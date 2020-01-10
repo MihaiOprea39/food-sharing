@@ -1,0 +1,48 @@
+.general-header {
+  background: linear-gradient(-45deg, #eacdca, #ccc0bc, #e0d6da, #23A6D5, #a99f9e, #23D5AB, #FCEEB5, #A2CCB6, #a96059, #A2CCB6);
+  background-size: 400% 400%;
+  margin-bottom: 50px;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+}
+
+.general-header.shrink nav .navbar-content {
+  height: 80px;
+}
+
+.general-header nav {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.general-header nav .navbar-content {
+  color: #fff;
+  display: flex;
+  height: 170px;
+  margin: 0 auto;
+  transition: all .25s ease-in-out;
+}
+
+.general-header nav .navbar-content .navbar-text {
+  align-items: center;
+  display: flex;
+  white-space: nowrap;
+}
+
+.general-header nav .navbar-content .navbar-text i {
+  transition: all 0.5s ease-in-out;
+  font-size: 40px;
+  color: #fff;
+  margin-right: 13px;
+}
+
+.general-header nav .navbar-content .navbar-text span {
+  color: #fff !important;
+  font-family: "Open Sans", sans-serif;
+  letter-spacing: 3px;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: .9rem;
+}

@@ -1,40 +1,45 @@
 import {Link} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import './header.scss';
 
-/**
- * @return {boolean}
- */
-function WillShrink() {
-    const [hasShrinked, setHasShrink] = useState(false);
+// https://codedaily.io/tutorials/60/Create-a-useMousePosition-Hook-with-useEffect-and-useState-in-React
+
+function TrackScroll(header) {
+    const [shrink, setShrink] = useState(false);
 
     useEffect(() => {
-        window.addEventListener('scroll', () => setHasShrink(true));
+        const decideShrink = () => {
+            const scrolled = document.scrollingElement.scrollTop;
+            const position = header.offsetTop;
+
+            setShrink(scrolled > position + 90);
+        };
+        window.addEventListener('scroll', decideShrink);
+
+        return () => window.removeEventListener('scroll', decideShrink);
     }, []);
 
-    return hasShrinked;
+    return shrink;
 }
 
-// function TrackScroll() {
-//     const scrolled = document.scrollingElement.scrollTop;
-//     const position = header.offsetTop;
-//
-//     if(scrolled > position + 90){
-//         header.classList.add('shrink');
-//     } else {
-//         header.classList.remove('shrink');
-//     }
-// }
-
 export default function Header() {
-    const isShrinked = WillShrink();
+    const [shrink, setShrink] = useState(false);
+    const header = useRef();
+
+    useEffect(() => {
+        // setShrink(TrackScroll(header));
+    }, []);
+
+
     return (
-        <header className="general-header">
+        <header ref={header} className={`general-header ${'shrink' ? shrink : ''}`}>
             <nav>
                 <div className="navbar-content">
                     <div className="navbar-text">
-                        <a href="../index.html" title="Pagina principala"><i className="fas fa-globe-americas"></i></a>
-                        <span>Cele sapte minuni ale lumii</span>
+                        <Link to={'/'}>
+                            <i className="fas fa-globe-americas"></i>
+                        </Link>
+                        <span>Some fancy header</span>
                     </div>
                 </div>
             </nav>

@@ -1,0 +1,44 @@
+@import '../variables/colour';
+@import '../variables/font-families';
+
+@mixin generic-typing($weight: normal) {
+  font-style: normal;
+  font-stretch: normal;
+  font-weight: $weight;
+  letter-spacing: normal;
+}
+
+@mixin generic-light() {
+  @include generic-typing(300);
+  @include generic-font();
+}
+
+@mixin generic() {
+  @include generic-typing();
+  @include generic-font();
+}
+
+@mixin generic-bold() {
+  @include generic-typing(bold);
+  @include generic-font();
+}
+
+@mixin generic-font($color: $colour-white, $font-family: $font-family-open-sans) {
+  color: $color;
+  font-family: $font-family;
+}
+
+@mixin paragraph($color: $colour-white, $font-family: $font-family-open-sans, $size: 16px) {
+  color: $color;
+  font-family: $font-family;
+  font-size: $size;
+  line-height: 26px;
+}
+
+@mixin heading($color: $colour-white, $font-family: $font-family-nunito) {
+  color: $color;
+  font-family: $font-family;
+}
+
+
+

@@ -1,3 +1,5 @@
+@import '../../misc/scss/utilities/mixins/typography';
+
 :root {
   --fullGrid: 1 / 1 / -1 / -1;
 }
@@ -28,6 +30,36 @@
       align-content: center;
       text-align: center;
       background-color: rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  .food-sharing-banner {
+    background-color: $color-dark-green;
+
+    .banner-container {
+      width: 1100px;
+      margin: 0 auto;
+      padding: 60px 0;
+
+      h1 {
+        font-size: 32px;
+      }
+    }
+  }
+
+  .food-sharing-duo-block {
+    display: flex;
+    flex-wrap: wrap;
+    height: 500px;
+    .left-block {
+      flex: 0 0 50%;
+      background-color: $colour-new-green;
+
+    }
+    .right-block {
+      flex: 0 0 50%;
+      background-color: $colour-new-blue;
+
     }
   }
 }

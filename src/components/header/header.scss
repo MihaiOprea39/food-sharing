@@ -1,14 +1,14 @@
 .general-header {
-  background: linear-gradient(-45deg, #eacdca, #ccc0bc, #e0d6da, #23A6D5, #a99f9e, #23D5AB, #FCEEB5, #A2CCB6, #a96059, #A2CCB6);
+  background-color: rgba(0, 166, 156, 1);
   background-size: 400% 400%;
   margin-bottom: 50px;
   position: fixed;
   width: 100%;
-  z-index: 999;
+  z-index: 10;
 }
 
 .general-header.shrink nav .navbar-content {
-  height: 80px;
+  height: 40px;
 }
 
 .general-header nav {
@@ -19,7 +19,7 @@
 .general-header nav .navbar-content {
   color: #fff;
   display: flex;
-  height: 170px;
+  height: 60px;
   margin: 0 auto;
   transition: all .25s ease-in-out;
 }

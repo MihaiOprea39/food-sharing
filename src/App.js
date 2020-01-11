@@ -1,5 +1,6 @@
 import React, {lazy, Suspense} from 'react';
 import './App.css';
+import './misc/scss/global.scss';
 import {
     BrowserRouter as Router,
     Switch,
@@ -15,7 +16,7 @@ function App() {
     return (
         <Router>
             <Suspense fallback={<div>Loading...</div>}>
-                {/*<Header/>*/}
+                <Header/>
                 <Switch>
                     <Route exact path="/">
                         <HomeComponent/>

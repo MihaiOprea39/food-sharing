@@ -1,0 +1,69 @@
+/**
+ * = Input groups
+ */
+
+.input-group {
+	transition: $transition-base;
+
+	.form-control {
+		box-shadow: none;
+
+		&:not(:first-child) {
+		    	border-left: 0;
+		    	padding-left: .4rem;
+		}
+		&:not(:last-child) {
+			border-right: 0;
+			padding-right: 0;
+		}
+		&:focus {
+			box-shadow: none;
+		}
+	}
+}
+
+.input-group-text {
+	@include font-size($font-size-sm);
+	transition: $input-transition;
+}
+
+.input-group-shadow {
+    	box-shadow: $shadow-input;
+    	border: 0;
+    	transition: box-shadow .15s ease;
+
+    .form-control,
+    .input-group-text {
+        	border: 0;
+        	box-shadow: none;
+	}
+
+}
+
+.input-group-lg > .form-control,
+.input-group-lg > .custom-select,
+.input-group-lg > .input-group-prepend > .input-group-text,
+.input-group-lg > .input-group-append > .input-group-text,
+.input-group-lg > .input-group-prepend > .btn,
+.input-group-lg > .input-group-append > .btn {
+  @include border-radius($input-border-radius-sm);
+}
+
+.input-group-prepend {
+	margin-right: -2px;
+}
+
+// .focus class is applied dinamycally from theme.js
+
+.focused {
+
+	.input-group-text {
+	    	color: $input-group-addon-focus-color;
+	    	background-color: $input-group-addon-focus-bg;
+	}
+
+	.input-group-shadow{
+		box-shadow:$shadow-input-focus;
+	}
+}
+

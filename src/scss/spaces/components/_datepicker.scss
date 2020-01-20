@@ -1,0 +1,25 @@
+/**
+ * = Datepickers
+ */
+
+.datepicker{
+    .active.day, .active.day:hover {
+        background: $primary;
+    }
+    table {
+		margin: 0;
+		-webkit-touch-callout: none;
+        user-select: none;
+
+        th {
+            font-weight: 500;
+        }
+
+        td, th {
+            width: 36px !important;
+            height: 36px !important;
+            border: none;
+            text-align: center;
+        }
+    }
+}

@@ -1,0 +1,314 @@
+/**
+ * = Buttons
+ */
+
+.btn {
+    position: relative;
+    transition: $transition-base;
+    letter-spacing: $btn-letter-spacing;
+    font-size: $btn-font-size;
+    @include border-radius($border-radius);
+    
+	&.btn-pill {
+		border-radius: $border-radius-pill;
+    }
+
+    &.btn-circle {
+        border-radius: $circle-radius;
+    }
+    
+    &.creative{
+        &:hover{
+            box-shadow: none;
+        }
+    }
+
+    .btn-group &, .input-group & {
+        margin-right: 0;
+        transform: translateY(0);
+    }
+
+    .toggle-arrow {
+        transition: $transition-base;
+    }
+
+    &[aria-expanded="true"] {
+        .toggle-arrow {
+            @include transform(rotate(180deg));
+        }
+    }
+	
+}
+
+// Sizes
+.btn-xs {
+    &, i {
+        font-size: $font-size-xs !important;
+    }
+}
+
+.btn-sm {
+    &, i {
+        font-size: $font-size-sm !important;
+    }
+}
+
+.btn-lg {
+    &, i {
+        font-size: $font-size-base !important;
+    }
+    padding: 0.85rem 1.75rem;
+}
+
+// Creative Buttons
+.creative {
+	background: none;
+	border: none;
+	cursor: pointer;
+	&:after {
+		@include creative-btn($primary, $transition-base);
+        @include translate(1px,1px);
+	}
+	&:before {
+		@include creative-btn($primary, $transition-base);
+		@include translate(-3px,-3px);
+	}
+	&:hover {
+		&:after {
+			transform: translate(0);
+		}
+		&:before {
+			transform: translate(0);
+		}
+    }
+    &:not(:last-child){
+        margin-right:.5rem;
+    }
+}
+
+// Fixes
+[class*="btn-outline-"] {
+    border-width: 2px;
+}
+
+.btn-outline-secondary {
+    color: $secondary;
+}
+
+.btn-inner-icon {
+    i:not(.fa) {
+        position: relative;
+    }
+}
+
+.btn-link {
+    font-weight: $btn-font-weight;
+    box-shadow: none;
+    padding: 0;
+
+	&:hover,
+	&:focus,
+	&:active {
+		background-color: transparent;
+		box-shadow: none;
+        transform: none;
+	}
+}
+
+// Icon labels
+.btn-icon-label {
+    position: relative;
+
+    .btn-inner-icon {
+        position: absolute;
+        height: 100%;
+        line-height: 1;
+        border-radius: 0;
+        text-align: center;
+        margin: 0;
+        width: 3rem;
+    }
+    .btn-inner-icon:not(:first-child),
+    .btn-inner-icon:not(:last-child) {
+        top: 0;
+
+    }
+    .btn-inner-icon:not(:first-child) {
+        right: 0;
+        border-top-right-radius: inherit;
+        border-bottom-right-radius: inherit;
+    }
+    .btn-inner-icon:not(:last-child) {
+        left: 0;
+        border-top-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+	}
+
+    .btn-inner-icon svg {
+        position: relative;
+        top: 50%;
+        @include translate(0, -50px);
+    }
+
+    .btn-inner-text:not(:first-child) {
+        padding-left: 2rem;
+    }
+    .btn-inner-text:not(:last-child) {
+        padding-right: 2rem;
+    }
+}
+
+.btn-inner-icon {
+    & i:not(.fa) {
+        position: relative;
+        top:1px;
+    }
+
+    & img{
+        width:20px;
+    }
+}
+
+// Icons 
+.btn-icon {
+    display: inline-block;
+
+    .btn-inner-icon:first-of-type {
+        margin-right: .3rem;
+    }
+    .btn-inner-icon:last-of-type {
+        margin-left: .3rem;
+    }
+}
+
+.btn-icon-only {
+    width: 2.575rem;
+    height: 2.575rem;
+    padding: 0;
+
+    &a {
+        line-height: 2.5;
+    }
+
+    &.btn-xs {
+        width: 1.7rem;
+        height: 1.7rem;
+    }
+    &.btn-sm {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+.spinner-border,
+.spinner-brow {
+    vertical-align: middle;
+}
+
+.btn-loading-overlay {
+    .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        @include transform(translate(-50%, -50%));
+        opacity: 0;
+    }
+    .btn-inner-text,
+    .spinner {
+        transition: $transition-base;
+    }
+    .btn-inner-text {
+        opacity: 1;
+    }
+    &.btn-loading {
+        .spinner {
+            opacity: 1;
+        }
+        .btn-inner-text {
+            opacity: 0;
+        }
+    }
+}
+
+.btn-group,
+.btn-vertical {
+
+    .dropdown-arrow {
+        transition: $transition-base;
+    }
+
+    &.show {
+        .dropdown-arrow {
+            @include transform(rotate(180deg));
+        }
+
+        &.dropright .dropdown-arrow {
+            @include transform(rotate(90deg));
+        }
+
+        &.dropleft .dropdown-arrow {
+            @include transform(rotate(-90deg));
+        }
+    }
+
+    // reset Bootstrap z-index: 1 from scss/bootstrap/_button-group.scss
+    // from overlaying the second button border
+    > .btn {
+        @include hover {
+            z-index: 0;
+          }
+          &:focus,
+          &:active,
+          &.active {
+            z-index: 0;
+          }
+    }
+}
+
+// Set color of theme buttons
+@each $color, $value in $theme-colors {
+    &.btn-#{$color}{
+        @include button-variant($value, $value);
+    }
+}
+
+// Set color of creative buttons
+@each $color, $value in $theme-colors {
+    .creative{ 
+        &.btn-#{$color}{
+            color: $value;
+            background: transparent;
+            &:after,
+            &:before {
+                border: 2px solid $value;
+            }
+            &:hover {
+                background: transparent;
+                color:$value;
+            }
+        }
+    }
+}
+
+// Brand (social) buttons 
+@each $color, $value in $brand-colors {
+    .btn-#{$color} {
+        @include button-variant($value, $value);
+
+		&.btn-link {
+			color: $value;
+			background: transparent;
+			box-shadow: none;
+            border:0;
+            border-style: none;
+			&:hover,
+			&:focus,
+			&.active {
+                background-color: transparent !important;
+                box-shadow: none;
+                border: 0;
+				color: $value;
+			}
+		}
+    }
+}

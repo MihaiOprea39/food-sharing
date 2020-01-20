@@ -17,18 +17,14 @@ function TrackScroll(header) {
         window.addEventListener('scroll', decideShrink);
 
         return () => window.removeEventListener('scroll', decideShrink);
-    }, []);
+    }, [header.offsetTop]);
 
     return shrink;
 }
 
 export default function Header() {
-    const [shrink, setShrink] = useState(false);
     const header = useRef();
-
-    useEffect(() => {
-        // setShrink(TrackScroll(header));
-    }, []);
+    const shrink = TrackScroll(header);
 
 
     return (

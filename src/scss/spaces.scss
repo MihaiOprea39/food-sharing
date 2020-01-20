@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Sanchez:400,400i&display=swap');
+
+// Bootstrap mixins and functions
+@import "bootstrap/mixins";
+@import "bootstrap/functions";
+
+// Change variables here
+@import "spaces/variables";
+
+// Bootstrap
+@import "bootstrap/bootstrap";
+
+// Vendor
+@import "spaces/vendor";
+
+// Pixel mixins & functions
+@import "spaces/mixins";
+@import "spaces/functions";
+
+// Utilities
+@import "spaces/reboot";
+@import "spaces/utilities";
+
+// Layout
+@import "spaces/layout";
+
+// Components
+@import "spaces/components";

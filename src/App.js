@@ -1,6 +1,17 @@
 import React, {lazy, Suspense} from 'react';
 import './App.css';
-import './misc/scss/global.scss';
+
+// Vendor css
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import '@fancyapps/fancybox/dist/jquery.fancybox.min.css';
+import 'prismjs/themes/prism.css';
+
+// Global styling
+import './scss/spaces.scss';
+// import './misc/scss/global.scss';
+
+// import './assets/js/spaces';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -9,6 +20,7 @@ import {
 import Header from "./components/header/Header";
 
 const HomeComponent = lazy(() => import('./components/home/Home'));
+const SignInComponent = lazy(() => import('./components/signin/SignIn'));
 const PickUpComponent = lazy(() => import('./components/PickUp'));
 const NotFoundComponent = lazy(() => import('./components/NotFound'));
 
@@ -19,7 +31,7 @@ function App() {
                 <Header/>
                 <Switch>
                     <Route exact path="/">
-                        <HomeComponent/>
+                        <SignInComponent/>
                     </Route>
                     <Route path="/pick-up">
                         <PickUpComponent/>

@@ -8,8 +8,10 @@ import 'prismjs/themes/prism.css';
 
 // Global styling
 import './scss/spaces.scss';
-// import './misc/scss/global.scss';
+// import './assets/js/test-file';
 
+
+// import './misc/scss/global.scss';
 // import './assets/js/spaces';
 
 import {
@@ -31,7 +33,7 @@ function App() {
                 <Header/>
                 <Switch>
                     <Route exact path="/">
-                        <SignInComponent/>
+                        <HomeComponent/>
                     </Route>
                     <Route path="/pick-up">
                         <PickUpComponent/>

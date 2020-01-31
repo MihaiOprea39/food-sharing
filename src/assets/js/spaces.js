@@ -1,10 +1,3 @@
-// import $ from 'jquery/dist/jquery.min';
-// import '@fancyapps/fancybox/dist/jquery.fancybox.min';
-// import Headroom from 'headroom.js';
-// import 'nouislider/distribute/nouislider.min';
-// import StickySidebar from 'sticky-sidebar';
-// import autocomplete from './autocomplete';
-
 $(document).ready(function () {
 
     // options

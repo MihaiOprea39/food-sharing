@@ -12,6 +12,7 @@
     "bootstrap-datepicker": "1.9.0",
     "firebase": "^7.6.1",
     "headroom.js": "0.10.3",
+    "html-react-parser": "^0.10.3",
     "jquery": "^3.4.1",
     "jquery-countdown": "2.2.0",
     "jquery-validation": "1.19.1",

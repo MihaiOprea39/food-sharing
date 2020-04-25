@@ -20,9 +20,12 @@ import {
     Route
 } from "react-router-dom";
 import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
 
 const HomeComponent = lazy(() => import('./components/home/Home'));
 const SignInComponent = lazy(() => import('./components/signin/SignIn'));
+const RestaurantComponent = lazy(() => import('./components/restaurant/Restaurant'));
+const RestaurantsListComponent = lazy(() => import('./components/restaurants-list/RestaurantsList'));
 const PickUpComponent = lazy(() => import('./components/PickUp'));
 const NotFoundComponent = lazy(() => import('./components/NotFound'));
 
@@ -38,10 +41,17 @@ function App() {
                     <Route path="/pick-up">
                         <PickUpComponent/>
                     </Route>
+                    <Route path="/restaurant/:id">
+                        <RestaurantComponent/>
+                    </Route>
+                    <Route path="/restaurants">
+                        <RestaurantsListComponent/>
+                    </Route>
                     <Route path="*">
-                        <NotFoundComponent />
+                        <NotFoundComponent/>
                     </Route>
                 </Switch>
+                <Footer/>
             </Suspense>
         </Router>
     );

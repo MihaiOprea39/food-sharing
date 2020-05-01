@@ -3,10 +3,12 @@ import Banner from "../banner/Banner";
 import firebase from "../../firebase";
 import parse from 'html-react-parser';
 import RestaurantFilters from "./RestaurantFilters";
-import {Pagination} from "@material-ui/lab";
 
 const DEFAULT_LIMIT = 5;
 
+/**
+ * @return {string}
+ */
 function CalculateStarRating(rating) {
     const rounded = Math.floor(rating);
     const decimal = rating - rounded;
@@ -20,30 +22,57 @@ function CalculateStarRating(rating) {
     return totalStars;
 }
 
+
 export default function RestaurantsList() {
     const [pageCount, setPageCount] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
     const [restaurants, setRestaurants] = useState([]);
+    const [lastVisible, setLastVisible] = useState(null);
+    const [isFetching, setIsFetching] = useState(false);
+    const [isDoneFetching, setIsDoneFetching] = useState(false);
 
-    const handlePageChange = (event, value) => {
-        setCurrentPage(value);
+    const handleRestaurantsContainerScroll = () => {
+        if (isDoneFetching) {
+            return;
+        }
 
-        fetchRestaurants();
+        if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+            setIsFetching(true);
+        }
     };
 
-    const fetchRestaurants = () => {
-
-        firebase
-            .firestore()
-            .collection('restaurants')
+    const fetchInitialRestaurants = async () => {
+        let initialQuery = await firebase
+            .firestore().collection('restaurants')
             .orderBy('name', 'asc')
-            .limit(DEFAULT_LIMIT)
-            .onSnapshot((snapshot => {
-                const availableRestaurants = snapshot.docs.map(doc => doc.data());
+            .limit(DEFAULT_LIMIT);
 
-                setRestaurants(availableRestaurants);
-            }));
+        let documentSnapshots = await initialQuery.get();
+        let documentData = documentSnapshots.docs.map(document => document.data());
+        let lastVisibleElement = documentData[documentData.length - 1].name;
 
+        setRestaurants(documentData);
+        setLastVisible(lastVisibleElement);
+    };
+
+    const fetchMoreRestaurants = async () => {
+        let additionalQuery = await firebase
+            .firestore().collection('restaurants')
+            .orderBy('name', 'asc')
+            .startAfter(lastVisible)
+            .limit(DEFAULT_LIMIT);
+
+        let documentSnapshots = await additionalQuery.get();
+        let documentData = documentSnapshots.docs.map(document => document.data());
+
+        setIsFetching(false);
+        setIsDoneFetching(!documentData.length);
+
+        if (Array.isArray(documentData) && !!documentData.length) {
+            let lastVisibleElement = documentData[documentData.length - 1].name;
+
+            setRestaurants([...restaurants, ...documentData]);
+            setLastVisible(lastVisibleElement);
+        }
     };
 
     const getNumberOfRestaurantPages = () => {
@@ -55,9 +84,23 @@ export default function RestaurantsList() {
     };
 
     useEffect(() => {
-        fetchRestaurants();
+        (async function asyncFn() {
+            await fetchInitialRestaurants();
+        })();
         getNumberOfRestaurantPages();
     }, []);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleRestaurantsContainerScroll);
+        return () => window.removeEventListener('scroll', handleRestaurantsContainerScroll);
+    }, []);
+
+    useEffect(() => {
+        if (!isFetching) return;
+        (async function asyncFn() {
+            await fetchMoreRestaurants();
+        })();
+    }, [isFetching]);
 
     return (
         <main>
@@ -136,7 +179,8 @@ export default function RestaurantsList() {
                                 </div>
                             </div>
                             <div className="tab-content mt-4 mt-lg-4" id="tabcontentexample-5">
-                                <div className="tab-pane fade show active" id="link-example-13" role="tabpanel"
+                                <div className="tab-pane fade show active restaurants-container" id="link-example-13"
+                                     role="tabpanel"
                                      aria-labelledby="tab-link-example-13">
                                     {restaurants.map((restaurant, key) => {
                                         return (
@@ -190,36 +234,7 @@ export default function RestaurantsList() {
                                             </div>
                                         );
                                     })}
-
-                                    <div className="row">
-                                        <div className="col mt-3 d-flex justify-content-center">
-                                            <Pagination count={pageCount} page={currentPage} onChange={handlePageChange}/>
-                                        </div>
-                                    </div>
-
-                                    {/*<div className="row">*/}
-                                    {/*    <div className="col mt-3 d-flex justify-content-center">*/}
-                                    {/*        <nav aria-label="Page navigation example">*/}
-                                    {/*            <ul className="pagination">*/}
-                                    {/*                <li className="page-item disabled"><a className="page-link"*/}
-                                    {/*                                                      tabIndex="-1"*/}
-                                    {/*                                                      href="#">Previous</a></li>*/}
-                                    {/*                <li className="page-item"><a className="page-link" href="#">1</a>*/}
-                                    {/*                </li>*/}
-                                    {/*                <li className="page-item active"><a className="page-link"*/}
-                                    {/*                                                    href="#">2</a></li>*/}
-                                    {/*                <li className="page-item"><a className="page-link" href="#">3</a>*/}
-                                    {/*                </li>*/}
-                                    {/*                <li className="page-item"><a className="page-link" href="#">4</a>*/}
-                                    {/*                </li>*/}
-                                    {/*                <li className="page-item"><a className="page-link" href="#">5</a>*/}
-                                    {/*                </li>*/}
-                                    {/*                <li className="page-item"><a className="page-link" href="#">Next</a>*/}
-                                    {/*                </li>*/}
-                                    {/*            </ul>*/}
-                                    {/*        </nav>*/}
-                                    {/*    </div>*/}
-                                    {/*</div>*/}
+                                    {(isFetching && !isDoneFetching) && 'Fetching more restaurants...'}
                                 </div>
                             </div>
                         </div>

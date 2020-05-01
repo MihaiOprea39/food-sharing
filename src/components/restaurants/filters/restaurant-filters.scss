@@ -1,0 +1,15 @@
+.ratings-list-container {
+  .rating-item-container {
+    display: flex;
+    align-items: center;
+    padding-left: 0;
+
+    .MuiCheckbox-root {
+      padding: 0;
+    }
+
+    .rating-stars {
+      margin-left: 6px;
+    }
+  }
+}

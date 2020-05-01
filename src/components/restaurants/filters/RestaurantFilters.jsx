@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -8,26 +7,15 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Checkbox from '@material-ui/core/Checkbox';
 import './restaurant-filters.scss';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    },
-}));
-
 const ratingInitialObject = {
     oneStar: false,
-    TwoStars: false,
-    ThreeStars: false,
+    twoStars: false,
+    threeStars: false,
     fourStars: false,
-    FiveStars: false
+    fiveStars: false
 };
 
 export default function RestaurantFilters() {
-    const classes = useStyles();
     const [ratingFilter, setRatingFilter] = useState(ratingInitialObject);
 
 
@@ -42,16 +30,16 @@ export default function RestaurantFilters() {
     console.log(ratingFilter);
 
     return (
-        <aside className="col-12 col-lg-3 mt-3 mt-lg-0 z-2 order-lg-2">
+        <aside className="col-12 col-lg-3 mt-3 mt-lg-0 z-2 order-lg-2 restaurant-filters-wrapper">
             <div id="filters-sidebar" className="d-none d-lg-block">
                 <form action="#" method="get" className="sidebar-inner">
 
-                    <div className="card shadow-sm border-soft mt-4">
+                    <div className="card shadow-sm border-soft mt-4 restaurant-filter-card">
                         <ExpansionPanel>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
                             >
-                                <Typography className={classes.heading}>Expansion Panel 1</Typography>
+                                <Typography>Expansion Panel 1</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <Typography>
@@ -62,12 +50,12 @@ export default function RestaurantFilters() {
                         </ExpansionPanel>
                     </div>
 
-                    <div className="card shadow-sm border-soft mt-4">
+                    <div className="card shadow-sm border-soft mt-4 restaurant-filter-card">
                         <ExpansionPanel>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
                             >
-                                <Typography className={classes.heading}>Ratings</Typography>
+                                <Typography>Ratings</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <ul id="reviews" className="list-group list-group list-group-flush ratings-list-container" style={{marginTop: '-32px'}}>
@@ -75,12 +63,12 @@ export default function RestaurantFilters() {
                                         <div className="form-check">
                                             <label className="form-check-label rating-item-container">
                                                 <Checkbox
-                                                    checked={ratingFilter.oneStar}
+                                                    checked={ratingFilter.fiveStars}
                                                     color="primary"
                                                     onChange={handleRatingFilterChange}
                                                     inputProps={{
                                                         'aria-label': 'primary checkbox',
-                                                        'name': 'oneStar'
+                                                        'name': 'fiveStars'
                                                     }}
                                                 />
                                                 <span className="d-flex rating-stars">
@@ -89,7 +77,66 @@ export default function RestaurantFilters() {
                                                         <i className="star fas fa-star text-warning"></i>
                                                         <i className="star fas fa-star text-warning"></i>
                                                         <i className="star fas fa-star text-warning"></i>
-                                                        <span>(12)</span>
+                                                    </span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li className="list-group-item border-0 py-1 pt-2 px-0 d-flex align-items-center justify-content-between">
+                                        <div className="form-check">
+                                            <label className="form-check-label rating-item-container">
+                                                <Checkbox
+                                                    checked={ratingFilter.fourStars}
+                                                    color="primary"
+                                                    onChange={handleRatingFilterChange}
+                                                    inputProps={{
+                                                        'aria-label': 'primary checkbox',
+                                                        'name': 'fourStars'
+                                                    }}
+                                                />
+                                                <span className="d-flex rating-stars">
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                    </span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li className="list-group-item border-0 py-1 pt-2 px-0 d-flex align-items-center justify-content-between">
+                                        <div className="form-check">
+                                            <label className="form-check-label rating-item-container">
+                                                <Checkbox
+                                                    checked={ratingFilter.threeStars}
+                                                    color="primary"
+                                                    onChange={handleRatingFilterChange}
+                                                    inputProps={{
+                                                        'aria-label': 'primary checkbox',
+                                                        'name': 'threeStars'
+                                                    }}
+                                                />
+                                                <span className="d-flex rating-stars">
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                    </span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li className="list-group-item border-0 py-1 pt-2 px-0 d-flex align-items-center justify-content-between">
+                                        <div className="form-check">
+                                            <label className="form-check-label rating-item-container">
+                                                <Checkbox
+                                                    checked={ratingFilter.twoStars}
+                                                    color="primary"
+                                                    onChange={handleRatingFilterChange}
+                                                    inputProps={{
+                                                        'aria-label': 'primary checkbox',
+                                                        'name': 'twoStars'
+                                                    }}
+                                                />
+                                                <span className="d-flex rating-stars">
+                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"></i>
                                                     </span>
                                             </label>
                                         </div>
@@ -107,81 +154,7 @@ export default function RestaurantFilters() {
                                                     }}
                                                 />
                                                 <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <span>(12)</span>
-                                                    </span>
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item border-0 py-1 pt-2 px-0 d-flex align-items-center justify-content-between">
-                                        <div className="form-check">
-                                            <label className="form-check-label rating-item-container">
-                                                <Checkbox
-                                                    checked={ratingFilter.oneStar}
-                                                    color="primary"
-                                                    onChange={handleRatingFilterChange}
-                                                    inputProps={{
-                                                        'aria-label': 'primary checkbox',
-                                                        'name': 'oneStar'
-                                                    }}
-                                                />
-                                                <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <span>(12)</span>
-                                                    </span>
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item border-0 py-1 pt-2 px-0 d-flex align-items-center justify-content-between">
-                                        <div className="form-check">
-                                            <label className="form-check-label rating-item-container">
-                                                <Checkbox
-                                                    checked={ratingFilter.oneStar}
-                                                    color="primary"
-                                                    onChange={handleRatingFilterChange}
-                                                    inputProps={{
-                                                        'aria-label': 'primary checkbox',
-                                                        'name': 'oneStar'
-                                                    }}
-                                                />
-                                                <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <span>(12)</span>
-                                                    </span>
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item border-0 py-1 pt-2 px-0 d-flex align-items-center justify-content-between">
-                                        <div className="form-check">
-                                            <label className="form-check-label rating-item-container">
-                                                <Checkbox
-                                                    checked={ratingFilter.oneStar}
-                                                    color="primary"
-                                                    onChange={handleRatingFilterChange}
-                                                    inputProps={{
-                                                        'aria-label': 'primary checkbox',
-                                                        'name': 'oneStar'
-                                                    }}
-                                                />
-                                                <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <span>(12)</span>
+                                                        <i className="star fas fa-star text-warning"/>
                                                     </span>
                                             </label>
                                         </div>
@@ -191,12 +164,12 @@ export default function RestaurantFilters() {
                         </ExpansionPanel>
                     </div>
 
-                    <div className="card shadow-sm border-soft mt-4">
+                    <div className="card shadow-sm border-soft mt-4  restaurant-filter-card">
                         <ExpansionPanel>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
                             >
-                                <Typography className={classes.heading}>Expansion Panel 1</Typography>
+                                <Typography>Expansion Panel 1</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <Typography>
@@ -209,7 +182,7 @@ export default function RestaurantFilters() {
 
 
 
-                    <div className="card list-group list-group-flush shadow-sm border-soft p-3">
+                    <div className="card list-group list-group-flush shadow-sm border-soft p-3 restaurant-filter-card">
                         <a href="#" data-target="#price"
                            className="accordion-panel-header w-100 d-flex align-items-center justify-content-between"
                            data-toggle="collapse" role="button" aria-expanded="false"
@@ -237,7 +210,7 @@ export default function RestaurantFilters() {
                             </div>
                         </div>
                     </div>
-                    <div className="card shadow-sm border-soft mt-4 p-3">
+                    <div className="card shadow-sm border-soft mt-4 p-3 restaurant-filter-card">
                         <a href="#" data-target="#amenities-1"
                            className="accordion-panel-header w-100 d-flex align-items-center justify-content-between"
                            data-toggle="collapse" role="button" aria-expanded="false"

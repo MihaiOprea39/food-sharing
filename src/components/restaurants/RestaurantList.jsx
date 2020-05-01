@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Banner from "../banner/Banner";
 import firebase from "../../firebase";
 import parse from 'html-react-parser';
-import RestaurantFilters from "./RestaurantFilters";
+import RestaurantFilters from "./filters/RestaurantFilters";
 
 const DEFAULT_LIMIT = 5;
 

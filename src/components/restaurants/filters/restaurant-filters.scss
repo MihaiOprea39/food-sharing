@@ -1,15 +1,30 @@
-.ratings-list-container {
-  .rating-item-container {
-    display: flex;
-    align-items: center;
-    padding-left: 0;
-
-    .MuiCheckbox-root {
-      padding: 0;
+.restaurant-filters-wrapper {
+  .restaurant-filter-card {
+    .MuiExpansionPanelSummary-root {
+      padding-top: 8px;
+      padding-bottom: 8px;
     }
+    .MuiTypography-root {
+      &.MuiTypography-body1 {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.4;
+        font-weight: 500 !important;
+      }
+    }
+    .ratings-list-container {
+      .rating-item-container {
+        display: flex;
+        align-items: center;
+        padding-left: 0;
 
-    .rating-stars {
-      margin-left: 6px;
+        .MuiCheckbox-root {
+          padding: 0;
+        }
+
+        .rating-stars {
+          margin-left: 6px;
+        }
+      }
     }
   }
 }

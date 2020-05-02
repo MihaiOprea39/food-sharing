@@ -4,31 +4,27 @@ import firebase from "../../firebase";
 import parse from 'html-react-parser';
 import RestaurantFilters from "./filters/RestaurantFilters";
 
-const DEFAULT_LIMIT = 5;
-
-/**
- * @return {string}
- */
-function CalculateStarRating(rating) {
-    const rounded = Math.floor(rating);
-    const decimal = rating - rounded;
-
-    let totalStars = '<i class="star fas fa-star text-warning"/>'.repeat(rounded);
-
-    if (decimal) {
-        totalStars = totalStars.concat('<i class="star fas fa-star-half text-warning"/>');
-    }
-
-    return totalStars;
-}
+const DEFAULT_LIMIT = 8;
 
 
 export default function RestaurantsList() {
-    const [pageCount, setPageCount] = useState(1);
     const [restaurants, setRestaurants] = useState([]);
     const [lastVisible, setLastVisible] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isDoneFetching, setIsDoneFetching] = useState(false);
+
+    const calculateStarRating = (rating) => {
+        const rounded = Math.floor(rating);
+        const decimal = rating - rounded;
+
+        let totalStars = '<i class="star fas fa-star text-warning"/>'.repeat(rounded);
+
+        if (decimal) {
+            totalStars = totalStars.concat('<i class="star fas fa-star-half text-warning"/>');
+        }
+
+        return totalStars;
+    }
 
     const handleRestaurantsContainerScroll = () => {
         if (isDoneFetching) {
@@ -61,11 +57,11 @@ export default function RestaurantsList() {
             .startAfter(lastVisible)
             .limit(DEFAULT_LIMIT);
 
-        let documentSnapshots = await additionalQuery.get();
-        let documentData = documentSnapshots.docs.map(document => document.data());
+        const documentSnapshots = await additionalQuery.get();
+        const documentData = documentSnapshots.docs.map(document => document.data());
 
         setIsFetching(false);
-        setIsDoneFetching(!documentData.length);
+        setIsDoneFetching(documentData.length < DEFAULT_LIMIT);
 
         if (Array.isArray(documentData) && !!documentData.length) {
             let lastVisibleElement = documentData[documentData.length - 1].name;
@@ -75,19 +71,26 @@ export default function RestaurantsList() {
         }
     };
 
-    const getNumberOfRestaurantPages = () => {
-        firebase
+    const applyFilters = async (filters) => {
+        let query = firebase
             .firestore()
             .collection('restaurants')
-            .get()
-            .then(snap => setPageCount(Math.ceil(snap.size / DEFAULT_LIMIT)));
-    };
+
+        if (filters.fiveStars) {
+            query = query.where('rating', '==', 5);
+        }
+
+        const documentSnapshots = await query.get();
+        const documentData = documentSnapshots.docs.map(document => document.data());
+
+        setRestaurants(documentData);
+        setIsDoneFetching(true);
+    }
 
     useEffect(() => {
         (async function asyncFn() {
             await fetchInitialRestaurants();
         })();
-        getNumberOfRestaurantPages();
     }, []);
 
     useEffect(() => {
@@ -126,7 +129,7 @@ export default function RestaurantsList() {
                                     <div className="input-group input-group-md mb-3 mb-lg-0">
                                         <div className="input-group-prepend">
                                             <span className="input-group-text"><i
-                                                className="far fa-calendar-alt"></i></span>
+                                                className="far fa-calendar-alt"/></span>
                                         </div>
                                         <input className="form-control datepicker" placeholder="Select date" type="text"
                                                required/>
@@ -147,7 +150,7 @@ export default function RestaurantsList() {
                     </div>
                     <div className="row">
 
-                        <RestaurantFilters/>
+                        <RestaurantFilters onFilterSubmit={applyFilters}/>
 
                         <div className="col-md-12 col-lg-9 order-lg-1">
                             <div className="justify-content-between align-items-center d-none d-md-flex">
@@ -163,7 +166,7 @@ export default function RestaurantsList() {
                                                href="#link-example-13" role="tab" aria-controls="link-example-13"
                                                aria-selected="true">
                                                 <span className="nav-link-icon d-block"><i
-                                                    className="fas fa-th-list"></i></span>
+                                                    className="fas fa-th-list"/></span>
                                             </a>
                                         </li>
                                         <li className="nav-item pr-0">
@@ -172,7 +175,7 @@ export default function RestaurantsList() {
                                                href="#link-example-14" role="tab" aria-controls="link-example-14"
                                                aria-selected="false">
                                                 <span className="nav-link-icon d-block"><i
-                                                    className="fas fa-th-large"></i></span>
+                                                    className="fas fa-th-large"/></span>
                                             </a>
                                         </li>
                                     </ul>
@@ -189,7 +192,7 @@ export default function RestaurantsList() {
                                                     <div
                                                         className="card card-article-wide shadow-sm flex-md-row no-gutters border-soft mb-4 animate-up-5">
                                                         <a href="single-space.html" className="col-md-6 col-lg-6">
-                                                            <img src="../../assets/img/private-office.jpg" alt="image"
+                                                            <img src={`${process.env.REACT_APP_RESOURCES_ROOT}/${restaurant.image}`} alt="image"
                                                                  className="card-img-top space-image-lg"/>
                                                         </a>
                                                         <div
@@ -203,7 +206,7 @@ export default function RestaurantsList() {
                                                         {restaurant.address}</span>
                                                             </div>
                                                             <div className="d-flex my-4">
-                                                                {parse(CalculateStarRating(restaurant.rating))}
+                                                                {parse(calculateStarRating(restaurant.rating))}
                                                                 <span className="badge badge-pill badge-secondary ml-2">
                                                                 {Number(restaurant.rating).toFixed(1)}
                                                             </span>

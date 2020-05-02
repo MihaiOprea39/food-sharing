@@ -1,6 +1,6 @@
 import React from 'react';
 import Banner from "../banner/Banner";
-import Recommended from "../Recommended/Recommended";
+import Recommended from "../recommended/Recommended";
 
 export default function Restaurant() {
     return (
@@ -53,35 +53,35 @@ export default function Restaurant() {
                                     </div>
                                     <div className="fancy-gallery my-5">
                                         <div className="row">
-                                            <a href="../../assets/img/conference-office.jpg"
+                                            <a href="../../../public/assets/img/conference-office.jpg"
                                                className="mb-4 col-6 col-sm-4 img-fluid"
                                                data-fancybox="images" data-caption="Conference Space">
-                                                <img src="../../assets/img/conference-office.jpg" alt=""/>
+                                                <img src="../../../public/assets/img/conference-office.jpg" alt=""/>
                                             </a>
-                                            <a href="../../assets/img/cowork-office.jpg"
+                                            <a href="../../../public/assets/img/cowork-office.jpg"
                                                className="mb-4 col-6 col-sm-4 img-fluid"
                                                data-fancybox="images" data-caption="Cowork Office">
-                                                <img src="../../assets/img/cowork-office.jpg" alt=""/>
+                                                <img src="../../../public/assets/img/cowork-office.jpg" alt=""/>
                                             </a>
-                                            <a href="../../assets/img/lifestyle-office.jpg"
+                                            <a href="../../../public/assets/img/lifestyle-office.jpg"
                                                className="mb-4 col-6 col-sm-4 img-fluid"
                                                data-fancybox="images" data-caption="Lifestyle Space">
-                                                <img src="../../assets/img/lifestyle-office.jpg" alt=""/>
+                                                <img src="../../../public/assets/img/lifestyle-office.jpg" alt=""/>
                                             </a>
-                                            <a href="../../assets/img/image-office.jpg"
+                                            <a href="../../../public/assets/img/image-office.jpg"
                                                className="mb-4 col-6 col-sm-4 img-fluid"
                                                data-fancybox="images" data-caption="Conference Space">
-                                                <img src="../../assets/img/image-office.jpg" alt=""/>
+                                                <img src="../../../public/assets/img/image-office.jpg" alt=""/>
                                             </a>
-                                            <a href="../../assets/img/meeting-office.jpg"
+                                            <a href="../../../public/assets/img/meeting-office.jpg"
                                                className="mb-4 col-6 col-sm-4 img-fluid"
                                                data-fancybox="images" data-caption="Meeting Office">
-                                                <img src="../../assets/img/meeting-office.jpg" alt=""/>
+                                                <img src="../../../public/assets/img/meeting-office.jpg" alt=""/>
                                             </a>
-                                            <a href="../../assets/img/private-office.jpg"
+                                            <a href="../../../public/assets/img/private-office.jpg"
                                                className="mb-4 col-6 col-sm-4 img-fluid"
                                                data-fancybox="images" data-caption="Private Space">
-                                                <img src="../../assets/img/private-office.jpg" alt=""/>
+                                                <img src="../../../public/assets/img/private-office.jpg" alt=""/>
                                             </a>
                                         </div>
                                     </div>
@@ -161,7 +161,7 @@ export default function Restaurant() {
                                             <span className="icon icon-white icon-xl"><i
                                                 className="fas fa-play-circle"></i></span>
                                         </a>
-                                        <img src="../../assets/img/lifestyle-office.jpg" alt="Image"/>
+                                        <img src="../../../public/assets/img/lifestyle-office.jpg" alt="Image"/>
                                     </div>
                                 </div>
                                 <div className="tab-pane fade" id="nav-amenities" role="tabpanel"
@@ -556,7 +556,7 @@ export default function Restaurant() {
                                     <a href="./profile.html" className="avatar-lg mr-2" data-toggle="tooltip"
                                        data-placement="top" title="More details">
                                         <img className="img-fluid rounded-circle"
-                                             src="../../assets/img/team/profile-image-4.jpg" alt="avatar"/>
+                                             src="../../../public/assets/img/team/profile-image-4.jpg" alt="avatar"/>
                                     </a>
                                     <div className="avatar-name"><a className="text-gray" href="./profile.html"
                                                                     data-toggle="tooltip" data-placement="top"

@@ -25,7 +25,7 @@ import Footer from "./components/footer/Footer";
 const HomeComponent = lazy(() => import('./components/home/Home'));
 const SignInComponent = lazy(() => import('./components/signin/SignIn'));
 const RestaurantComponent = lazy(() => import('./components/restaurants/Restaurant'));
-const RestaurantsListComponent = lazy(() => import('./components/restaurants/RestaurantList'));
+const RestaurantsListComponent = lazy(() => import('./components/restaurants/list/RestaurantList'));
 const PickUpComponent = lazy(() => import('./components/PickUp'));
 const NotFoundComponent = lazy(() => import('./components/NotFound'));
 

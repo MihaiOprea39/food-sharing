@@ -1,0 +1,32 @@
+.restaurant-list-main {
+  .restaurant-list-wrapper {
+    .restaurant-list-counter {
+      margin-top: 20px;
+      p {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.4;
+        font-size: 18px;
+      }
+    }
+  }
+  .restaurant-list-loader {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .MuiCircularProgress-root {
+      height: 50px;
+      width: 50px;
+    }
+
+    span {
+      margin-right: 40px;
+      font-family: "Poppins", sans-serif;
+      line-height: 1.4;
+      font-weight: 500;
+      margin-top: 9px;
+      font-size: 18px;
+    }
+  }
+}

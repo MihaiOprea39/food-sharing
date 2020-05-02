@@ -30,6 +30,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
     "react-slick": "^0.25.2",
+    "react-waypoint": "^9.0.2",
     "reactstrap": "^8.2.0",
     "slick-carousel": "^1.8.1",
     "sticky-sidebar": "3.3.1",

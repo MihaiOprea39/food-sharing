@@ -6,6 +6,12 @@ import {Waypoint} from 'react-waypoint';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import './restaurant-list.scss'
 import RestaurantListItem from "./list-item/RestaurantListItem";
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FoodShareDatePicker from "../../misc/DatePicker";
 
 const DEFAULT_LIMIT = 8;
 
@@ -15,6 +21,7 @@ export default function RestaurantsList() {
     const [lastVisible, setLastVisible] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isDoneFetching, setIsDoneFetching] = useState(false);
+    const [searchRestaurant, setSearchRestaurant] = useState('');
 
     const getNumberOfRestaurants = () => {
         firebase
@@ -68,6 +75,28 @@ export default function RestaurantsList() {
         }
     };
 
+    const onSearchChange = async (event) => {
+        setSearchRestaurant(event.target.value);
+    };
+
+    const onSearchSubmit = async () => {
+        let searchQuery = firebase
+            .firestore()
+            .collection('restaurants')
+            .where('keywords', 'array-contains', searchRestaurant.toLowerCase())
+            .orderBy('name', 'asc')
+
+        // if (lastVisible) {
+        //     searchQuery = searchQuery.startAt(lastVisible);
+        // }
+
+        searchQuery = await searchQuery.limit(restaurants.length).get();
+        const documentData = searchQuery.docs.map(document => document.data());
+
+        setRestaurants(documentData);
+        setIsDoneFetching(documentData.length < DEFAULT_LIMIT);
+    };
+
     const applyFilters = async (filters) => {
         let query = firebase
             .firestore()
@@ -106,40 +135,25 @@ export default function RestaurantsList() {
                 <div id="spaces-container" className="container">
                     <div className="row">
                         <div className="col-12">
-                            <form autoComplete="off" className="row" action="#">
-                                <div className="col-12 col-lg-4">
-                                    <div className="form-group mb-lg-0">
-                                        <div className="input-group input-group-md mb-lg-0">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text"><i className="fas fa-search"/></span>
-                                            </div>
-                                            <input id="search-location" type="text"
-                                                   className="form-control autocomplete"
-                                                   placeholder="Search location" tabIndex="1" required/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-12 col-lg-3">
-                                    <div className="input-group input-group-md mb-3 mb-lg-0">
-                                        <div className="input-group-prepend">
-                                            <span className="input-group-text"><i
-                                                className="far fa-calendar-alt"/></span>
-                                        </div>
-                                        <input className="form-control datepicker" placeholder="Select date" type="text"
-                                               required/>
-                                    </div>
-                                </div>
-                                <div className="col-12 col-lg-2">
-                                    <button className="btn btn-primary btn-block mt-md-0 animate-up-2"
-                                            type="submit">Find a
-                                        desk
-                                    </button>
-                                </div>
-                                <div className="col-lg d-lg-none">
+                            <FormControl variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-amount">Search restaurant</InputLabel>
+                                <OutlinedInput
+                                    type="text"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start"><SearchIcon/></InputAdornment>}
+                                    labelWidth={140}
+                                    onChange={onSearchChange}
+                                />
+                            </FormControl>
+                            <FoodShareDatePicker/>
+                            <div className="col-12 col-lg-2">
+                                <button onClick={onSearchSubmit}>TEST</button>
+                                {/*<button className="btn btn-primary btn-block mt-md-0 animate-up-2" >Find a desk</button>*/}
+                            </div>
+                            <div className="col-lg d-lg-none">
                                     <span className="d-block font-small text-primary mt-2 text-right"
                                           id="show-filters-button">Show filters</span>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                     <div className="row">
@@ -147,9 +161,11 @@ export default function RestaurantsList() {
                         <RestaurantFilters onFilterSubmit={applyFilters}/>
 
                         <div className="col-md-12 col-lg-9 order-lg-1 restaurant-list-wrapper">
-                            <div className="restaurant-list-counter justify-content-between align-items-center d-none d-md-flex">
+                            <div
+                                className="restaurant-list-counter justify-content-between align-items-center d-none d-md-flex">
                                 <div className="mr-3">
-                                    <p className="mb-3 mb-md-0 font-small">Showing <strong>{restaurants.length}</strong> restaurants out of <strong>{restaurantsCount}</strong>
+                                    <p className="mb-3 mb-md-0 font-small">Showing <strong>{restaurants.length}</strong> restaurants
+                                        out of <strong>{restaurantsCount}</strong>
                                     </p>
                                 </div>
                             </div>
@@ -159,7 +175,7 @@ export default function RestaurantsList() {
                                      aria-labelledby="tab-link-example-13">
 
                                     {restaurants.map((restaurant, key) =>
-                                        <RestaurantListItem key={key} restaurant={restaurant} />
+                                        <RestaurantListItem key={key} restaurant={restaurant}/>
                                     )}
 
                                     {(isFetching && !isDoneFetching) &&

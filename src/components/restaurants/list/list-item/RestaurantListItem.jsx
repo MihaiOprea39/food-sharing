@@ -14,7 +14,7 @@ export default function RestaurantListItem({restaurant}) {
         }
 
         return totalStars;
-    }
+    };
 
     return (
         <div className="row">

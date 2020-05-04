@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Banner from "../../banner/Banner";
 import firebase from "../../../firebase";
 import RestaurantFilters from "../filters/RestaurantFilters";
@@ -6,22 +6,27 @@ import {Waypoint} from 'react-waypoint';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import './restaurant-list.scss'
 import RestaurantListItem from "./list-item/RestaurantListItem";
-import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import FoodShareDatePicker from "../../misc/DatePicker";
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import format from 'date-fns/format';
 
 const DEFAULT_LIMIT = 8;
+
+const initialFilters = {
+    search: '',
+    date: null,
+    rating: []
+};
 
 export default function RestaurantsList() {
     const [restaurants, setRestaurants] = useState([]);
     const [restaurantsCount, setRestaurantsCount] = useState(0);
+    const [filters, setFilters] = useState(initialFilters);
     const [lastVisible, setLastVisible] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isDoneFetching, setIsDoneFetching] = useState(false);
-    const [searchRestaurant, setSearchRestaurant] = useState('');
 
     const getNumberOfRestaurants = () => {
         firebase
@@ -41,7 +46,7 @@ export default function RestaurantsList() {
 
         let documentSnapshots = await initialQuery.get();
         let documentData = documentSnapshots.docs.map(document => document.data());
-        let lastVisibleElement = documentData[documentData.length - 1].name;
+        let lastVisibleElement = documentData[documentData.length - 1] ? documentData[documentData.length - 1].name : null;
 
         setRestaurants(documentData);
         setLastVisible(lastVisibleElement);
@@ -76,49 +81,81 @@ export default function RestaurantsList() {
     };
 
     const onSearchChange = async (event) => {
-        setSearchRestaurant(event.target.value);
+        setFilters({
+            ...filters,
+            search: event.target.value
+        });
     };
 
+    const onDateChange = async (value) => {
+        const date = value ? format(value, 'MMM dd, yyyy') : null;
+
+        setFilters({
+            ...filters,
+            date
+        });
+    };
+
+    const onSidebarFiltersChange = (sidebarFilters) => {
+        setFilters({
+            ...filters,
+            ...sidebarFilters
+        });
+    };
+
+    // const updateCustomFields = () => {
+    //     firebase.firestore().collection('restaurants')
+    //         .get()
+    //         .then(snap => {
+    //             snap.forEach(doc => {
+    //                 firebase.firestore().collection("restaurants")
+    //                     .doc(doc.id)
+    //                     .set(
+    //                         {
+    //                             rating: doc.data().rating.toString()
+    //                         },
+    //                         {merge: true}
+    //                     );
+    //             });
+    //         })
+    // };
+
     const onSearchSubmit = async () => {
+        const {search, date, rating} = filters;
+
         let searchQuery = firebase
             .firestore()
-            .collection('restaurants')
-            .where('keywords', 'array-contains', searchRestaurant.toLowerCase())
-            .orderBy('name', 'asc')
+            .collection('restaurants');
 
-        // if (lastVisible) {
-        //     searchQuery = searchQuery.startAt(lastVisible);
-        // }
+        if (date) {
+            searchQuery = searchQuery
+                .where('date', '>=', date.toString())
+                .orderBy('date', 'asc');
+        }
 
-        searchQuery = await searchQuery.limit(restaurants.length).get();
+        if (search) {
+            searchQuery = searchQuery
+                .where('keywords', 'array-contains', search.toLowerCase())
+                .orderBy('name', 'asc')
+        }
+
+        if (rating && !!rating.length) {
+            searchQuery = searchQuery.where('rating', 'in', rating);
+        }
+
+        searchQuery = await searchQuery.get();
         const documentData = searchQuery.docs.map(document => document.data());
 
         setRestaurants(documentData);
-        setIsDoneFetching(documentData.length < DEFAULT_LIMIT);
-    };
-
-    const applyFilters = async (filters) => {
-        let query = firebase
-            .firestore()
-            .collection('restaurants')
-            .limit(restaurants.length)
-
-        if (filters.fiveStars) {
-            query = query.where('rating', '==', 5);
-        }
-
-        const documentSnapshots = await query.get();
-        const documentData = documentSnapshots.docs.map(document => document.data());
-
-        setRestaurants(documentData);
         setIsDoneFetching(true);
-    }
+    };
 
     useEffect(() => {
         (async function asyncFn() {
             await fetchInitialRestaurants();
         })();
         getNumberOfRestaurants();
+        // updateCustomFields();
     }, []);
 
     useEffect(() => {
@@ -134,31 +171,26 @@ export default function RestaurantsList() {
             <div className="section pt-5 pt-lg-6">
                 <div id="spaces-container" className="container">
                     <div className="row">
-                        <div className="col-12">
-                            <FormControl variant="outlined">
-                                <InputLabel htmlFor="outlined-adornment-amount">Search restaurant</InputLabel>
-                                <OutlinedInput
-                                    type="text"
-                                    id="outlined-adornment-amount"
-                                    startAdornment={<InputAdornment position="start"><SearchIcon/></InputAdornment>}
-                                    labelWidth={140}
-                                    onChange={onSearchChange}
-                                />
-                            </FormControl>
-                            <FoodShareDatePicker/>
-                            <div className="col-12 col-lg-2">
-                                <button onClick={onSearchSubmit}>TEST</button>
-                                {/*<button className="btn btn-primary btn-block mt-md-0 animate-up-2" >Find a desk</button>*/}
-                            </div>
-                            <div className="col-lg d-lg-none">
-                                    <span className="d-block font-small text-primary mt-2 text-right"
-                                          id="show-filters-button">Show filters</span>
-                            </div>
+                        <div className="restaurant-search-container col-md-12 col-lg-9">
+                            <Grid container alignItems="flex-end">
+                                <Grid item>
+                                    <SearchIcon/>
+                                </Grid>
+                                <Grid item>
+                                    <TextField label="Search" onChange={onSearchChange} value={filters.search} />
+                                </Grid>
+                            </Grid>
+                            <FoodShareDatePicker value={filters.date} onChange={onDateChange}
+                                                 placeholder="Available date"/>
+                            <button className="btn btn-primary btn-block mt-md-0 animate-up-2 search-button"
+                                    onClick={onSearchSubmit}
+                            >Find restaurants
+                            </button>
                         </div>
                     </div>
                     <div className="row">
 
-                        <RestaurantFilters onFilterSubmit={applyFilters}/>
+                        <RestaurantFilters onFiltersChange={onSidebarFiltersChange}/>
 
                         <div className="col-md-12 col-lg-9 order-lg-1 restaurant-list-wrapper">
                             <div

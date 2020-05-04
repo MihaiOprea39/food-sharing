@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -7,50 +7,33 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Checkbox from '@material-ui/core/Checkbox';
 import './restaurant-filters.scss';
 
-const ratingInitialObject = {
-    oneStar: false,
-    twoStars: false,
-    threeStars: false,
-    fourStars: false,
-    fiveStars: false
+const initialFilters = {
+    rating: []
 };
 
-export default function RestaurantFilters({onFilterSubmit}) {
-    const [ratingFilter, setRatingFilter] = useState(ratingInitialObject);
+export default function RestaurantFilters({onFiltersChange}) {
+    const [filters, setFilters] = useState(initialFilters);
 
+    const handleRatingChange = (event) => {
+        const {target: {name: stars}} = event;
 
-    const handleRatingFilterChange = (event) => {
         event.persist();
 
-        setRatingFilter({
-            ...ratingFilter,
-            [event.target.name]: event.target.checked
-        })
-    }
+        setFilters({
+            ...filters,
+            rating: filters.rating.includes(stars) ?
+                filters.rating.filter(item => item !== stars) :
+                [...filters.rating, stars]
+        });
+    };
 
-    const handleFilterSubmit = () => {
-        onFilterSubmit(ratingFilter);
-    }
+    useEffect(() => {
+        onFiltersChange(filters);
+    }, [filters]);
 
     return (
         <aside className="col-12 col-lg-3 mt-3 mt-lg-0 z-2 order-lg-2 restaurant-filters-wrapper">
             <div id="filters-sidebar" className="d-none d-lg-block">
-                <div className="card shadow-sm border-soft mt-4 restaurant-filter-card">
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon/>}
-                        >
-                            <Typography>Expansion Panel 1</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <Typography>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                                sit amet blandit leo lobortis eget.
-                            </Typography>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                </div>
-
                 <div className="card shadow-sm border-soft mt-4 restaurant-filter-card">
                     <ExpansionPanel>
                         <ExpansionPanelSummary
@@ -65,12 +48,12 @@ export default function RestaurantFilters({onFilterSubmit}) {
                                     <div className="form-check">
                                         <label className="form-check-label rating-item-container">
                                             <Checkbox
-                                                checked={ratingFilter.fiveStars}
+                                                checked={filters.rating.includes('5')}
                                                 color="primary"
-                                                onChange={handleRatingFilterChange}
+                                                onChange={handleRatingChange}
                                                 inputProps={{
                                                     'aria-label': 'primary checkbox',
-                                                    'name': 'fiveStars'
+                                                    'name': '5'
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
@@ -87,12 +70,12 @@ export default function RestaurantFilters({onFilterSubmit}) {
                                     <div className="form-check">
                                         <label className="form-check-label rating-item-container">
                                             <Checkbox
-                                                checked={ratingFilter.fourStars}
+                                                checked={filters.rating.includes('4')}
                                                 color="primary"
-                                                onChange={handleRatingFilterChange}
+                                                onChange={handleRatingChange}
                                                 inputProps={{
                                                     'aria-label': 'primary checkbox',
-                                                    'name': 'fourStars'
+                                                    'name': '4'
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
@@ -108,12 +91,12 @@ export default function RestaurantFilters({onFilterSubmit}) {
                                     <div className="form-check">
                                         <label className="form-check-label rating-item-container">
                                             <Checkbox
-                                                checked={ratingFilter.threeStars}
+                                                checked={filters.rating.includes('3')}
                                                 color="primary"
-                                                onChange={handleRatingFilterChange}
+                                                onChange={handleRatingChange}
                                                 inputProps={{
                                                     'aria-label': 'primary checkbox',
-                                                    'name': 'threeStars'
+                                                    'name': '3'
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
@@ -128,12 +111,12 @@ export default function RestaurantFilters({onFilterSubmit}) {
                                     <div className="form-check">
                                         <label className="form-check-label rating-item-container">
                                             <Checkbox
-                                                checked={ratingFilter.twoStars}
+                                                checked={filters.rating.includes('2')}
                                                 color="primary"
-                                                onChange={handleRatingFilterChange}
+                                                onChange={handleRatingChange}
                                                 inputProps={{
                                                     'aria-label': 'primary checkbox',
-                                                    'name': 'twoStars'
+                                                    'name': '2'
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
@@ -147,12 +130,12 @@ export default function RestaurantFilters({onFilterSubmit}) {
                                     <div className="form-check">
                                         <label className="form-check-label rating-item-container">
                                             <Checkbox
-                                                checked={ratingFilter.oneStar}
+                                                checked={filters.rating.includes('1')}
                                                 color="primary"
-                                                onChange={handleRatingFilterChange}
+                                                onChange={handleRatingChange}
                                                 inputProps={{
                                                     'aria-label': 'primary checkbox',
-                                                    'name': 'oneStar'
+                                                    'name': '1'
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
@@ -182,35 +165,6 @@ export default function RestaurantFilters({onFilterSubmit}) {
                     </ExpansionPanel>
                 </div>
 
-
-                <div className="card list-group list-group-flush shadow-sm border-soft p-3 restaurant-filter-card">
-                    <a href="#" data-target="#price"
-                       className="accordion-panel-header w-100 d-flex align-items-center justify-content-between"
-                       data-toggle="collapse" role="button" aria-expanded="false"
-                       aria-controls="price">
-                        <span className="icon-title h6 mb-0 font-weight-bold">Price range</span>
-                        <span className="icon"><i className="fas fa-plus"></i></span>
-                    </a>
-                    <div id="price" className="collapse">
-                        <div className="pt-5">
-                            <div id="input-slider-range" data-range-value-min="100"
-                                 data-range-value-max="500"></div>
-                            <div className="row d-none">
-                                <div className="col-6">
-                                                        <span className="range-slider-value value-low"
-                                                              data-range-value-low="200"
-                                                              id="input-slider-range-value-low"></span>
-                                </div>
-                                <div className="col-6 text-right">
-                                                        <span className="range-slider-value value-high"
-                                                              data-range-value-high="400"
-                                                              id="input-slider-range-value-high"></span>
-                                </div>
-                            </div>
-                            <span className="font-xs text-gray">*Prices are in USD</span>
-                        </div>
-                    </div>
-                </div>
                 <div className="card shadow-sm border-soft mt-4 p-3 restaurant-filter-card">
                     <a href="#" data-target="#amenities-1"
                        className="accordion-panel-header w-100 d-flex align-items-center justify-content-between"
@@ -255,11 +209,6 @@ export default function RestaurantFilters({onFilterSubmit}) {
                         </li>
                     </ul>
                 </div>
-
-
-                <button className="btn btn-sm btn-block btn-primary animate-up-2 mt-4"
-                        onClick={handleFilterSubmit}>Apply filters
-                </button>
             </div>
         </aside>
     );

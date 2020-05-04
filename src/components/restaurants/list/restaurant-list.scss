@@ -1,4 +1,22 @@
 .restaurant-list-main {
+  .restaurant-search-container {
+    display: flex;
+    justify-content: space-between;
+
+    .MuiGrid-container {
+      width: auto;
+      margin-bottom: 9px;
+
+      .MuiGrid-item {
+        svg {
+          margin-right: 6px;
+        }
+      }
+    }
+    .search-button {
+      width: 190px;
+    }
+  }
   .restaurant-list-wrapper {
     .restaurant-list-counter {
       margin-top: 20px;

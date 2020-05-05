@@ -103,22 +103,42 @@ export default function RestaurantsList() {
         });
     };
 
-    // const updateCustomFields = () => {
-    //     firebase.firestore().collection('restaurants')
-    //         .get()
-    //         .then(snap => {
-    //             snap.forEach(doc => {
-    //                 firebase.firestore().collection("restaurants")
-    //                     .doc(doc.id)
-    //                     .set(
-    //                         {
-    //                             rating: doc.data().rating.toString()
-    //                         },
-    //                         {merge: true}
-    //                     );
-    //             });
-    //         })
-    // };
+    const updateCustomFields = () => {
+        // firebase.firestore()
+        //     .collection('restaurants')
+        //     .get()
+        //     .then(snapshot => {
+        //         snapshot.forEach(doc => {
+        //             firebase.firestore()
+        //                 .collection('restaurants')
+        //                 .doc(doc.id)
+        //                 .collection('reviews')
+        //                 .add({
+        //                     "name": "Brad Gerris",
+        //                     "rating": "3",
+        //                     "comment": "A pretty decent but sloppy job",
+        //                     "timestamp": "May 05, 2020"
+        //                 }).then()
+        //         })
+        //     })
+        // JSON.parse(JSON.stringify((local))).forEach((item, index) => {
+        //     firebase.firestore()
+        //         .collection('restaurants')
+        //         .add({
+        //             date: item.date,
+        //             gallery: item.gallery,
+        //             id: index + 1,
+        //             rating: item.rating,
+        //             address: item.address,
+        //             age: item.age,
+        //             image: item.image,
+        //             keywords: item.keywords,
+        //             name: item.name
+        //         })
+        //         .then()
+        //
+        // });
+    };
 
     const onSearchSubmit = async () => {
         const {search, date, rating} = filters;
@@ -177,7 +197,7 @@ export default function RestaurantsList() {
                                     <SearchIcon/>
                                 </Grid>
                                 <Grid item>
-                                    <TextField label="Search" onChange={onSearchChange} value={filters.search} />
+                                    <TextField label="Search" onChange={onSearchChange} value={filters.search}/>
                                 </Grid>
                             </Grid>
                             <FoodShareDatePicker value={filters.date} onChange={onDateChange}

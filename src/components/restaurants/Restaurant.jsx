@@ -13,6 +13,7 @@ import ThumbDown from '@material-ui/icons/ThumbDown';
 import TabPanel from "../misc/TabPanel";
 import firebase from "../../firebase";
 import {Link, useParams} from "react-router-dom";
+import ReviewsComponent from "../Reviews/Reviews";
 
 function a11yProps(index) {
     return {
@@ -23,6 +24,7 @@ function a11yProps(index) {
 
 export default function Restaurant() {
     const [tabValue, setTabValue] = useState(0);
+    const [generatedId, setGeneratedId] = useState('');
     const [restaurant, setRestaurant] = useState(null);
     const [amenities, setAmenities] = useState(null);
     const [reviews, setReviews] = useState(null);
@@ -39,6 +41,8 @@ export default function Restaurant() {
             .get()
             .then(snapshot => {
                 const data = snapshot.docs.map(document => {
+                    setGeneratedId(document.id);
+
                     getAmenities(document);
                     getReviews(document);
 
@@ -98,10 +102,8 @@ export default function Restaurant() {
                                     >
                                         <Tab label="About" icon={<PhoneIcon/>} {...a11yProps(0)} />
                                         <Tab label="Amenities" icon={<FavoriteIcon/>} {...a11yProps(1)} />
-                                        <Tab label="Item Three" icon={<PersonPinIcon/>} {...a11yProps(2)} />
-                                        <Tab label="Item Four" icon={<HelpIcon/>} {...a11yProps(3)} />
-                                        <Tab label="Item Five" icon={<ShoppingBasket/>} {...a11yProps(4)} />
-                                        <Tab label="Item Six" icon={<ThumbDown/>} {...a11yProps(5)} />
+                                        <Tab label="Reviews" icon={<PersonPinIcon/>} {...a11yProps(2)} />
+                                        <Tab label="Location" icon={<HelpIcon/>} {...a11yProps(3)} />
                                     </Tabs>
                                 </AppBar>
                                 <TabPanel value={tabValue} index={0}>
@@ -467,19 +469,10 @@ export default function Restaurant() {
                                     </div>
                                 </TabPanel>
                                 <TabPanel value={tabValue} index={2}>
-                                    Item Three
+                                   <ReviewsComponent reviews={reviews} />
                                 </TabPanel>
                                 <TabPanel value={tabValue} index={3}>
-                                    Item Four
-                                </TabPanel>
-                                <TabPanel value={tabValue} index={4}>
-                                    Item Five
-                                </TabPanel>
-                                <TabPanel value={tabValue} index={5}>
-                                    Item Six
-                                </TabPanel>
-                                <TabPanel value={tabValue} index={6}>
-                                    Item Seven
+                                   Location
                                 </TabPanel>
                             </div>
                         </div>

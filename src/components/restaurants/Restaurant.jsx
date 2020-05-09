@@ -26,6 +26,7 @@ export default function Restaurant() {
     const [restaurant, setRestaurant] = useState(null);
     const [amenities, setAmenities] = useState(null);
     const [reviews, setReviews] = useState(null);
+    const [averageRating, setAverageRating] = useState(0);
     const {id: restaurantId} = useParams();
 
     const handleChange = (event, newValue) => {
@@ -46,7 +47,6 @@ export default function Restaurant() {
 
                     return document.data();
                 });
-
 
                 setRestaurant(data[0] || null);
             })
@@ -70,10 +70,14 @@ export default function Restaurant() {
             .collection('restaurants')
             .doc(document.id)
             .collection('reviews')
+            .orderBy('timestamp', 'asc')
             .get()
             .then(snap => {
                 const reviews = snap.docs.map(review => review.data());
+                const ratings = reviews.map(({rating}) => Number(rating));
+                const ratingsTotal = ratings.reduce((acc, current) => acc + current, 0);
 
+                setAverageRating((ratingsTotal / ratings.length) || 0)
                 setReviews(reviews);
             });
     };
@@ -84,10 +88,12 @@ export default function Restaurant() {
             .doc(generatedId)
             .collection('reviews')
             .add(review)
-            .then();
+            .then(() => setReviews([...reviews, review]));
     };
 
     useEffect(getRestaurantData, []);
+
+    console.log('rating', averageRating);
 
     return (
         <main>
@@ -468,9 +474,9 @@ export default function Restaurant() {
                         </div>
                         <aside className="col-12 col-lg-4">
                             <div className="card bg-soft shadow-sm border-soft p-3">
-                                <div className="d-flex align-items-baseline">
-                                    <span className="h3 font-weight-bold mb-0 mr-1">$ 250</span>
-                                    <span className="small">/month</span>
+                                <div className="d-flex align-items-center justify-content-center">
+                                    <span><i className="foodshare-star star fas fa-star text-warning"/></span>
+                                    <span className="h3 font-weight-bold mb-0 mr-1">{averageRating.toFixed(2)} <span className="font-weight-light">/</span> 5</span>
                                 </div>
                             </div>
                             <div className="card shadow-sm border-soft mt-4 p-3">

@@ -1,17 +1,18 @@
 import React, {useRef, forwardRef, useImperativeHandle} from 'react';
 
-
 const STARS_RATINGS = [1, 2, 3, 4, 5];
 
-const FoodShareStars = ({onStarsSelect}) => {
+const FoodShareStars = forwardRef(({onStarsSelect}, ref) => {
     const container = useRef();
 
-    const resetStars = () => {
-        Array.from(container.current.children).forEach((star) => {
-            star.classList.remove('text-warning');
-            star.classList.add('text-gray');
-        });
-    };
+    useImperativeHandle(ref, () => ({
+        resetStars(){
+            Array.from(container.current.children).forEach((star) => {
+                star.classList.remove('text-warning');
+                star.classList.add('text-gray');
+            });
+        }
+    }));
 
     const onStarInteract = (rating) => {
         Array.from(container.current.children).forEach((star) => {
@@ -33,12 +34,12 @@ const FoodShareStars = ({onStarsSelect}) => {
         <div className={`foodshare-stars-container`} ref={container}>
             {STARS_RATINGS.map((rating, index) =>
                 (
-                    <i key={index} className={`foodshare-star star fas fa-star text-gray`} data-star={index + 1}
+                    <i key={index} className="foodshare-star star fas fa-star text-gray" data-star={index + 1}
                        onClick={() => onStarInteract(rating, index)}/>
                 )
             )}
         </div>
     );
-}
+});
 
 export default FoodShareStars;

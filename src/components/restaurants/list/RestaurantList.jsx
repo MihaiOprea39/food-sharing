@@ -44,9 +44,9 @@ export default function RestaurantsList() {
             .orderBy('name', 'asc')
             .limit(DEFAULT_LIMIT);
 
-        let documentSnapshots = await initialQuery.get();
-        let documentData = documentSnapshots.docs.map(document => document.data());
-        let lastVisibleElement = documentData[documentData.length - 1] ? documentData[documentData.length - 1].name : null;
+        const documentSnapshots = await initialQuery.get();
+        const documentData = documentSnapshots.docs.map(document => document.data());
+        const lastVisibleElement = documentData[documentData.length - 1] ? documentData[documentData.length - 1].name : null;
 
         setRestaurants(documentData);
         setLastVisible(lastVisibleElement);
@@ -104,6 +104,26 @@ export default function RestaurantsList() {
     };
 
     const updateCustomFields = () => {
+        firebase.firestore()
+            .collection('restaurants')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    firebase.firestore()
+                        .collection('restaurants')
+                        .doc(doc.id)
+                        .set({
+                            keywords: ['', `${doc.data().name.toLowerCase()}`].concat(
+                                doc
+                                    .data()
+                                    .name.toLowerCase()
+                                    .split(" ")
+                            )
+                        }, {
+                            merge: true
+                        }).then()
+                })
+            })
         // firebase.firestore()
         //     .collection('restaurants')
         //     .get()

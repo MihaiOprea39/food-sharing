@@ -1,8 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import parse from "html-react-parser";
 import FoodShareStars from "./Stars";
+import format from "date-fns/format";
 
-export default function ReviewsComponent({reviews, onCommentSubmit}) {
+const defaultReview = {
+    comment: '',
+    rating: '',
+    timestamp: format(new Date(), 'MMM dd, yyyy'),
+    name: "A testing user"
+}
+
+export default function ReviewsComponent({reviews, addReview}) {
+    const [newReview, setNewReview] = useState(defaultReview);
+
     const calculateRating = (rating) => {
         const rounded = Math.floor(rating);
         const decimal = 5 - rounded;
@@ -16,6 +26,33 @@ export default function ReviewsComponent({reviews, onCommentSubmit}) {
 
         return totalStars;
     };
+
+    const onAddReview = () => {
+        addReview(newReview);
+        setNewReview(defaultReview);
+    };
+
+    const onReviewTyping = (event) => {
+        setNewReview({
+            ...newReview,
+            comment: event.target.value
+        })
+    };
+
+    const handleStarsSelect = (rating) => {
+        setNewReview({
+            ...newReview,
+            rating: String(rating)
+        })
+    };
+
+    const calculateRemainingCharacters = () => {
+        if (!newReview) {
+            return 1000;
+        }
+
+        return 1000 - newReview.comment.length;
+    }
 
     return (
         <div className="reviews-list-wrapper">
@@ -40,14 +77,18 @@ export default function ReviewsComponent({reviews, onCommentSubmit}) {
 
             <div className="d-flex justify-content-between align-items-center mb-3 mt-5">
                 <h4 className="m-0">Add a review</h4>
-               <FoodShareStars />
+                <FoodShareStars onStarsSelect={handleStarsSelect}/>
             </div>
             <textarea name="description" className="form-control border" placeholder="Add a review" rows="6"
-                      data-bind-characters-target="#charactersRemaining" maxLength="1000" required></textarea>
+                      data-bind-characters-target="#charactersRemaining" maxLength="1000" required
+                      onChange={onReviewTyping}
+                      value={newReview.comment}
+            />
             <div className="d-flex justify-content-between mt-3">
                 <small className="font-weight-light">
-                    <span id="charactersRemaining">1000</span> characters remaining</small>
-                <button type="submit" className="btn btn-primary animate-up-2">Add review</button>
+                    <span id="charactersRemaining">{calculateRemainingCharacters()}</span> characters remaining
+                </small>
+                <button type="submit" className="btn btn-primary animate-up-2" onClick={onAddReview}>Add review</button>
             </div>
         </div>
     );

@@ -4,29 +4,7 @@ import './header.scss';
 
 // https://codedaily.io/tutorials/60/Create-a-useMousePosition-Hook-with-useEffect-and-useState-in-React
 
-function TrackScroll(header) {
-    const [shrink, setShrink] = useState(false);
-
-    useEffect(() => {
-        const decideShrink = () => {
-            const scrolled = document.scrollingElement.scrollTop;
-            const position = header.offsetTop;
-
-            setShrink(scrolled > position + 90);
-        };
-        window.addEventListener('scroll', decideShrink);
-
-        return () => window.removeEventListener('scroll', decideShrink);
-    }, [header.offsetTop]);
-
-    return shrink;
-}
-
 export default function Header() {
-    const header = useRef();
-    const shrink = TrackScroll(header);
-
-
     return (
         <header className="header-global">
             <nav id="navbar-main"

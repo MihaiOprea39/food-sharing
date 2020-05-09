@@ -12,7 +12,7 @@ export default function NotFound() {
                             <div>
                                 <Link to="/">
                                     <img className="img-fluid w-75" src={NotFoundImage}
-                                         alt="404-image"/>
+                                         alt="the 404 display" />
                                 </Link>
                                 <h1 className="mt-5 font-weight-light">Page not <span
                                     className="font-weight-bolder text-primary">found</span></h1>

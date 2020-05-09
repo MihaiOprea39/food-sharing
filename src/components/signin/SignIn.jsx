@@ -1,5 +1,6 @@
 import React from 'react';
 import signInSvg from '../../assets/img/signin.svg';
+import {Link} from "react-router-dom";
 
 export default function SignIn() {
     return (
@@ -18,27 +19,27 @@ export default function SignIn() {
                                         account.</p>
                                 </div>
                                 <div className="btn-wrapper mt-4 mb-5 text-center">
-                                    <a href="#"
+                                    <Link to="#"
                                        className="d-block d-sm-inline-block btn btn-sm btn-icon btn-twitter animate-up-1 mb-2 mr-1">
                                     <span className="btn-inner-icon">
                                         <i className="fab fa-twitter"></i>
                                     </span>
                                         <span className="btn-inner-text">Twitter</span>
-                                    </a>
-                                    <a href="#"
+                                    </Link>
+                                    <Link to="#"
                                        className="d-block d-sm-inline-block btn btn-sm btn-icon btn-facebook animate-up-1 mb-2 mr-1">
                                     <span className="btn-inner-icon">
                                         <i className="fab fa-facebook"></i>
                                     </span>
                                         <span className="btn-inner-text">Facebook</span>
-                                    </a>
-                                    <a href="#"
+                                    </Link>
+                                    <Link to="#"
                                        className="d-block d-sm-inline-block btn btn-sm btn-icon btn-instagram animate-up-1 mb-2">
                                     <span className="btn-inner-icon">
                                         <i className="fab fa-instagram"></i>
                                     </span>
                                         <span className="btn-inner-text">Instagram</span>
-                                    </a>
+                                    </Link>
                                 </div>
                                 <span className="clearfix"></span>
                                 <form>
@@ -74,10 +75,10 @@ export default function SignIn() {
                                 <div className="d-flex justify-content-between align-items-center mt-4">
                                 <span>
                                     <small>Not registered?</small>
-                                    <a href="./sign-up.html" className="small font-weight-bold">Create account</a>
+                                    <Link to="./sign-up.html" className="small font-weight-bold">Create account</Link>
                                 </span>
-                                    <div><a href="./forgot-password-request.html" className="small text-right">Lost
-                                        password?</a></div>
+                                    <div><Link to="./forgot-password-request.html" className="small text-right">Lost
+                                        password?</Link></div>
                                 </div>
                             </div>
                         </div>

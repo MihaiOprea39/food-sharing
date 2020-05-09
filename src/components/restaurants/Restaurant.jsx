@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Banner from "../banner/Banner";
 import Recommended from "../recommended/Recommended";
 import AppBar from '@material-ui/core/AppBar';
@@ -8,8 +8,6 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import PersonPinIcon from '@material-ui/icons/PersonPin';
 import HelpIcon from '@material-ui/icons/Help';
-import ShoppingBasket from '@material-ui/icons/ShoppingBasket';
-import ThumbDown from '@material-ui/icons/ThumbDown';
 import TabPanel from "../misc/TabPanel";
 import firebase from "../../firebase";
 import {Link, useParams} from "react-router-dom";
@@ -23,7 +21,7 @@ function a11yProps(index) {
 }
 
 export default function Restaurant() {
-    const [tabValue, setTabValue] = useState(0);
+    const [tabValue, setTabValue] = useState(2);
     const [generatedId, setGeneratedId] = useState('');
     const [restaurant, setRestaurant] = useState(null);
     const [amenities, setAmenities] = useState(null);
@@ -80,12 +78,22 @@ export default function Restaurant() {
             });
     };
 
+    const onReviewSubmit = (review) => {
+        firebase.firestore()
+            .collection('restaurants')
+            .doc(generatedId)
+            .collection('reviews')
+            .add(review)
+            .then();
+    };
+
     useEffect(getRestaurantData, []);
 
     return (
         <main>
             <Banner/>
-            <div className="section pt-5 pt-lg-6">
+            {restaurant &&
+                <div className="section pt-5 pt-lg-6">
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-lg-8 mt-3 ml-lg-0">
@@ -108,13 +116,13 @@ export default function Restaurant() {
                                 </AppBar>
                                 <TabPanel value={tabValue} index={0}>
 
-                                    <h2 className="font-weight-normal">L'atelier Vancouver Coworking</h2>
+                                    <h2 className="font-weight-normal">{restaurant.name}</h2>
                                     <div className="d-block d-md-flex">
                                         <h6 className="text-secondary font-weight-light"><i
                                             className="fas fa-check-circle mr-1 pr-1"></i>Verified</h6>
                                         <span className="lh-120 ml-md-4"><i
-                                            className="fas fa-map-marker-alt mr-1 pr-1"></i>26,
-                                        Vancouver, BC, Canada - 324578
+                                            className="fas fa-map-marker-alt mr-1 pr-1"/>
+                                            {restaurant.address}
                                         <a data-fancybox
                                            href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
                                            className="text-primary ml-md-3">See Location</a>
@@ -136,25 +144,7 @@ export default function Restaurant() {
 
                                         </div>
                                     </div>
-                                    <p><span className="font-weight-bold">L'atelier</span> is the brainchild of 3
-                                        innovative
-                                        guys that want to create a working hub for the local community. The plan is
-                                        to
-                                        offer a cool place to hang out with other creative souls and let the
-                                        brainwaves go
-                                        berserk.</p>
-                                    <p>The guys were the group behind the Startup Weekend Vancouver, Startup Pirates
-                                        Vancouver and Startup Coffee Vancouver, so they are no fools and have plenty
-                                        of
-                                        experience in startups and community growth. This project is another notch
-                                        into
-                                        creating Vancouver as a regional startup hub.</p>
-                                    <p>Cowork Vancouver is aiming to attract the techies, the freelance developers
-                                        or
-                                        anyone wishing to get involved in the startup scene - really there are no
-                                        exclusions of bodies who may want a desk - the founders just want a
-                                        community of
-                                        entrepreneurs and geeks to mingle with.</p>
+                                    <p>{restaurant.description}</p>
                                     <div className="row shadow-sm mt-5">
                                         <div className="col-6 col-xl-3 card bg-soft">
                                             <div className="card-body text-center">
@@ -469,10 +459,10 @@ export default function Restaurant() {
                                     </div>
                                 </TabPanel>
                                 <TabPanel value={tabValue} index={2}>
-                                   <ReviewsComponent reviews={reviews} />
+                                    <ReviewsComponent reviews={reviews} addReview={onReviewSubmit}/>
                                 </TabPanel>
                                 <TabPanel value={tabValue} index={3}>
-                                   Location
+                                    Location
                                 </TabPanel>
                             </div>
                         </div>
@@ -602,6 +592,7 @@ export default function Restaurant() {
                     </div>
                 </div>
             </div>
+            }
             <Recommended/>
         </main>
     );

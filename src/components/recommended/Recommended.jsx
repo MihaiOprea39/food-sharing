@@ -12,7 +12,7 @@ export default function Recommended() {
                         <div className="card shadow-sm border-soft mb-4 animate-up-5">
                             <a href="./single-space.html" className="position-relative">
                                 <img src="../../../public/assets/img/lifestyle-office.jpg"
-                                     className="card-img-top space-image" alt="image"/>
+                                     className="card-img-top space-image" alt="card-element"/>
                                 <span className="badge badge-secondary position-absolute listing-badge">
                                         <span className="font-weight-normal font-xs">Lifestyle Space</span>
                                 </span>
@@ -53,7 +53,7 @@ export default function Recommended() {
                         <div className="card shadow-sm border-soft mb-4 animate-up-5">
                             <a href="./single-space.html" className="position-relative">
                                 <img src="../../../public/assets/img/private-office.jpg" className="card-img-top space-image"
-                                     alt="image"/>
+                                     alt="card-element"/>
                                 <span className="badge badge-warning position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Private Space</span>
                                 </span>
@@ -94,7 +94,7 @@ export default function Recommended() {
                         <div className="card shadow-sm border-soft mb-4 animate-up-5">
                             <a href="./single-space.html" className="position-relative">
                                 <img src="../../../public/assets/img/conference-office.jpg"
-                                     className="card-img-top space-image" alt="image"/>
+                                     className="card-img-top space-image" alt="card-element"/>
                                 <span className="badge badge-primary position-absolute listing-badge">
                                         <span className="font-weight-normal font-xs">Conference Room</span>
                                     </span>

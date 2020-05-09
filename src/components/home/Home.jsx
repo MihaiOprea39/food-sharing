@@ -291,7 +291,7 @@ export default function Home() {
                             <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/image-office.jpg" className="card-img-top space-image"
-                                         alt="image"/>
+                                         alt="a card"/>
                                 <span className="badge badge-primary position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Office Space</span>
                                 </span>
@@ -332,7 +332,7 @@ export default function Home() {
                             <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/cowork-office.jpg" className="card-img-top space-image"
-                                         alt="image"/>
+                                         alt="a card"/>
                                 <span className="badge badge-secondary position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Coworking Space</span>
                                 </span>
@@ -373,7 +373,7 @@ export default function Home() {
                             <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/meeting-office.jpg" className="card-img-top space-image"
-                                         alt="image"/>
+                                         alt="a card"/>
                                 <span className="badge badge-warning position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Meeting Space</span>
                                 </span>
@@ -414,7 +414,7 @@ export default function Home() {
                             <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/conference-office.jpg" className="card-img-top space-image"
-                                         alt="image"/>
+                                         alt="a crd"/>
                                 <span className="badge badge-primary position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Conference Room</span>
                                 </span>
@@ -455,7 +455,7 @@ export default function Home() {
                             <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/lifestyle-office.jpg" className="card-img-top space-image"
-                                         alt="image"/>
+                                         alt="a card"/>
                                 <span className="badge badge-secondary position-absolute listing-badge">
                                         <span className="font-weight-normal font-xs">Lifestyle Space</span>
                                 </span>
@@ -496,7 +496,7 @@ export default function Home() {
                             <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/private-office.jpg" className="card-img-top space-image"
-                                         alt="image"/>
+                                         alt="a card"/>
                                 <span className="badge badge-warning position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Private Space</span>
                                 </span>

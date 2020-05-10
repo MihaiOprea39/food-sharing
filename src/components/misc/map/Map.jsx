@@ -21,11 +21,11 @@ export default function FoodShareMap({center = defaultProps.center, zoom = defau
                 defaultCenter={center}
                 defaultZoom={zoom}
             >
-                <Marker
-                    lat={59.955413}
-                    lng={30.337844}
-                    name="My Marker"
-                />
+                {/*<Marker*/}
+                {/*    lat={59.955413}*/}
+                {/*    lng={30.337844}*/}
+                {/*    name="My Marker"*/}
+                {/*/>*/}
             </GoogleMapReact>
         </div>);
 

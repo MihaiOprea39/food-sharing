@@ -12,7 +12,6 @@ import './scss/spaces.scss';
 
 
 // import './misc/scss/global.scss';
-// import './assets/js/spaces';
 
 import {
     BrowserRouter as Router,

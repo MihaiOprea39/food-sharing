@@ -74,10 +74,8 @@ export default function Restaurant() {
             .get()
             .then(snap => {
                 const reviews = snap.docs.map(review => review.data());
-                const ratings = reviews.map(({rating}) => Number(rating));
-                const ratingsTotal = ratings.reduce((acc, current) => acc + current, 0);
 
-                setAverageRating((ratingsTotal / ratings.length) || 0)
+                setAverageRating(calculateAverageRating(reviews));
                 setReviews(reviews);
             });
     };
@@ -88,18 +86,30 @@ export default function Restaurant() {
             .doc(generatedId)
             .collection('reviews')
             .add(review)
-            .then(() => setReviews([...reviews, review]));
+            .then(() => {
+                const updatedReviews = [...reviews, review];
+
+                setAverageRating(calculateAverageRating(updatedReviews));
+                setReviews(updatedReviews)
+            });
+    };
+
+    const calculateAverageRating = (reviews) => {
+        const ratings = reviews.map(({rating}) => Number(rating));
+        const ratingsSum = ratings.reduce((acc, current) => acc + current, 0);
+
+        return (ratingsSum / ratings.length) || 0;
     };
 
     useEffect(getRestaurantData, []);
 
-    console.log('rating', averageRating);
+    console.log(amenities);
 
     return (
         <main>
             <Banner/>
             {restaurant &&
-                <div className="section pt-5 pt-lg-6">
+            <div className="section pt-5 pt-lg-6">
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-lg-8 mt-3 ml-lg-0">
@@ -129,9 +139,9 @@ export default function Restaurant() {
                                         <span className="lh-120 ml-md-4"><i
                                             className="fas fa-map-marker-alt mr-1 pr-1"/>
                                             {restaurant.address}
-                                        <a data-fancybox
-                                           href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
-                                           className="text-primary ml-md-3">See Location</a>
+                                            <a data-fancybox
+                                               href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
+                                               className="text-primary ml-md-3">See Location</a>
                                     </span>
                                     </div>
                                     <div className="fancy-gallery my-5">
@@ -208,260 +218,24 @@ export default function Restaurant() {
                                 </TabPanel>
                                 <TabPanel value={tabValue} index={1}>
                                     <div className="row">
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Basic</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>High-Speed WiFi</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Air Conditioning</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Heating</span>
-                                                    </li>
-                                                </ul>
+                                        {amenities && amenities.map((amenity, key) =>
+                                            <div className="col-12 col-lg-6 mb-4" key={key}>
+                                                <div className="card shadow-sm border-soft p-4">
+                                                    <h5 className="font-weight-normal">{Object.keys(amenity)[0]}</h5>
+                                                    <ul className="list-unstyled mb-0">
+                                                        {Object.values(amenity)[0].map((value, index) =>
+                                                            <li className="d-flex py-1" key={index}>
+                                                                <span className="icon icon-xs icon-primary">
+                                                                    <i className="fas fa-check-circle mr-2"/>
+                                                                </span>
+                                                                <span>{value}</span>
+                                                            </li>)
+                                                        }
+                                                    </ul>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Seating</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Standing Desks</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Ergonomic Chairs</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Beanbags</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Community</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Events</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Community Lunches</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Workshops</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Community Drinks</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Facebook Group for Members</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Mentorship Programs</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Pitching events</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Accelerator programs</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Toastmasters</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Facilities</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Kitchen</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Skype Room</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Makerspace</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Personal Lockers</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Phone Booth</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Event Space For Rent</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Nearby Airbnb</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Onsite Airbnb</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Equipment</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Printer</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>3D Printer</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Projector</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Transportation</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>5 Minute Walk From Public Transit</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>10 Minute Walk From Metro Station</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Bike Parking</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Relax Zones</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Outdoor Terrace</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Lounge / Chill-out Area</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-6 mb-4">
-                                            <div className="card shadow-sm border-soft p-4">
-                                                <h5 className="font-weight-normal">Caffeine Fix</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Free Tea</span>
-                                                    </li>
-                                                    <li className="d-flex py-1">
-                                                    <span className="icon icon-xs icon-primary">
-                                                        <i className="fas fa-check-circle mr-2"></i>
-                                                    </span>
-                                                        <span>Free Coffee</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                        )
+                                        }
                                     </div>
                                 </TabPanel>
                                 <TabPanel value={tabValue} index={2}>
@@ -476,7 +250,8 @@ export default function Restaurant() {
                             <div className="card bg-soft shadow-sm border-soft p-3">
                                 <div className="d-flex align-items-center justify-content-center">
                                     <span><i className="foodshare-star star fas fa-star text-warning"/></span>
-                                    <span className="h3 font-weight-bold mb-0 mr-1">{averageRating.toFixed(2)} <span className="font-weight-light">/</span> 5</span>
+                                    <span className="h3 font-weight-bold mb-0 mr-1">{averageRating.toFixed(2)} <span
+                                        className="font-weight-light">/</span> 5</span>
                                 </div>
                             </div>
                             <div className="card shadow-sm border-soft mt-4 p-3">

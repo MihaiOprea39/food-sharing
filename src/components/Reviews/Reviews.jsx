@@ -55,16 +55,31 @@ export default function ReviewsComponent({reviews, addReview}) {
 
     const calculateRemainingCharacters = () => {
         if (!newReview) {
-            return 1000;
+            return 100;
         }
 
-        return 1000 - newReview.comment.length;
+        return 100 - newReview.comment.length;
     }
+
+    const validateButton = () => {
+        const {rating, comment} = newReview;
+
+        return !!comment.length && comment.length < 100 && !!rating;
+    };
+
+    const validateMessage = () => {
+        const {comment} = newReview;
+
+        return comment.length < 100 ? <div><span id="charactersRemaining">{calculateRemainingCharacters()}</span> characters remaining</div>
+            : parse('<span style="color: red">Your message exceeds the required limit.</span>')
+
+    };
 
     return (
         <Fragment>
             {reviews && <div className="reviews-list-wrapper">
-                <p className="font-small font-weight-light text-gray mb-3 reviews-count">{reviews.length} reviews found </p>
+                <p className="font-small font-weight-light text-gray mb-3 reviews-count">{reviews.length} reviews
+                    found </p>
 
                 {reviews && reviews.map((review, key) =>
                     <div className="bg-white border border-soft shadow-soft  p-4 mb-4 single-review" key={key}>
@@ -88,15 +103,19 @@ export default function ReviewsComponent({reviews, addReview}) {
                     <FoodShareStars onStarsSelect={handleStarsSelect} ref={starsRef}/>
                 </div>
                 <textarea name="description" className="form-control border" placeholder="Add a review" rows="6"
-                          data-bind-characters-target="#charactersRemaining" maxLength="1000" required
+                          data-bind-characters-target="#charactersRemaining" maxLength="100" required
                           onChange={onReviewTyping}
                           value={newReview.comment}
                 />
                 <div className="d-flex justify-content-between mt-3">
                     <small className="font-weight-light">
-                        <span id="charactersRemaining">{calculateRemainingCharacters()}</span> characters remaining
+                        {
+                            validateMessage()
+                        }
                     </small>
-                    <button type="submit" className={`btn btn-primary animate-up-2 ${'not-allowed-element'}`} onClick={onAddReview}>Add review
+                    <button type="submit"
+                            className={`btn btn-primary animate-up-2 ${validateButton() ? '' : 'not-allowed-element'}`}
+                            onClick={onAddReview}>Add review
                     </button>
                 </div>
             </div>

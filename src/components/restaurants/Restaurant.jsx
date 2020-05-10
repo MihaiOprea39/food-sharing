@@ -1,37 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import Banner from "../banner/Banner";
+import Banner from "../misc/banner/Banner";
 import Recommended from "../recommended/Recommended";
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import PhoneIcon from '@material-ui/icons/Phone';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
-import HelpIcon from '@material-ui/icons/Help';
-import TabPanel from "../misc/TabPanel";
 import firebase from "../../firebase";
 import {Link, useParams} from "react-router-dom";
 import ReviewsComponent from "../Reviews/Reviews";
+import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
+import './restaurant.scss';
+import Typography from "@material-ui/core/Typography";
 
-function a11yProps(index) {
-    return {
-        id: `scrollable-force-tab-${index}`,
-        'aria-controls': `scrollable-force-tabpanel-${index}`,
-    };
-}
 
 export default function Restaurant() {
-    const [tabValue, setTabValue] = useState(2);
     const [generatedId, setGeneratedId] = useState('');
     const [restaurant, setRestaurant] = useState(null);
     const [amenities, setAmenities] = useState(null);
     const [reviews, setReviews] = useState(null);
     const [averageRating, setAverageRating] = useState(0);
     const {id: restaurantId} = useParams();
+    const [activeTab, setActiveTab] = useState('1');
 
-    const handleChange = (event, newValue) => {
-        setTabValue(newValue);
-    };
+    const toggleTab = tab => {
+        if (activeTab !== tab) {
+            setActiveTab(tab);
+        }
+    }
 
     const getRestaurantData = () => {
         firebase.firestore()
@@ -103,147 +94,178 @@ export default function Restaurant() {
 
     useEffect(getRestaurantData, []);
 
-    console.log(amenities);
-
     return (
         <main>
-            <Banner/>
+            {restaurant && <Banner
+                title={`${restaurant.name} overview`}
+                subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
+                 the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
+                 that set this restaurant apart from others. A location tool for simplicity is also available."
+            >
+                <Link color="inherit" to="/">
+                    Home
+                </Link>
+                <Link color="inherit" to="/restaurants">
+                    Restaurants
+                </Link>
+                <Typography color="textPrimary">{restaurant.name}</Typography>
+            </Banner>
+            }
             {restaurant &&
-            <div className="section pt-5 pt-lg-6">
+            <div className="section pt-5">
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-lg-8 mt-3 ml-lg-0">
                             <div className="restaurant-single-wrapper">
-                                <AppBar position="static" color="default">
-                                    <Tabs
-                                        value={tabValue}
-                                        onChange={handleChange}
-                                        variant="scrollable"
-                                        scrollButtons="on"
-                                        indicatorColor="primary"
-                                        textColor="primary"
-                                        aria-label="scrollable force tabs"
-                                    >
-                                        <Tab label="About" icon={<PhoneIcon/>} {...a11yProps(0)} />
-                                        <Tab label="Amenities" icon={<FavoriteIcon/>} {...a11yProps(1)} />
-                                        <Tab label="Reviews" icon={<PersonPinIcon/>} {...a11yProps(2)} />
-                                        <Tab label="Location" icon={<HelpIcon/>} {...a11yProps(3)} />
-                                    </Tabs>
-                                </AppBar>
-                                <TabPanel value={tabValue} index={0}>
-
-                                    <h2 className="font-weight-normal">{restaurant.name}</h2>
-                                    <div className="d-block d-md-flex">
-                                        <h6 className="text-secondary font-weight-light"><i
-                                            className="fas fa-check-circle mr-1 pr-1"></i>Verified</h6>
-                                        <span className="lh-120 ml-md-4"><i
-                                            className="fas fa-map-marker-alt mr-1 pr-1"/>
-                                            {restaurant.address}
-                                            <a data-fancybox
-                                               href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
-                                               className="text-primary ml-md-3">See Location</a>
+                                <Nav tabs>
+                                    <NavItem>
+                                        <NavLink
+                                            className={`${activeTab === '1' ? 'active' : ''}`}
+                                            onClick={() => { toggleTab('1'); }}
+                                        >
+                                            <span><i className="far fa-address-card"/> About</span>
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            className={`${activeTab === '2' ? 'active' : ''}`}
+                                            onClick={() => { toggleTab('2'); }}
+                                        >
+                                            <span><i className="far fa-star"/> Reviews</span>
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            className={`${activeTab === '3' ? 'active' : ''}`}
+                                            onClick={() => { toggleTab('3'); }}
+                                        >
+                                            <span><i className="fas fa-cubes"/> Amenities</span>
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            className={`${activeTab === '4' ? 'active' : ''}`}
+                                            onClick={() => { toggleTab('4'); }}
+                                        >
+                                            <span><i className="fas fa-map-marker-alt"/> Location</span>
+                                        </NavLink>
+                                    </NavItem>
+                                </Nav>
+                                <TabContent activeTab={activeTab}>
+                                    <TabPane tabId="1">
+                                        <h2 className="font-weight-normal">{restaurant.name}</h2>
+                                        <div className="d-block d-md-flex">
+                                            <h6 className="text-secondary font-weight-light"><i
+                                                className="fas fa-check-circle mr-1 pr-1"></i>Verified</h6>
+                                            <span className="lh-120 ml-md-4"><i
+                                                className="fas fa-map-marker-alt mr-1 pr-1"/>
+                                                {restaurant.address}
+                                                <a data-fancybox
+                                                   href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
+                                                   className="text-primary ml-md-3">See Location</a>
                                     </span>
-                                    </div>
-                                    <div className="fancy-gallery my-5">
-                                        <div className="row">
-                                            {
-                                                restaurant && restaurant.gallery.map((image, key) =>
-                                                    <Link to={`/${process.env.REACT_APP_RESOURCES_ROOT}/${image}`}
-                                                          className="mb-4 col-6 col-sm-4 img-fluid"
-                                                          data-fancybox="images" data-caption="Restaurant space"
-                                                          key={key}>
-                                                        <img src={`${process.env.REACT_APP_RESOURCES_ROOT}/${image}`}
-                                                             alt=""/>
-                                                    </Link>
-                                                )
-                                            }
+                                        </div>
+                                        <div className="fancy-gallery my-5">
+                                            <div className="row">
+                                                {
+                                                    restaurant && restaurant.gallery.map((image, key) =>
+                                                        <Link to={`/${process.env.REACT_APP_RESOURCES_ROOT}/${image}`}
+                                                              className="mb-4 col-6 col-sm-4 img-fluid"
+                                                              data-fancybox="images" data-caption="Restaurant space"
+                                                              key={key}>
+                                                            <img src={`${process.env.REACT_APP_RESOURCES_ROOT}/${image}`}
+                                                                 alt=""/>
+                                                        </Link>
+                                                    )
+                                                }
 
-                                        </div>
-                                    </div>
-                                    <p>{restaurant.description}</p>
-                                    <div className="row shadow-sm mt-5">
-                                        <div className="col-6 col-xl-3 card bg-soft">
-                                            <div className="card-body text-center">
-                                                <div className="icon">
-                                                    <i className="far fa-calendar-alt"></i>
-                                                </div>
-                                                <p className="font-weight-normal h4 mt-3 mb-0">
-                                                    <span className="counter text-dark mr-2">1</span>Year
-                                                </p>
-                                                <p className="text-muted mb-0">
-                                                    Minimum term
-                                                </p>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xl-3 card bg-soft border-left">
-                                            <div className="card-body text-center">
-                                                <div className="icon">
-                                                    <i className="fas fa-ruler-combined"></i>
+                                        <p>{restaurant.description}</p>
+                                        <div className="row shadow-sm mt-5">
+                                            <div className="col-6 col-xl-3 card bg-soft">
+                                                <div className="card-body text-center">
+                                                    <div className="icon">
+                                                        <i className="far fa-calendar-alt"></i>
+                                                    </div>
+                                                    <p className="font-weight-normal h4 mt-3 mb-0">
+                                                        <span className="counter text-dark mr-2">1</span>Year
+                                                    </p>
+                                                    <p className="text-muted mb-0">
+                                                        Minimum term
+                                                    </p>
                                                 </div>
-                                                <p className="font-weight-normal mt-3 mb-0 h4">
-                                                    <span className="counter text-dark mr-2">180</span>SqFt
-                                                </p>
-                                                <p className="text-muted mb-0">
-                                                    Space size
-                                                </p>
+                                            </div>
+                                            <div className="col-6 col-xl-3 card bg-soft border-left">
+                                                <div className="card-body text-center">
+                                                    <div className="icon">
+                                                        <i className="fas fa-ruler-combined"></i>
+                                                    </div>
+                                                    <p className="font-weight-normal mt-3 mb-0 h4">
+                                                        <span className="counter text-dark mr-2">180</span>SqFt
+                                                    </p>
+                                                    <p className="text-muted mb-0">
+                                                        Space size
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="col-6 col-xl-3 card bg-soft border-left">
+                                                <div className="card-body text-center">
+                                                    <div className="icon">
+                                                        <i className="fas fa-users"></i>
+                                                    </div>
+                                                    <p className="font-weight-normal mt-3 mb-0 h4">
+                                                        <span className="counter text-dark mr-2">15</span>+
+                                                    </p>
+                                                    <p className="text-muted mb-0">
+                                                        People
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="col-6 col-xl-3 card bg-soft border-left">
+                                                <div className="card-body text-center">
+                                                    <div className="icon">
+                                                        <i className="fas fa-couch"></i>
+                                                    </div>
+                                                    <p className="font-weight-normal mt-3 mb-0 h4">
+                                                        <span className="text-dark mr-2">Meeting</span>
+                                                    </p>
+                                                    <p className="text-muted mb-0">
+                                                        Space type
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xl-3 card bg-soft border-left">
-                                            <div className="card-body text-center">
-                                                <div className="icon">
-                                                    <i className="fas fa-users"></i>
-                                                </div>
-                                                <p className="font-weight-normal mt-3 mb-0 h4">
-                                                    <span className="counter text-dark mr-2">15</span>+
-                                                </p>
-                                                <p className="text-muted mb-0">
-                                                    People
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="col-6 col-xl-3 card bg-soft border-left">
-                                            <div className="card-body text-center">
-                                                <div className="icon">
-                                                    <i className="fas fa-couch"></i>
-                                                </div>
-                                                <p className="font-weight-normal mt-3 mb-0 h4">
-                                                    <span className="text-dark mr-2">Meeting</span>
-                                                </p>
-                                                <p className="text-muted mb-0">
-                                                    Space type
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabValue} index={1}>
-                                    <div className="row">
-                                        {amenities && amenities.map((amenity, key) =>
-                                            <div className="col-12 col-lg-6 mb-4" key={key}>
-                                                <div className="card shadow-sm border-soft p-4">
-                                                    <h5 className="font-weight-normal">{Object.keys(amenity)[0]}</h5>
-                                                    <ul className="list-unstyled mb-0">
-                                                        {Object.values(amenity)[0].map((value, index) =>
-                                                            <li className="d-flex py-1" key={index}>
+                                    </TabPane>
+                                    <TabPane tabId="2">
+                                        <ReviewsComponent reviews={reviews} addReview={onReviewSubmit}/>
+                                    </TabPane>
+                                    <TabPane tabId="3">
+                                        <div className="row">
+                                            {amenities && amenities.map((amenity, key) =>
+                                                <div className="col-12 col-lg-6 mb-4" key={key}>
+                                                    <div className="card shadow-sm border-soft p-4">
+                                                        <h5 className="font-weight-normal">{Object.keys(amenity)[0]}</h5>
+                                                        <ul className="list-unstyled mb-0">
+                                                            {Object.values(amenity)[0].map((value, index) =>
+                                                                <li className="d-flex py-1" key={index}>
                                                                 <span className="icon icon-xs icon-primary">
                                                                     <i className="fas fa-check-circle mr-2"/>
                                                                 </span>
-                                                                <span>{value}</span>
-                                                            </li>)
-                                                        }
-                                                    </ul>
+                                                                    <span>{value}</span>
+                                                                </li>)
+                                                            }
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
-                                        }
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabValue} index={2}>
-                                    <ReviewsComponent reviews={reviews} addReview={onReviewSubmit}/>
-                                </TabPanel>
-                                <TabPanel value={tabValue} index={3}>
-                                    Location
-                                </TabPanel>
+                                            )
+                                            }
+                                        </div>
+                                    </TabPane>
+                                    <TabPane tabId="4">
+                                        Location
+                                    </TabPane>
+                                </TabContent>
                             </div>
                         </div>
                         <aside className="col-12 col-lg-4">

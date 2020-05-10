@@ -1,0 +1,17 @@
+.foodshare-breadcrumbs-wrapper {
+  margin-bottom: 20px;
+  .MuiSvgIcon-fontSizeSmall {
+    color: #66799e;
+  }
+  .MuiBreadcrumbs-li {
+    a, p {
+      font-family: "Poppins", sans-serif;
+    }
+    .MuiTypography-colorTextPrimary {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  }
+}
+

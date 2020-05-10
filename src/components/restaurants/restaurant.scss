@@ -1,0 +1,33 @@
+.restaurant-single-wrapper {
+  .nav-tabs {
+    .nav-item {
+      .nav-link {
+        span {
+          color: #869ab8;
+          font-family: "Poppins", sans-serif;
+          font-weight: 400;
+        }
+        &.active {
+          span {
+            color: #005AD4;
+            background-color: #f3f7fa;
+            border-color: #dde1ed #dde1ed #f3f7fa;
+          }
+        }
+        &:hover {
+          span {
+            color: #005AD4;
+            border-color: #dde1ed #dde1ed #f3f7fa;
+          }
+        }
+      }
+    }
+  }
+  .tab-content {
+    .tab-pane {
+      &.active {
+        margin-top: 35px;
+      }
+    }
+  }
+}

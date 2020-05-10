@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Banner from "../../banner/Banner";
+import Banner from "../../misc/banner/Banner";
 import firebase from "../../../firebase";
 import RestaurantFilters from "../filters/RestaurantFilters";
 import {Waypoint} from 'react-waypoint';
@@ -11,6 +11,8 @@ import FoodShareDatePicker from "../../misc/DatePicker";
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import format from 'date-fns/format';
+import {Link} from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
 
 const DEFAULT_LIMIT = 8;
 
@@ -207,7 +209,17 @@ export default function RestaurantsList() {
 
     return (
         <main className="restaurant-list-main">
-            <Banner/>
+            <Banner
+                title="Restaurant listings"
+                subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
+                 the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
+                 that set this restaurant apart from others. A location tool for simplicity is also available."
+            >
+                <Link color="inherit" to="/">
+                    Home
+                </Link>
+                <Typography color="textPrimary">Restaurants</Typography>
+            </Banner>
             <div className="section pt-5 pt-lg-6">
                 <div id="spaces-container" className="container">
                     <div className="row">

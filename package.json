@@ -17,6 +17,7 @@
     "bootstrap-datepicker": "1.9.0",
     "date-fns": "^2.12.0",
     "firebase": "^7.6.1",
+    "google-map-react": "^1.1.7",
     "headroom.js": "0.10.3",
     "html-react-parser": "^0.10.3",
     "jquery": "^3.4.1",

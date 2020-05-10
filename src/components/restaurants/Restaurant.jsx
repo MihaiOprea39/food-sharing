@@ -7,6 +7,7 @@ import ReviewsComponent from "../Reviews/Reviews";
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import './restaurant.scss';
 import Typography from "@material-ui/core/Typography";
+import FoodShareMap from "../misc/map/Map";
 
 
 export default function Restaurant() {
@@ -263,7 +264,7 @@ export default function Restaurant() {
                                         </div>
                                     </TabPane>
                                     <TabPane tabId="4">
-                                        Location
+                                        <FoodShareMap />
                                     </TabPane>
                                 </TabContent>
                             </div>

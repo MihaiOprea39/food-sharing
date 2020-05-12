@@ -2,7 +2,6 @@ import React, {useState, useRef, Fragment} from 'react';
 import parse from "html-react-parser";
 import FoodShareStars from "./Stars";
 import format from "date-fns/format";
-import './reviews.scss';
 
 const defaultReview = {
     comment: '',

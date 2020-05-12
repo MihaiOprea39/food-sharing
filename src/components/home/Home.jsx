@@ -1,11 +1,23 @@
 import React from 'react';
 import './home.scss';
+import SchedulePickUpFilters from "../schedule-pickup/ScheduleFilters";
+import { useHistory } from "react-router-dom";
+
 
 export default function Home() {
+    const history = useHistory();
+
+    const handleScheduleFilters = (filters) => {
+        const {date, restaurant: {id: restaurantId}} = filters;
+        const queryString = `restaurant=${restaurantId}&date=${date}`
+
+        history.push(`/pick-up?${queryString}`);
+    }
 
     return (
         <main className="home-container">
-            <section className="section section-xl bg-primary overlay-dark text-white rounded" data-background="assets/img/hero.jpg">
+            <section className="section section-xl bg-primary overlay-dark text-white rounded"
+                     data-background="assets/img/hero.jpg">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 text-md-center">
@@ -21,38 +33,7 @@ export default function Home() {
                     </div>
                     <div className="row mt-4">
                         <div className="col">
-                            <div className="card card-body">
-                                <form autoComplete="off" className="row" method="get"
-                                      action="html/pages/all-spaces.html">
-                                    <div className="col-12 col-lg-5">
-                                        <div className="form-group mb-lg-0">
-                                            <div className="input-group input-group-lg mb-lg-0">
-                                                <div className="input-group-prepend">
-                                                    <span className="input-group-text"><i className="fas fa-search"></i></span>
-                                                </div>
-                                                <input id="search-location" type="text"
-                                                       className="form-control autocomplete"
-                                                       placeholder="Search location" tabIndex="1" required />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-12 col-lg-4">
-                                        <div className="input-group input-group-lg mb-3 mb-lg-0">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text"><i
-                                                    className="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input className="form-control datepicker" placeholder="Select date"
-                                                   type="text" required />
-                                        </div>
-                                    </div>
-                                    <div className="col-12 col-lg-3">
-                                        <button className="btn btn-lg btn-primary btn-block mt-3 mt-md-0 animate-up-2"
-                                                type="submit">Find a desk
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                            <SchedulePickUpFilters onFiltersSubmit={handleScheduleFilters} />
                         </div>
                     </div>
                 </div>
@@ -95,7 +76,8 @@ export default function Home() {
                     </div>
                     <div className="row mt-6">
                         <div className="col-md-4">
-                            <h2 className="h1 mb-5">Explore our <span className="font-weight-bold">available</span> <br/>office
+                            <h2 className="h1 mb-5">Explore our <span className="font-weight-bold">available</span>
+                                <br/>office
                                 spaces.</h2>
                         </div>
                         <div className="col-md-4">
@@ -130,7 +112,7 @@ export default function Home() {
                                             <div className="progress progress-lg">
                                                 <div className="progress-bar bg-primary" role="progressbar"
                                                      aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"
-                                                     style={{ width: '85%' }}></div>
+                                                     style={{width: '85%'}}></div>
                                             </div>
                                         </div>
                                         <div
@@ -139,7 +121,7 @@ export default function Home() {
                                                 <h4 className="font-weight-normal">Book your tour experience today!</h4>
                                                 <p className="lead mb-0">Schedule a tour, make an appointment to rent
                                                     space <br className="d-none d-lg-inline"/>at Themesberg, or ask for
-                                                        more information.</p>
+                                                    more information.</p>
                                             </div>
                                             <div className="align-content-end">
                                                 <button type="button" className="btn btn-primary animate-up-2"
@@ -292,7 +274,7 @@ export default function Home() {
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/image-office.jpg" className="card-img-top space-image"
                                          alt="a card"/>
-                                <span className="badge badge-primary position-absolute listing-badge">
+                                    <span className="badge badge-primary position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Office Space</span>
                                 </span>
                                 </a>
@@ -333,7 +315,7 @@ export default function Home() {
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/cowork-office.jpg" className="card-img-top space-image"
                                          alt="a card"/>
-                                <span className="badge badge-secondary position-absolute listing-badge">
+                                    <span className="badge badge-secondary position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Coworking Space</span>
                                 </span>
                                 </a>
@@ -374,7 +356,7 @@ export default function Home() {
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/meeting-office.jpg" className="card-img-top space-image"
                                          alt="a card"/>
-                                <span className="badge badge-warning position-absolute listing-badge">
+                                    <span className="badge badge-warning position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Meeting Space</span>
                                 </span>
                                 </a>
@@ -415,7 +397,7 @@ export default function Home() {
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/conference-office.jpg" className="card-img-top space-image"
                                          alt="a crd"/>
-                                <span className="badge badge-primary position-absolute listing-badge">
+                                    <span className="badge badge-primary position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Conference Room</span>
                                 </span>
                                 </a>
@@ -456,7 +438,7 @@ export default function Home() {
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/lifestyle-office.jpg" className="card-img-top space-image"
                                          alt="a card"/>
-                                <span className="badge badge-secondary position-absolute listing-badge">
+                                    <span className="badge badge-secondary position-absolute listing-badge">
                                         <span className="font-weight-normal font-xs">Lifestyle Space</span>
                                 </span>
                                 </a>
@@ -497,7 +479,7 @@ export default function Home() {
                                 <a href="./html/pages/single-space.html" className="position-relative">
                                     <img src="assets/img/private-office.jpg" className="card-img-top space-image"
                                          alt="a card"/>
-                                <span className="badge badge-warning position-absolute listing-badge">
+                                    <span className="badge badge-warning position-absolute listing-badge">
                                     <span className="font-weight-normal font-xs">Private Space</span>
                                 </span>
                                 </a>

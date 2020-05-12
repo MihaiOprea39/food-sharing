@@ -3,7 +3,7 @@ import Banner from "../misc/banner/Banner";
 import Recommended from "../recommended/Recommended";
 import firebase from "../../firebase";
 import {Link, useParams} from "react-router-dom";
-import ReviewsComponent from "../Reviews/Reviews";
+import ReviewsComponent from "../reviews/Reviews";
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import './restaurant.scss';
 import Typography from "@material-ui/core/Typography";

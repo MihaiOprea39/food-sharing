@@ -57,12 +57,12 @@ export default function RestaurantFilters({onFiltersChange}) {
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                    </span>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-warning"/>
+                                            </span>
                                         </label>
                                     </div>
                                 </li>
@@ -79,10 +79,11 @@ export default function RestaurantFilters({onFiltersChange}) {
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-grey"/>
                                                     </span>
                                         </label>
                                     </div>
@@ -100,9 +101,11 @@ export default function RestaurantFilters({onFiltersChange}) {
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-warning"/>
+                                                        <i className="star fas fa-star text-grey"/>
+                                                        <i className="star fas fa-star text-grey"/>
                                                     </span>
                                         </label>
                                     </div>
@@ -120,9 +123,12 @@ export default function RestaurantFilters({onFiltersChange}) {
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                        <i className="star fas fa-star text-warning"></i>
-                                                    </span>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                            </span>
                                         </label>
                                     </div>
                                 </li>
@@ -139,8 +145,12 @@ export default function RestaurantFilters({onFiltersChange}) {
                                                 }}
                                             />
                                             <span className="d-flex rating-stars">
-                                                        <i className="star fas fa-star text-warning"/>
-                                                    </span>
+                                                <i className="star fas fa-star text-warning"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                                <i className="star fas fa-star text-grey"/>
+                                            </span>
                                         </label>
                                     </div>
                                 </li>

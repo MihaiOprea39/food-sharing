@@ -9,7 +9,6 @@ import './restaurant.scss';
 import Typography from "@material-ui/core/Typography";
 import FoodShareMap from "../misc/map/Map";
 
-
 export default function Restaurant() {
     const [generatedId, setGeneratedId] = useState('');
     const [restaurant, setRestaurant] = useState(null);
@@ -93,12 +92,16 @@ export default function Restaurant() {
         return (ratingsSum / ratings.length) || 0;
     };
 
+    const handleMarkerClick = (marker) => {
+      console.log(marker);
+    };
+
     useEffect(getRestaurantData, []);
 
     return (
         <main>
             {restaurant && <Banner
-                title={`${restaurant.name} overview`}
+                title={`${restaurant.name}`}
                 subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
                  the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
                  that set this restaurant apart from others. A location tool for simplicity is also available."
@@ -161,9 +164,7 @@ export default function Restaurant() {
                                             <span className="lh-120 ml-md-4"><i
                                                 className="fas fa-map-marker-alt mr-1 pr-1"/>
                                                 {restaurant.address}
-                                                <a data-fancybox
-                                                   href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
-                                                   className="text-primary ml-md-3">See Location</a>
+                                                <a data-fancybox className="text-primary ml-md-3" onClick={() => { toggleTab('4'); }}>See Location</a>
                                     </span>
                                         </div>
                                         <div className="fancy-gallery my-5">
@@ -264,7 +265,7 @@ export default function Restaurant() {
                                         </div>
                                     </TabPane>
                                     <TabPane tabId="4">
-                                        <FoodShareMap />
+                                        <FoodShareMap onMarkerClick={handleMarkerClick} />
                                     </TabPane>
                                 </TabContent>
                             </div>

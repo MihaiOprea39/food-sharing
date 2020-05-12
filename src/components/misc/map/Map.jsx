@@ -1,32 +1,46 @@
-import React from "react";
-import GoogleMapReact, {Marker} from 'google-map-react';
+import React from "react"
+import { compose, withProps } from "recompose"
+import { withScriptjs, withGoogleMap, GoogleMap } from "react-google-maps"
+import FoodShareMarker from "./Marker";
 
 const defaultProps = {
     center: {
-        lat: 59.95,
-        lng: 30.33
+        lat: -34.397,
+        lng: 150.644
     },
     zoom: 11
 }
 
-const FoodShareMarker = ({ text }) => <div>{text}</div>;
+const KEY = process.env.REACT_APP_MAPS_KEY;
 
-export default function FoodShareMap({center = defaultProps.center, zoom = defaultProps.zoom}) {
-    console.log(process.env.REACT_APP_MAPS_KEY);
+const FoodShareMap = compose(
+    withProps({
+        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${KEY}&v=3.exp&libraries=places`,
+        loadingElement: <div style={{ height: `100%` }} />,
+        containerElement: <div style={{ height: `100vh` }} />,
+        mapElement: <div style={{ height: `100%` }} />,
+    }),
+    withScriptjs,
+    withGoogleMap
+)(({zoom = defaultProps.zoom, center = defaultProps.center, onMarkerClick}) => {
+        const onMarkerInteract = () => {
+            onMarkerClick();
+        }
 
-    return (
-        <div style={{height: '100vh', width: '100%'}}>
-            <GoogleMapReact
-                bootstrapURLKeys={{key: process.env.REACT_APP_MAPS_KEY}}
-                defaultCenter={center}
-                defaultZoom={zoom}
+        return (
+            <GoogleMap
+                zoom={zoom}
+                center={center}
             >
-                {/*<Marker*/}
-                {/*    lat={59.955413}*/}
-                {/*    lng={30.337844}*/}
-                {/*    name="My Marker"*/}
-                {/*/>*/}
-            </GoogleMapReact>
-        </div>);
+                <FoodShareMarker visible onMarkerClick={onMarkerInteract}>
+                    <div>
+                        <button className="btn btn-block btn-primary mt-4">Schedule pickup</button>
+                    </div>
+                </FoodShareMarker>
+            </GoogleMap>
+        );
+    }
+);
 
-}
+
+export default FoodShareMap;

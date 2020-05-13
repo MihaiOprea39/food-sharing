@@ -2,10 +2,13 @@ import React, {useEffect} from "react"
 import {InfoWindow, Marker} from "react-google-maps";
 import parse from "html-react-parser";
 import Checkbox from "@material-ui/core/Checkbox";
+import {useHistory} from "react-router-dom";
 
 const defaultPosition = {lat: -34.397, lng: 150.644};
 
-export default function FoodShareMarker({marker, position = defaultPosition, selected, icon = null, onMarkerClick}) {
+export default function FoodShareMarker({marker, position = defaultPosition, selected, icon = null, togglePickup = false, onTogglePickup, onMarkerClick}) {
+    const history = useHistory();
+
     const calculateRating = (rating) => {
         const rounded = Math.floor(rating);
         const decimal = 5 - rounded;
@@ -19,6 +22,10 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
 
         return totalStars;
     };
+
+    const handleScheduleInteract = (id) => {
+        history.push(`/pick-up?restaurant=${id}`);
+    }
 
     const onMarkerInteract = (marker) => {
         onMarkerClick(marker);
@@ -34,8 +41,6 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
 
         return () => window.removeEventListener("keydown", escapeKeyListener);
     }, []);
-
-    console.log(marker);
 
     return (
         <Marker
@@ -63,15 +68,27 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                                     </span>
                                 </div>
                             </li>
-                            <li>
-                                <div><span className="marker-field meta-property">Pick-up</span>
-                                    <Checkbox
-                                        checked
-                                        color="primary"
-                                    />
-                                </div>
-                            </li>
+                            {togglePickup && (
+                                <li>
+                                    <div><span className="marker-field meta-property">Pick-up</span>
+                                        <Checkbox
+                                            onChange={(event) => onTogglePickup(event.target.checked, marker.id)}
+                                            checked={marker.readyForPickup}
+                                            color="primary"
+                                        />
+                                    </div>
+                                </li>
+                            )}
                         </ul>
+                        {!togglePickup && (
+                            <div>
+                                <button
+                                    className="btn btn-primary animate-up-2 schedule-pickup"
+                                    onClick={() => handleScheduleInteract(marker.id)}
+                                >Schedule pickup
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </InfoWindow>
             )}

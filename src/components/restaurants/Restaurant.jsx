@@ -36,7 +36,10 @@ export default function Restaurant() {
                     getAmenities(document);
                     getReviews(document);
 
-                    return document.data();
+                    return {
+                        ...document.data(),
+                        readyForPickup: false
+                    };
                 });
 
                 setRestaurant(data[0] || null);
@@ -90,10 +93,6 @@ export default function Restaurant() {
         const ratingsSum = ratings.reduce((acc, current) => acc + current, 0);
 
         return (ratingsSum / ratings.length) || 0;
-    };
-
-    const handleMarkerClick = (marker) => {
-        console.log(marker);
     };
 
     useEffect(getRestaurantData, []);

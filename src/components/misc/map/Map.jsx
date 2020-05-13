@@ -12,7 +12,7 @@ const defaultProps = {
     zoom: 11
 }
 
-function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center}) {
+function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center, togglePickup = false, onTogglePickup}) {
     const [selectedMarker, setSelectedMarker] = useState(null);
 
     return (
@@ -29,12 +29,14 @@ function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center}) 
                         url: `/assets/img/marker3.png`,
                         scaledSize: new window.google.maps.Size(60, 60)
                     }}
+                    togglePickup={togglePickup}
                     selected={selectedMarker && marker.id === selectedMarker.id}
                     position={{
                         lat: 45.4211,
                         lng: -75.6903
                     }}
                     onMarkerClick={(selectedMarker) => setSelectedMarker(selectedMarker)}
+                    onTogglePickup={(readyForPickupState, markerId) => onTogglePickup(readyForPickupState, markerId)}
                 />
             ))}
         </GoogleMap>

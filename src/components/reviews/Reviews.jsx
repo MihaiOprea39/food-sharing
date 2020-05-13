@@ -112,8 +112,7 @@ export default function ReviewsComponent({reviews, addReview}) {
                             validateMessage()
                         }
                     </small>
-                    <button type="submit"
-                            className={`btn btn-primary animate-up-2 ${validateButton() ? '' : 'not-allowed-element'}`}
+                    <button className={`btn btn-primary animate-up-2 ${validateButton() ? '' : 'not-allowed-element'}`}
                             onClick={onAddReview}>Add review
                     </button>
                 </div>

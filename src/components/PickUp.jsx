@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import {useLocation} from "react-router-dom";
 import firebase from "../firebase";
 import format from "date-fns/format";
+import FoodShareMap from "./misc/map/Map";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -15,6 +16,7 @@ export default function PickUp() {
     const [activeStep, setActiveStep] = useState(0);
     const [pickupDate, setPickupDate] = useState(null);
     const [pickupRestaurant, setPickupRestaurant] = useState(null);
+    const [restaurants, setRestaurants] = useState([]);
     const query = useQuery();
 
     const handleStepChange = (step) => {
@@ -49,9 +51,56 @@ export default function PickUp() {
             })
     };
 
+    const getRestaurants = async () => {
+        const query = await firebase
+            .firestore().collection('restaurants')
+            .orderBy('name', 'asc');
+
+        const snapshot = await query.get();
+        const data = snapshot.docs.map(document => ({
+            ...document.data(),
+            readyForPickup: false
+        }));
+
+        setRestaurants(data || []);
+    };
+
+    const handleReadyForPickupChange = (state, restaurantId) => {
+        console.log(restaurantId);
+        const updatedRestaurants = restaurants.map(restaurant => ({
+            ...restaurant,
+            readyForPickup: restaurant.id === restaurantId ? state : restaurant.readyForPickup
+        }));
+        
+        console.log(updatedRestaurants);
+
+        // setRestaurants(updatedRestaurants);
+    };
+
     useEffect(handleQueryStrings, []);
 
-    console.log(pickupDate, pickupRestaurant);
+    useEffect(() => window.scrollTo(0, 0), []);
+
+    useEffect(() => {
+        (async function asyncFn() {
+            await getRestaurants();
+        })();
+    }, []);
+    
+
+    const getStepOne = () => {
+        return (
+            <FoodShareMap
+                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
+                loadingElement={<div style={{height: `100%`}}/>}
+                containerElement={<div style={{height: `100vh`}}/>}
+                mapElement={<div style={{height: `100%`}}/>}
+                markers={restaurants}
+                togglePickup
+                onTogglePickup={handleReadyForPickupChange}
+            />
+        );
+    };
 
     return (
         <main>
@@ -70,7 +119,12 @@ export default function PickUp() {
                 <div className="container">
                     <div className="row">
                         <div className="col-12 mt-3 ml-lg-0">
-                            <FoodShareStepper activeStep={activeStep} onStepChange={handleStepChange}/>
+                            <FoodShareStepper
+                                activeStep={activeStep}
+                                stepOneContent={getStepOne()}
+                                stepTwoContent={<div>TEST 2 TEST</div>}
+                                stepThreeContent={<div>TEST 3 TEST</div>}
+                                onStepChange={handleStepChange}/>
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,7 @@ export default function Restaurant() {
     const [reviews, setReviews] = useState(null);
     const [averageRating, setAverageRating] = useState(0);
     const {id: restaurantId} = useParams();
-    const [activeTab, setActiveTab] = useState('1');
+    const [activeTab, setActiveTab] = useState('4');
 
     const toggleTab = tab => {
         if (activeTab !== tab) {
@@ -93,7 +93,7 @@ export default function Restaurant() {
     };
 
     const handleMarkerClick = (marker) => {
-      console.log(marker);
+        console.log(marker);
     };
 
     useEffect(getRestaurantData, []);
@@ -125,7 +125,9 @@ export default function Restaurant() {
                                     <NavItem>
                                         <NavLink
                                             className={`${activeTab === '1' ? 'active' : ''}`}
-                                            onClick={() => { toggleTab('1'); }}
+                                            onClick={() => {
+                                                toggleTab('1');
+                                            }}
                                         >
                                             <span><i className="far fa-address-card"/> About</span>
                                         </NavLink>
@@ -133,7 +135,9 @@ export default function Restaurant() {
                                     <NavItem>
                                         <NavLink
                                             className={`${activeTab === '2' ? 'active' : ''}`}
-                                            onClick={() => { toggleTab('2'); }}
+                                            onClick={() => {
+                                                toggleTab('2');
+                                            }}
                                         >
                                             <span><i className="far fa-star"/> Reviews</span>
                                         </NavLink>
@@ -141,7 +145,9 @@ export default function Restaurant() {
                                     <NavItem>
                                         <NavLink
                                             className={`${activeTab === '3' ? 'active' : ''}`}
-                                            onClick={() => { toggleTab('3'); }}
+                                            onClick={() => {
+                                                toggleTab('3');
+                                            }}
                                         >
                                             <span><i className="fas fa-cubes"/> Amenities</span>
                                         </NavLink>
@@ -149,7 +155,9 @@ export default function Restaurant() {
                                     <NavItem>
                                         <NavLink
                                             className={`${activeTab === '4' ? 'active' : ''}`}
-                                            onClick={() => { toggleTab('4'); }}
+                                            onClick={() => {
+                                                toggleTab('4');
+                                            }}
                                         >
                                             <span><i className="fas fa-map-marker-alt"/> Location</span>
                                         </NavLink>
@@ -164,7 +172,9 @@ export default function Restaurant() {
                                             <span className="lh-120 ml-md-4"><i
                                                 className="fas fa-map-marker-alt mr-1 pr-1"/>
                                                 {restaurant.address}
-                                                <a data-fancybox className="text-primary ml-md-3" onClick={() => { toggleTab('4'); }}>See Location</a>
+                                                <a data-fancybox className="text-primary ml-md-3" onClick={() => {
+                                                    toggleTab('4');
+                                                }}>See Location</a>
                                     </span>
                                         </div>
                                         <div className="fancy-gallery my-5">
@@ -175,8 +185,9 @@ export default function Restaurant() {
                                                               className="mb-4 col-6 col-sm-4 img-fluid"
                                                               data-fancybox="images" data-caption="Restaurant space"
                                                               key={key}>
-                                                            <img src={`${process.env.REACT_APP_RESOURCES_ROOT}/${image}`}
-                                                                 alt=""/>
+                                                            <img
+                                                                src={`${process.env.REACT_APP_RESOURCES_ROOT}/${image}`}
+                                                                alt=""/>
                                                         </Link>
                                                     )
                                                 }
@@ -188,7 +199,7 @@ export default function Restaurant() {
                                             <div className="col-6 col-xl-3 card bg-soft">
                                                 <div className="card-body text-center">
                                                     <div className="icon">
-                                                        <i className="far fa-calendar-alt"></i>
+                                                        <i className="far fa-calendar-alt"/>
                                                     </div>
                                                     <p className="font-weight-normal h4 mt-3 mb-0">
                                                         <span className="counter text-dark mr-2">1</span>Year
@@ -201,7 +212,7 @@ export default function Restaurant() {
                                             <div className="col-6 col-xl-3 card bg-soft border-left">
                                                 <div className="card-body text-center">
                                                     <div className="icon">
-                                                        <i className="fas fa-ruler-combined"></i>
+                                                        <i className="fas fa-ruler-combined"/>
                                                     </div>
                                                     <p className="font-weight-normal mt-3 mb-0 h4">
                                                         <span className="counter text-dark mr-2">180</span>SqFt
@@ -265,7 +276,13 @@ export default function Restaurant() {
                                         </div>
                                     </TabPane>
                                     <TabPane tabId="4">
-                                        <FoodShareMap onMarkerClick={handleMarkerClick} />
+                                        <FoodShareMap
+                                            googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
+                                            loadingElement={<div style={{height: `100%`}}/>}
+                                            containerElement={<div style={{height: `100vh`}}/>}
+                                            mapElement={<div style={{height: `100%`}}/>}
+                                            markers={[restaurant]}
+                                        />
                                     </TabPane>
                                 </TabContent>
                             </div>

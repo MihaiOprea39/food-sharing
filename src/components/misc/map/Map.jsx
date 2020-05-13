@@ -1,46 +1,46 @@
-import React from "react"
-import { compose, withProps } from "recompose"
+import React, {useState} from "react"
 import { withScriptjs, withGoogleMap, GoogleMap } from "react-google-maps"
 import FoodShareMarker from "./Marker";
+import mapStyle from './mapStyle';
+import './map.scss';
 
 const defaultProps = {
     center: {
-        lat: -34.397,
-        lng: 150.644
+        lat: 45.4211,
+        lng: -75.6903
     },
     zoom: 11
 }
 
-const KEY = process.env.REACT_APP_MAPS_KEY;
+function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center}) {
+    const [selectedMarker, setSelectedMarker] = useState(null);
 
-const FoodShareMap = compose(
-    withProps({
-        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${KEY}&v=3.exp&libraries=places`,
-        loadingElement: <div style={{ height: `100%` }} />,
-        containerElement: <div style={{ height: `100vh` }} />,
-        mapElement: <div style={{ height: `100%` }} />,
-    }),
-    withScriptjs,
-    withGoogleMap
-)(({zoom = defaultProps.zoom, center = defaultProps.center, onMarkerClick}) => {
-        const onMarkerInteract = () => {
-            onMarkerClick();
-        }
+    return (
+        <GoogleMap
+            defaultZoom={zoom}
+            defaultCenter={center}
+            defaultOptions={{ styles: mapStyle }}
+        >
+            {markers && markers.map((marker) => (
+                <FoodShareMarker
+                    marker={marker}
+                    key={marker.id}
+                    icon={{
+                        url: `/assets/img/marker3.png`,
+                        scaledSize: new window.google.maps.Size(60, 60)
+                    }}
+                    selected={selectedMarker && marker.id === selectedMarker.id}
+                    position={{
+                        lat: 45.4211,
+                        lng: -75.6903
+                    }}
+                    onMarkerClick={(selectedMarker) => setSelectedMarker(selectedMarker)}
+                />
+            ))}
+        </GoogleMap>
+    );
+}
 
-        return (
-            <GoogleMap
-                zoom={zoom}
-                center={center}
-            >
-                <FoodShareMarker visible onMarkerClick={onMarkerInteract}>
-                    <div>
-                        <button className="btn btn-block btn-primary mt-4">Schedule pickup</button>
-                    </div>
-                </FoodShareMarker>
-            </GoogleMap>
-        );
-    }
-);
-
+const FoodShareMap = withScriptjs(withGoogleMap(Map));
 
 export default FoodShareMap;

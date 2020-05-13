@@ -1,0 +1,36 @@
+.foodshare-info-window-wrapper {
+  padding: 15px 5px;
+  h3 {
+    border-bottom: 1px solid #000;
+    padding-bottom: 1px;
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+  .marker-field-container {
+    padding-left: 0;
+    list-style-type: none;
+
+    .MuiCheckbox-colorPrimary {
+      padding: 0;
+    }
+
+    .marker-field {
+      font-size: 13px;
+      &.meta-property {
+        margin-right: 20px;
+        width: 55px;
+        display: inline-block;
+      }
+      &.meta-value {}
+    }
+
+  }
+  hr {
+    margin-top: -2px;
+    margin-bottom: 0;
+    border-top: 3px solid rgba(17, 17, 17, 0.05)
+  }
+  p {
+    font-size: 25px;
+  }
+}

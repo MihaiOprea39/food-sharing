@@ -1,13 +1,13 @@
 import React, {useState} from "react"
-import { withScriptjs, withGoogleMap, GoogleMap } from "react-google-maps"
+import {withScriptjs, withGoogleMap, GoogleMap} from "react-google-maps"
 import FoodShareMarker from "./Marker";
 import mapStyle from './mapStyle';
 import './map.scss';
 
 const defaultProps = {
     center: {
-        lat: 45.4211,
-        lng: -75.6903
+        lat: 34.10,
+        lng: -118.33
     },
     zoom: 11
 }
@@ -19,24 +19,29 @@ function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center, t
         <GoogleMap
             defaultZoom={zoom}
             defaultCenter={center}
-            defaultOptions={{ styles: mapStyle }}
+            defaultOptions={{styles: mapStyle}}
         >
             {markers && markers.map((marker) => (
                 <FoodShareMarker
                     marker={marker}
                     key={marker.id}
-                    icon={{
-                        url: `/assets/img/marker3.png`,
-                        scaledSize: new window.google.maps.Size(60, 60)
-                    }}
+                    icon={!marker.readyForPickup ?
+                        {
+                            url: `/assets/img/marker.png`,
+                            scaledSize: new window.google.maps.Size(50, 50)
+                        } : {
+                            url: `/assets/img/marker-active.png`,
+                            scaledSize: new window.google.maps.Size(60, 60)
+                        }
+                    }
                     togglePickup={togglePickup}
                     selected={selectedMarker && marker.id === selectedMarker.id}
                     position={{
-                        lat: 45.4211,
-                        lng: -75.6903
+                        lat: marker.latitude,
+                        lng: marker.longitude
                     }}
                     onMarkerClick={(selectedMarker) => setSelectedMarker(selectedMarker)}
-                    onTogglePickup={(readyForPickupState, markerId) => onTogglePickup(readyForPickupState, markerId)}
+                    onTogglePickup={(event, markerId) => onTogglePickup(event, markerId)}
                 />
             ))}
         </GoogleMap>

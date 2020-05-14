@@ -220,8 +220,8 @@ export default function Home() {
                         <div className="col-12">
                             <h5 className="font-weight-normal mb-5">Top Cities</h5>
                         </div>
-                        <div className="col-12 col-sm-6 col-lg-3 mb-4 mb-lg-0">
-                            <a href="./html/pages/all-spaces.html" className="card img-card fh-400 border-0 outer-bg"
+                        <div className="col-12 col-sm-6 col-lg-3 mb-4 mb-lg-0" onClick={() => history.push('/restaurants?location=1')}>
+                            <a className="card img-card fh-400 border-0 outer-bg"
                                data-background-inner="assets/img/newyork.jpg">
                                 <div className="inner-bg overlay-dark"></div>
                                 <div className="card-img-overlay d-flex align-items-center">

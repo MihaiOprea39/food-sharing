@@ -8,8 +8,6 @@ import 'prismjs/themes/prism.css';
 
 // Global styling
 import './scss/spaces.scss';
-// import './assets/js/test-file';
-
 
 // import './misc/scss/global.scss';
 

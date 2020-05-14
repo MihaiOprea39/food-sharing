@@ -13,14 +13,19 @@ import TextField from '@material-ui/core/TextField';
 import format from 'date-fns/format';
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+import {useLocation} from "react-router-dom";
 
-const DEFAULT_LIMIT = 8;
+const DEFAULT_LIMIT = 2;
 
 const initialFilters = {
     search: '',
     date: null,
     rating: []
 };
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 export default function RestaurantsList() {
     const [restaurants, setRestaurants] = useState([]);
@@ -29,6 +34,8 @@ export default function RestaurantsList() {
     const [lastVisible, setLastVisible] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
     const [isDoneFetching, setIsDoneFetching] = useState(false);
+    const [locations, setLocations] = useState([]);
+    const queryString = useQuery();
 
     const getNumberOfRestaurants = () => {
         firebase
@@ -41,10 +48,15 @@ export default function RestaurantsList() {
     const fetchInitialRestaurants = async () => {
         setIsFetching(true);
 
+        const currentLocation = Number(queryString.get('location'));
         let initialQuery = await firebase
             .firestore().collection('restaurants')
             .orderBy('name', 'asc')
             .limit(DEFAULT_LIMIT);
+
+        if (currentLocation) {
+            initialQuery = initialQuery.where('location', '==', currentLocation);
+        }
 
         const documentSnapshots = await initialQuery.get();
         const documentData = documentSnapshots.docs.map(document => document.data());
@@ -55,6 +67,18 @@ export default function RestaurantsList() {
         setIsFetching(false);
     };
 
+    const getAllLocations = () => {
+        firebase
+            .firestore()
+            .collection('locations')
+            .get()
+            .then(querySnapshot => {
+                const list = querySnapshot.docs.map(doc => doc.data());
+
+                setLocations(list);
+            })
+    };
+
     const fetchMoreRestaurants = async () => {
         if (isDoneFetching) {
             return;
@@ -62,11 +86,17 @@ export default function RestaurantsList() {
 
         setIsFetching(true);
 
+
+        const currentLocation = Number(queryString.get('location'));
         let additionalQuery = await firebase
             .firestore().collection('restaurants')
             .orderBy('name', 'asc')
             .startAfter(lastVisible)
             .limit(DEFAULT_LIMIT);
+
+        if (currentLocation) {
+            additionalQuery = additionalQuery.where('location', '==', currentLocation);
+        }
 
         const documentSnapshots = await additionalQuery.get();
         const documentData = documentSnapshots.docs.map(document => document.data());
@@ -115,12 +145,7 @@ export default function RestaurantsList() {
                         .collection('restaurants')
                         .doc(doc.id)
                         .set({
-                            keywords: ['', `${doc.data().name.toLowerCase()}`].concat(
-                                doc
-                                    .data()
-                                    .name.toLowerCase()
-                                    .split(" ")
-                            )
+                            location: [1, 2, 3, 4][Math.floor(Math.random() * [1, 2, 3, 4].length)]
                         }, {
                             merge: true
                         }).then()
@@ -198,6 +223,7 @@ export default function RestaurantsList() {
         })();
         getNumberOfRestaurants();
         // updateCustomFields();
+        getAllLocations()
     }, []);
 
     useEffect(() => {
@@ -206,6 +232,8 @@ export default function RestaurantsList() {
             await fetchMoreRestaurants();
         })();
     }, [isFetching]);
+
+    useEffect(() => window.scrollTo(0, 0), []);
 
     return (
         <main className="restaurant-list-main">
@@ -242,7 +270,7 @@ export default function RestaurantsList() {
                     </div>
                     <div className="row">
 
-                        <RestaurantFilters onFiltersChange={onSidebarFiltersChange}/>
+                        <RestaurantFilters locations={locations} onFiltersChange={onSidebarFiltersChange}/>
 
                         <div className="col-md-12 col-lg-9 order-lg-1 restaurant-list-wrapper">
                             <div

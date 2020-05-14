@@ -281,6 +281,10 @@ export default function Restaurant() {
                                             containerElement={<div style={{height: `100vh`}}/>}
                                             mapElement={<div style={{height: `100%`}}/>}
                                             markers={[restaurant]}
+                                            center={{
+                                                lat: restaurant.latitude,
+                                                lng: restaurant.longitude
+                                            }}
                                         />
                                     </TabPane>
                                 </TabContent>

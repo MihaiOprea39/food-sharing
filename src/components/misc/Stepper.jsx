@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-    return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+    return ['Select pickup date and location', 'Create an ad group', 'Create an ad'];
 }
 
 export default function VerticalLinearStepper({activeStep = 0, stepOneContent, stepTwoContent, stepThreeContent, onStepChange}) {

@@ -7,6 +7,7 @@ import {useLocation} from "react-router-dom";
 import firebase from "../firebase";
 import format from "date-fns/format";
 import FoodShareMap from "./misc/map/Map";
+import FoodShareDatePicker from "./misc/DatePicker";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -23,16 +24,21 @@ export default function PickUp() {
         setActiveStep(step);
     };
 
-    const handleQueryStrings = () => {
+    const handleQueryStrings = async () => {
         const date = query.get('date');
-        const restaurant = query.get('restaurant');
+        const restaurantId = query.get('restaurant');
 
         date && setPickupDate(getMatchingDate(date));
+        restaurantId && setPickupRestaurant(getMatchingRestaurant(restaurantId));
+        date && restaurantId && setActiveStep(1);
 
-        restaurant && setPickupRestaurant(getMatchingRestaurant(restaurant));
+        const response = await getRestaurants();
+        const restaurants = response.map(rest => ({
+            ...rest,
+            readyForPickup: rest.id === Number(restaurantId) || false
+        }));
 
-        date && restaurant && setActiveStep(1);
-
+        setRestaurants(restaurants);
     };
 
     const getMatchingDate = (date) => {
@@ -51,54 +57,155 @@ export default function PickUp() {
             })
     };
 
-    const getRestaurants = async () => {
-        const query = await firebase
+    const getRestaurants = () => {
+        return firebase
             .firestore().collection('restaurants')
-            .orderBy('name', 'asc');
-
-        const snapshot = await query.get();
-        const data = snapshot.docs.map(document => ({
-            ...document.data(),
-            readyForPickup: false
-        }));
-
-        setRestaurants(data || []);
+            .orderBy('name', 'asc')
+            .get()
+            .then(snapshot => snapshot.docs.map(document => document.data()));
     };
 
-    const handleReadyForPickupChange = (state, restaurantId) => {
-        console.log(restaurantId);
+    const handleReadyForPickupChange = (event, restaurantId) => {
+        event.persist();
+
         const updatedRestaurants = restaurants.map(restaurant => ({
             ...restaurant,
-            readyForPickup: restaurant.id === restaurantId ? state : restaurant.readyForPickup
+            readyForPickup: restaurant.id === restaurantId ? event.target.checked : false
         }));
-        
-        console.log(updatedRestaurants);
 
-        // setRestaurants(updatedRestaurants);
+        setRestaurants(updatedRestaurants);
     };
 
-    useEffect(handleQueryStrings, []);
+    const onDateChange = (value) => {
+        const date = value ? format(value, 'MMM dd, yyyy') : null;
+
+        setPickupDate(date);
+    }
 
     useEffect(() => window.scrollTo(0, 0), []);
 
     useEffect(() => {
         (async function asyncFn() {
-            await getRestaurants();
+            await handleQueryStrings();
         })();
     }, []);
-    
+
+
+    console.log(pickupRestaurant, pickupDate);
 
     const getStepOne = () => {
         return (
-            <FoodShareMap
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
-                loadingElement={<div style={{height: `100%`}}/>}
-                containerElement={<div style={{height: `100vh`}}/>}
-                mapElement={<div style={{height: `100%`}}/>}
-                markers={restaurants}
-                togglePickup
-                onTogglePickup={handleReadyForPickupChange}
-            />
+            <div>
+                <FoodShareDatePicker placeholder="Available date" value={pickupDate} onChange={onDateChange}/>
+                <FoodShareMap
+                    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
+                    loadingElement={<div style={{height: `100%`}}/>}
+                    containerElement={<div style={{height: `500px`}}/>}
+                    mapElement={<div style={{height: `100%`}}/>}
+                    markers={restaurants}
+                    togglePickup
+                    onTogglePickup={handleReadyForPickupChange}
+                />
+            </div>
+        );
+    };
+
+    const getStepTwo = () => {
+        return (
+            <div className="card shadow-soft border p-4 mb-4">
+                <h5 className="mb-4">General information</h5>
+                <div className="form-group focused">
+                    <label htmlFor="firstname">Title</label>
+                    <input type="text" value="L'atelier Vancouver Coworking" className="form-control shadow-soft"
+                           id="firstname" placeholder="Space title" required=""/>
+                </div>
+                <div className="form-group focused">
+                    <label htmlFor="location">Location</label>
+                    <input type="text" value="26, Vancouver, BC, Canada - 324578" className="form-control shadow-soft"
+                           id="location" placeholder="Search for location" required=""/>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-lg-6">
+                        <div className="form-group">
+                            <label htmlFor="currency">Currency</label>
+                            <select className="custom-select" id="currency">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="AUD">AUD</option>
+                                <option value="CNY">CNY</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-6">
+                        <div className="form-group focused">
+                            <label htmlFor="price">Monthly price</label>
+                            <input type="number" value="250" className="form-control shadow-soft" id="price"
+                                   placeholder="Ex. 1200" required=""/>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-lg-6">
+                        <div className="form-group">
+                            <label htmlFor="term">Minimum term</label>
+                            <select className="custom-select" id="term">
+                                <option value="d">day</option>
+                                <option value="m">month</option>
+                                <option value="y" selected="">year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-6">
+                        <div className="form-group focused">
+                            <label htmlFor="term_amount">Amount</label>
+                            <input type="number" value="1" className="form-control shadow-soft" id="term_amount"
+                                   placeholder="Ex. 20" required=""/>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-lg-4">
+                        <div className="form-group focused">
+                            <label htmlFor="sqfeet">Square feet</label>
+                            <input type="number" value="180" className="form-control shadow-soft" id="sqfeet"
+                                   placeholder="Ex. 80" required=""/>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-4">
+                        <div className="form-group focused">
+                            <label htmlFor="people">People capacity</label>
+                            <input type="number" value="15" className="form-control shadow-soft" id="people"
+                                   placeholder="Ex. 20" required=""/>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-4">
+                        <div className="form-group">
+                            <label htmlFor="type">Space type</label>
+                            <select className="custom-select" id="type">
+                                <option value="meeting" selected="">meeting</option>
+                                <option value="work">work</option>
+                                <option value="events">events</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="form-group focused">
+                    <label htmlFor="description">Description</label>
+                    <textarea rows="10" className="form-control shadow-soft" id="description" placeholder="Description"
+                              required="">L'atelier is the brainchild of 3 innovative guys that want to create a working hub for the local community. The plan is to offer a cool place to hang out with other creative souls and let the brainwaves go berserk.
+
+The guys were the group behind the Startup Weekend Vancouver, Startup Pirates Vancouver and Startup Coffee Vancouver, so they are no fools and have plenty of experience in startups and community growth. This project is another notch into creating Vancouver as a regional startup hub.
+
+Cowork Vancouver is aiming to attract the techies, the freelance developers or anyone wishing to get involved in the startup scene - really there are no exclusions of bodies who may want a desk - the founders just want a community of entrepreneurs and geeks to mingle with.</textarea>
+                </div>
+                <div className="row">
+                    <div className="col">
+                        <button className="btn btn-primary btn-dark mt-2 animate-up-2" type="submit">Update</button>
+                    </div>
+                </div>
+            </div>
         );
     };
 
@@ -122,7 +229,7 @@ export default function PickUp() {
                             <FoodShareStepper
                                 activeStep={activeStep}
                                 stepOneContent={getStepOne()}
-                                stepTwoContent={<div>TEST 2 TEST</div>}
+                                stepTwoContent={getStepTwo()}
                                 stepThreeContent={<div>TEST 3 TEST</div>}
                                 onStepChange={handleStepChange}/>
                         </div>

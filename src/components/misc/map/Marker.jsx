@@ -54,7 +54,7 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                     position={position}
                 >
                     <div className="foodshare-info-window-wrapper">
-                        <h3>{marker.name}</h3>
+                        <h3>{marker.name} - {marker.id}</h3>
                         <ul className="marker-field-container">
                             <li>
                                 <div><span className="marker-field meta-property">Address</span> <span
@@ -72,7 +72,7 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                                 <li>
                                     <div><span className="marker-field meta-property">Pick-up</span>
                                         <Checkbox
-                                            onChange={(event) => onTogglePickup(event.target.checked, marker.id)}
+                                            onChange={(event) => onTogglePickup(event, marker.id)}
                                             checked={marker.readyForPickup}
                                             color="primary"
                                         />

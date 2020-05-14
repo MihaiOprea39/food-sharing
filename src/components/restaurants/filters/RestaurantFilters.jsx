@@ -5,14 +5,31 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Checkbox from '@material-ui/core/Checkbox';
+import {makeStyles} from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import './restaurant-filters.scss';
 
 const initialFilters = {
-    rating: []
+    rating: [],
+    location: null
 };
 
-export default function RestaurantFilters({onFiltersChange}) {
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2),
+    },
+}));
+
+export default function RestaurantFilters({locations, onFiltersChange}) {
     const [filters, setFilters] = useState(initialFilters);
+    const classes = useStyles();
 
     const handleRatingChange = (event) => {
         const {target: {name: stars}} = event;
@@ -24,6 +41,16 @@ export default function RestaurantFilters({onFiltersChange}) {
             rating: filters.rating.includes(stars) ?
                 filters.rating.filter(item => item !== stars) :
                 [...filters.rating, stars]
+        });
+    };
+
+    const handleLocationChange = (event) => {
+        console.log(event.target.value);
+        event.persist();
+
+        setFilters({
+            ...filters,
+            location: event.target.value
         });
     };
 
@@ -164,13 +191,15 @@ export default function RestaurantFilters({onFiltersChange}) {
                         <ExpansionPanelSummary
                             expandIcon={<ExpandMoreIcon/>}
                         >
-                            <Typography>Expansion Panel 1</Typography>
+                            <Typography>Location</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
-                            <Typography>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                                sit amet blandit leo lobortis eget.
-                            </Typography>
+                            <select className="custom-select custom-select" style={{marginTop: '-15px'}} onChange={handleLocationChange}>
+                                <option value={null}>None</option>
+                                {locations && locations.map((location, key) => (
+                                    <option key={key} value={location.id}>{location.name}</option>
+                                ))}
+                            </select>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                 </div>

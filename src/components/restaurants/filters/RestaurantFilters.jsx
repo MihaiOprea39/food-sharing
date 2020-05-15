@@ -5,31 +5,25 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Checkbox from '@material-ui/core/Checkbox';
-import {makeStyles} from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import './restaurant-filters.scss';
+import {useLocation} from "react-router-dom";
 
 const initialFilters = {
     rating: [],
-    location: null
+    location: ''
 };
 
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    },
-    selectEmpty: {
-        marginTop: theme.spacing(2),
-    },
-}));
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 export default function RestaurantFilters({locations, onFiltersChange}) {
     const [filters, setFilters] = useState(initialFilters);
-    const classes = useStyles();
+    const queryString = useQuery();
+
+    const setLocationFilterFromUrl = () => {
+        initialFilters.location = queryString.get('location') || '';
+    }
 
     const handleRatingChange = (event) => {
         const {target: {name: stars}} = event;
@@ -45,18 +39,19 @@ export default function RestaurantFilters({locations, onFiltersChange}) {
     };
 
     const handleLocationChange = (event) => {
-        console.log(event.target.value);
         event.persist();
 
         setFilters({
             ...filters,
-            location: event.target.value
+            location: event.target.value || ''
         });
     };
 
     useEffect(() => {
         onFiltersChange(filters);
     }, [filters]);
+
+    useEffect(setLocationFilterFromUrl, []);
 
     return (
         <aside className="col-12 col-lg-3 mt-3 mt-lg-0 z-2 order-lg-2 restaurant-filters-wrapper">
@@ -194,59 +189,14 @@ export default function RestaurantFilters({locations, onFiltersChange}) {
                             <Typography>Location</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
-                            <select className="custom-select custom-select" style={{marginTop: '-15px'}} onChange={handleLocationChange}>
-                                <option value={null}>None</option>
+                            <select className="custom-select custom-select" style={{marginTop: '-15px'}} value={filters.location} onChange={handleLocationChange}>
+                                <option value="">None</option>
                                 {locations && locations.map((location, key) => (
                                     <option key={key} value={location.id}>{location.name}</option>
                                 ))}
                             </select>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
-                </div>
-
-                <div className="card shadow-sm border-soft mt-4 p-3 restaurant-filter-card">
-                    <a href="#" data-target="#amenities-1"
-                       className="accordion-panel-header w-100 d-flex align-items-center justify-content-between"
-                       data-toggle="collapse" role="button" aria-expanded="false"
-                       aria-controls="amenities-1">
-                        <span className="icon-title h6 mb-0 font-weight-bold">Amenities</span>
-                        <span className="icon"><i className="fas fa-plus"></i></span>
-                    </a>
-                    <ul id="amenities-1"
-                        className="collapse list-group list-group list-group-flush">
-                        <li className="list-group-item border-0 py-1 px-0 d-flex align-items-center justify-content-between">
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input className="form-check-input" type="checkbox"/>
-                                    <span className="form-check-sign"></span> Kitchen
-                                </label>
-                            </div>
-                        </li>
-                        <li className="list-group-item border-0 py-1 px-0 d-flex align-items-center justify-content-between">
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input className="form-check-input" type="checkbox"/>
-                                    <span className="form-check-sign"></span> Conference Room
-                                </label>
-                            </div>
-                        </li>
-                        <li className="list-group-item border-0 py-1 px-0 d-flex align-items-center justify-content-between">
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input className="form-check-input" type="checkbox"/>
-                                    <span className="form-check-sign"></span> Coffee & Drinks
-                                </label>
-                            </div>
-                        </li>
-                        <li className="list-group-item border-0 py-1 px-0 d-flex align-items-center justify-content-between">
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input className="form-check-input" type="checkbox"/>
-                                    <span className="form-check-sign"></span> Bike Parking
-                                </label>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </aside>

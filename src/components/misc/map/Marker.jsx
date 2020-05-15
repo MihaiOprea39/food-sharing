@@ -3,25 +3,12 @@ import {InfoWindow, Marker} from "react-google-maps";
 import parse from "html-react-parser";
 import Checkbox from "@material-ui/core/Checkbox";
 import {useHistory} from "react-router-dom";
+import CalculateStarRating from "../../../services/calculate-star-rating";
 
 const defaultPosition = {lat: -34.397, lng: 150.644};
 
 export default function FoodShareMarker({marker, position = defaultPosition, selected, icon = null, togglePickup = false, onTogglePickup, onMarkerClick}) {
     const history = useHistory();
-
-    const calculateRating = (rating) => {
-        const rounded = Math.floor(rating);
-        const decimal = 5 - rounded;
-
-        let totalStars = '<i class="star fas fa-star text-warning"/>'.repeat(rounded);
-
-        if (decimal) {
-            const greyStars = ('<i class="star far fa-star text-gray"/>').repeat(decimal);
-            totalStars = totalStars.concat(greyStars);
-        }
-
-        return totalStars;
-    };
 
     const handleScheduleInteract = (id) => {
         history.push(`/pick-up?restaurant=${id}`);
@@ -64,7 +51,7 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                             <li>
                                 <div><span className="marker-field meta-property">Rating</span>
                                     <span
-                                        className="marker-field meta-value">{parse(calculateRating(Number(marker.rating)))}
+                                        className="marker-field meta-value">{parse(CalculateStarRating(Number(marker.rating)))}
                                     </span>
                                 </div>
                             </li>

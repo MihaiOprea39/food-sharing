@@ -11,7 +11,7 @@ import FoodShareDatePicker from "../../misc/DatePicker";
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import format from 'date-fns/format';
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {useLocation} from "react-router-dom";
 
@@ -20,7 +20,8 @@ const DEFAULT_LIMIT = 2;
 const initialFilters = {
     search: '',
     date: null,
-    rating: []
+    rating: [],
+    location: ''
 };
 
 function useQuery() {
@@ -35,7 +36,10 @@ export default function RestaurantsList() {
     const [isFetching, setIsFetching] = useState(false);
     const [isDoneFetching, setIsDoneFetching] = useState(false);
     const [locations, setLocations] = useState([]);
+    const [location, setLocation] = useState('');
     const queryString = useQuery();
+    const locationQueryString = queryString.get('location');
+    const history = useHistory();
 
     const getNumberOfRestaurants = () => {
         firebase
@@ -45,10 +49,16 @@ export default function RestaurantsList() {
             .then(snapshot => setRestaurantsCount(snapshot.size));
     };
 
+    const getMatchingLocation = (locationsList, locationId = locationQueryString) => {
+        const match = locationsList.find(({id}) => id === Number(locationId));
+
+        return (match && match.name) || '';
+    }
+
     const fetchInitialRestaurants = async () => {
         setIsFetching(true);
 
-        const currentLocation = Number(queryString.get('location'));
+        const currentLocation = Number(locationQueryString);
         let initialQuery = await firebase
             .firestore().collection('restaurants')
             .orderBy('name', 'asc')
@@ -74,7 +84,9 @@ export default function RestaurantsList() {
             .get()
             .then(querySnapshot => {
                 const list = querySnapshot.docs.map(doc => doc.data());
+                const matchingLocation = getMatchingLocation(list);
 
+                setLocation(matchingLocation);
                 setLocations(list);
             })
     };
@@ -86,8 +98,7 @@ export default function RestaurantsList() {
 
         setIsFetching(true);
 
-
-        const currentLocation = Number(queryString.get('location'));
+        const currentLocation = Number(locationQueryString);
         let additionalQuery = await firebase
             .firestore().collection('restaurants')
             .orderBy('name', 'asc')
@@ -188,7 +199,7 @@ export default function RestaurantsList() {
     };
 
     const onSearchSubmit = async () => {
-        const {search, date, rating} = filters;
+        const {search, date, rating, location} = filters;
 
         let searchQuery = firebase
             .firestore()
@@ -210,6 +221,15 @@ export default function RestaurantsList() {
             searchQuery = searchQuery.where('rating', 'in', rating);
         }
 
+        if (location) {
+            searchQuery = searchQuery.where('location', '==', Number(location));
+            setLocation(getMatchingLocation(locations, location));
+            history.replace(`/restaurants?location=${location}`);
+        } else {
+            history.replace('/restaurants');
+            setLocation('');
+        }
+
         searchQuery = await searchQuery.get();
         const documentData = searchQuery.docs.map(document => document.data());
 
@@ -223,7 +243,7 @@ export default function RestaurantsList() {
         })();
         getNumberOfRestaurants();
         // updateCustomFields();
-        getAllLocations()
+        getAllLocations();
     }, []);
 
     useEffect(() => {
@@ -238,7 +258,7 @@ export default function RestaurantsList() {
     return (
         <main className="restaurant-list-main">
             <Banner
-                title="Restaurant listings"
+                title={`Restaurant listings ${location ? `in ${location}` : '' }`}
                 subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
                  the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
                  that set this restaurant apart from others. A location tool for simplicity is also available."
@@ -270,7 +290,9 @@ export default function RestaurantsList() {
                     </div>
                     <div className="row">
 
-                        <RestaurantFilters locations={locations} onFiltersChange={onSidebarFiltersChange}/>
+                        <RestaurantFilters locations={locations}
+                                           onFiltersChange={onSidebarFiltersChange}
+                        />
 
                         <div className="col-md-12 col-lg-9 order-lg-1 restaurant-list-wrapper">
                             <div

@@ -2,6 +2,7 @@ import React, {useState, useRef, Fragment} from 'react';
 import parse from "html-react-parser";
 import FoodShareStars from "./Stars";
 import format from "date-fns/format";
+import CalculateStarRating from "../../services/calculate-star-rating";
 
 const defaultReview = {
     comment: '',
@@ -13,20 +14,6 @@ const defaultReview = {
 export default function ReviewsComponent({reviews, addReview}) {
     const [newReview, setNewReview] = useState(defaultReview);
     const starsRef = useRef();
-
-    const calculateRating = (rating) => {
-        const rounded = Math.floor(rating);
-        const decimal = 5 - rounded;
-
-        let totalStars = '<i class="star fas fa-star text-warning"/>'.repeat(rounded);
-
-        if (decimal) {
-            const greyStars = ('<i class="star far fa-star text-gray"/>').repeat(decimal);
-            totalStars = totalStars.concat(greyStars);
-        }
-
-        return totalStars;
-    };
 
     const onAddReview = () => {
         addReview(newReview);
@@ -90,7 +77,7 @@ export default function ReviewsComponent({reviews, addReview}) {
                                    className="font-weight-normal font-small text-gray-800">{review.name}</a>
                                 <span className="ml-2 font-small d-none d-md-inline">{review.timestamp}</span></div>
                             <div className="d-flex justify-content-end align-items-center">
-                                {parse(calculateRating(Number(review.rating)))}
+                                {parse(CalculateStarRating(Number(review.rating)))}
                             </div>
                         </div>
                         <p className="m-0">{review.comment}</p>

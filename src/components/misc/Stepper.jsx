@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
     },
     button: {
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(4),
         marginRight: theme.spacing(1),
     },
     actionsContainer: {
@@ -28,7 +28,7 @@ function getSteps() {
     return ['Select pickup date and location', 'Create an ad group', 'Create an ad'];
 }
 
-export default function VerticalLinearStepper({activeStep = 0, stepOneContent, stepTwoContent, stepThreeContent, onStepChange}) {
+export default function VerticalLinearStepper({activeStep = 0, stepOneContent, stepTwoContent, canProceedToStepTwo = false, stepThreeContent, canProceedToStepThree, onStepChange}) {
     const classes = useStyles();
     const steps = getSteps();
 
@@ -57,6 +57,16 @@ export default function VerticalLinearStepper({activeStep = 0, stepOneContent, s
         onStepChange(0);
     };
 
+    const canProceedToNextStep = () => {
+        if (activeStep === 0) {
+            return canProceedToStepTwo;
+        }
+
+        if (activeStep === 1) {
+            return canProceedToStepThree;
+        }
+    }
+
     return (
         <div className={classes.root}>
             <Stepper activeStep={activeStep} orientation="vertical">
@@ -75,12 +85,13 @@ export default function VerticalLinearStepper({activeStep = 0, stepOneContent, s
                                         Back
                                     </Button>
                                     <Button
+                                        disabled={!canProceedToNextStep()}
                                         variant="contained"
                                         color="primary"
                                         onClick={handleNext}
                                         className={classes.button}
                                     >
-                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next step'}
                                     </Button>
                                 </div>
                             </div>

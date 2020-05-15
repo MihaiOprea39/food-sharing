@@ -68,12 +68,16 @@ export default function PickUp() {
     const handleReadyForPickupChange = (event, restaurantId) => {
         event.persist();
 
+        console.log('here', event.target.checked);
         const updatedRestaurants = restaurants.map(restaurant => ({
             ...restaurant,
             readyForPickup: restaurant.id === restaurantId ? event.target.checked : false
         }));
+        const matchingRestaurant = updatedRestaurants.find(({id}) => Number(restaurantId));
 
         setRestaurants(updatedRestaurants);
+        // setPickupRestaurant(matchingRestaurant.readyForPickup ? matchingRestaurant : null);
+        // ????
     };
 
     const onDateChange = (value) => {
@@ -91,12 +95,15 @@ export default function PickUp() {
     }, []);
 
 
-    console.log(pickupRestaurant, pickupDate);
+    console.log(pickupRestaurant);
 
     const getStepOne = () => {
         return (
-            <div>
-                <FoodShareDatePicker placeholder="Available date" value={pickupDate} onChange={onDateChange}/>
+            <div className="pickup-step-one-container">
+                <div className="d-flex align-items-center mb-4">
+                    <h5 style={{marginBottom: '-9px'}} className="mr-4">Desired date</h5>
+                    <FoodShareDatePicker placeholder="Available on" value={pickupDate} onChange={onDateChange}/>
+                </div>
                 <FoodShareMap
                     googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
                     loadingElement={<div style={{height: `100%`}}/>}
@@ -112,98 +119,25 @@ export default function PickUp() {
 
     const getStepTwo = () => {
         return (
-            <div className="card shadow-soft border p-4 mb-4">
+            <div className="p-2">
                 <h5 className="mb-4">General information</h5>
                 <div className="form-group focused">
-                    <label htmlFor="firstname">Title</label>
+                    <label htmlFor="firstname">Name</label>
                     <input type="text" value="L'atelier Vancouver Coworking" className="form-control shadow-soft"
-                           id="firstname" placeholder="Space title" required=""/>
+                           id="firstname" placeholder="Space title" readOnly/>
                 </div>
                 <div className="form-group focused">
                     <label htmlFor="location">Location</label>
                     <input type="text" value="26, Vancouver, BC, Canada - 324578" className="form-control shadow-soft"
                            id="location" placeholder="Search for location" required=""/>
                 </div>
-                <div className="row">
-                    <div className="col-12 col-lg-6">
-                        <div className="form-group">
-                            <label htmlFor="currency">Currency</label>
-                            <select className="custom-select" id="currency">
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="GBP">GBP</option>
-                                <option value="AUD">AUD</option>
-                                <option value="CNY">CNY</option>
-                                <option value="JPY">JPY</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-12 col-lg-6">
-                        <div className="form-group focused">
-                            <label htmlFor="price">Monthly price</label>
-                            <input type="number" value="250" className="form-control shadow-soft" id="price"
-                                   placeholder="Ex. 1200" required=""/>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12 col-lg-6">
-                        <div className="form-group">
-                            <label htmlFor="term">Minimum term</label>
-                            <select className="custom-select" id="term">
-                                <option value="d">day</option>
-                                <option value="m">month</option>
-                                <option value="y" selected="">year</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-12 col-lg-6">
-                        <div className="form-group focused">
-                            <label htmlFor="term_amount">Amount</label>
-                            <input type="number" value="1" className="form-control shadow-soft" id="term_amount"
-                                   placeholder="Ex. 20" required=""/>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12 col-lg-4">
-                        <div className="form-group focused">
-                            <label htmlFor="sqfeet">Square feet</label>
-                            <input type="number" value="180" className="form-control shadow-soft" id="sqfeet"
-                                   placeholder="Ex. 80" required=""/>
-                        </div>
-                    </div>
-                    <div className="col-12 col-lg-4">
-                        <div className="form-group focused">
-                            <label htmlFor="people">People capacity</label>
-                            <input type="number" value="15" className="form-control shadow-soft" id="people"
-                                   placeholder="Ex. 20" required=""/>
-                        </div>
-                    </div>
-                    <div className="col-12 col-lg-4">
-                        <div className="form-group">
-                            <label htmlFor="type">Space type</label>
-                            <select className="custom-select" id="type">
-                                <option value="meeting" selected="">meeting</option>
-                                <option value="work">work</option>
-                                <option value="events">events</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
                 <div className="form-group focused">
                     <label htmlFor="description">Description</label>
                     <textarea rows="10" className="form-control shadow-soft" id="description" placeholder="Description"
-                              required="">L'atelier is the brainchild of 3 innovative guys that want to create a working hub for the local community. The plan is to offer a cool place to hang out with other creative souls and let the brainwaves go berserk.
-
-The guys were the group behind the Startup Weekend Vancouver, Startup Pirates Vancouver and Startup Coffee Vancouver, so they are no fools and have plenty of experience in startups and community growth. This project is another notch into creating Vancouver as a regional startup hub.
-
-Cowork Vancouver is aiming to attract the techies, the freelance developers or anyone wishing to get involved in the startup scene - really there are no exclusions of bodies who may want a desk - the founders just want a community of entrepreneurs and geeks to mingle with.</textarea>
-                </div>
-                <div className="row">
-                    <div className="col">
-                        <button className="btn btn-primary btn-dark mt-2 animate-up-2" type="submit">Update</button>
-                    </div>
+                              onChange={() => 5}
+                              value="L'atelier is the brainchild of 3 innovative guys that want to create a working hub for the local community.
+                               The plan is to offer a cool place to hang out with other creative souls and let the brainwaves go berserk.">
+                    </textarea>
                 </div>
             </div>
         );
@@ -231,7 +165,9 @@ Cowork Vancouver is aiming to attract the techies, the freelance developers or a
                                 stepOneContent={getStepOne()}
                                 stepTwoContent={getStepTwo()}
                                 stepThreeContent={<div>TEST 3 TEST</div>}
-                                onStepChange={handleStepChange}/>
+                                canProceedToStepTwo={!!(pickupDate && pickupRestaurant)}
+                                onStepChange={handleStepChange}
+                            />
                         </div>
                     </div>
                 </div>

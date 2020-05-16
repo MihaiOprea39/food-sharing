@@ -1,7 +1,7 @@
 import React, {useEffect, useState, Fragment} from 'react';
 import FoodShareStepper from "./reusable/Stepper";
 import Banner from "./reusable/banner/Banner";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {useLocation} from "react-router-dom";
 import firebase from "../firebase";
@@ -10,6 +10,8 @@ import FoodShareMap from "./reusable/map/Map";
 import FoodShareDatePicker from "./reusable/DatePicker";
 import CalculateStarRating from "../services/calculate-star-rating";
 import parse from "html-react-parser";
+import FoodShareDialog from "./reusable/dialog/Dialog";
+import FoodShareToast from "./reusable/Toast";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -19,13 +21,36 @@ export default function PickUp() {
     const [activeStep, setActiveStep] = useState(0);
     const [pickupDate, setPickupDate] = useState(null);
     const [pickupRestaurant, setPickupRestaurant] = useState(null);
-    const [pickupComment, setPickupComment] = useState('');
+    const [pickupMessage, setPickupMessage] = useState('');
     const [restaurants, setRestaurants] = useState([]);
+    const [isMessageDialogVisible, setIsMessageDialogVisible] = useState(false);
     const query = useQuery();
+    const history = useHistory();
 
     const handleStepChange = (step) => {
-        setActiveStep(step);
+        if (step === 2 && isUsingDefaultMessage()) {
+            setIsMessageDialogVisible(true);
+        } else {
+            setActiveStep(step);
+        }
     };
+
+    const handleStepReset = () => {
+        setPickupMessage('');
+        setPickupRestaurant(null);
+        setPickupDate(null);
+        resetRestaurants();
+        history.replace('/pick-up');
+    }
+
+    const resetRestaurants = () => {
+        const resettedRestaurants = restaurants.map(rest => ({
+            ...rest,
+            readyForPickup: false
+        }));
+
+        setRestaurants(resettedRestaurants);
+    }
 
     const handleQueryStrings = async () => {
         const date = query.get('date');
@@ -105,13 +130,27 @@ export default function PickUp() {
     const onPickupCommentChange = (event) => {
         event.persist();
 
-        setPickupComment(event.target.value);
+        setPickupMessage(event.target.value);
     }
 
     const onDateChange = (value) => {
         const date = value ? format(value, 'MMM dd, yyyy') : null;
 
         setPickupDate(date);
+    }
+
+    const handleMessageDialogConfirm = () => {
+        setActiveStep(2);
+        setPickupMessage(DEFAULT_MESSAGE);
+        handleMessageDialogClose();
+    }
+
+    const handleMessageDialogClose = () => {
+        setIsMessageDialogVisible(false);
+    }
+
+    const isUsingDefaultMessage = () => {
+        return pickupMessage === '' || pickupMessage === DEFAULT_MESSAGE;
     }
 
     useEffect(() => window.scrollTo(0, 0), []);
@@ -125,8 +164,6 @@ export default function PickUp() {
     const DEFAULT_MESSAGE = `Greetings, \n
 This is PLACEHOLDER contacting you. We've come across one of your listings and noticed that the ${pickupRestaurant && pickupRestaurant.name} restaurant is available for pick-up on ${pickupDate && pickupDate}. If the date works for you, we'd very much like to come collect any food you can dispose of. Don't worry about the logistics, we need merely only your approval and we'll handle the rest!`
 
-
-    console.log(pickupRestaurant);
 
     const getStepOne = () => {
         return (
@@ -152,39 +189,12 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
         return (
             <Fragment>
                 {pickupRestaurant && <div className="p-2">
-                    <h5 className="mb-4">General information</h5>
-                    <div className="form-group focused">
-                        <label htmlFor="firstname">Name</label>
-                        <input type="text" value={pickupRestaurant.name} className="form-control shadow-soft"
-                               id="firstname" placeholder="Space title" readOnly/>
-                    </div>
-                    <div className="row">
-                        <div className="col-12 col-lg-6">
-                            <div className="form-group focused">
-                                <label htmlFor="location">Address</label>
-                                <input type="text" value={pickupRestaurant.address} className="form-control shadow-soft"
-                                       id="address" readOnly/>
-                            </div>
-                        </div>
-                        <div className="col-12 col-lg-6">
-                            <div className="form-group focused">
-                                <label htmlFor="location">Location</label>
-                                <input type="text" value={pickupRestaurant.location.name}
-                                       className="form-control shadow-soft"
-                                       id="location" readOnly/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="form-group focused">
-                        <span className="d-block mb-2 font-small">Rating</span>
-                        {parse(CalculateStarRating(pickupRestaurant.rating))}
-                    </div>
                     <div className="form-group focused">
                         <label htmlFor="description">Message</label>
                         <textarea rows="10" className="form-control shadow-soft" id="description"
                                   placeholder={DEFAULT_MESSAGE}
                                   onChange={onPickupCommentChange}
-                                  value={pickupComment}>
+                                  value={pickupMessage}>
                     </textarea>
                     </div>
                 </div>
@@ -193,8 +203,87 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
         );
     };
 
+    const getStepThree = () => {
+        return (
+            <Fragment>
+                {(pickupRestaurant && pickupRestaurant.location && pickupDate && pickupMessage) && (
+                    <div className="row mt-2">
+
+                        <div className="col-lg-4">
+                            <div className="card shadow-soft border p-4 mb-4">
+                                <div className="form-group focused">
+                                    <label htmlFor="firstname">Name</label>
+                                    <input type="text" value={pickupRestaurant.name}
+                                           className="form-control shadow-soft"
+                                           id="firstname" placeholder="Space title" readOnly/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-4">
+                            <div className="card shadow-soft border p-4 mb-4">
+                                <div className="form-group focused">
+                                    <label htmlFor="location">Address</label>
+                                    <input type="text" value={pickupRestaurant.address}
+                                           className="form-control shadow-soft"
+                                           id="address" readOnly/>
+                                </div>
+                                <div className="form-group focused">
+                                    <label htmlFor="location">Address</label>
+                                    <input type="text" value={pickupRestaurant.address}
+                                           className="form-control shadow-soft"
+                                           id="address" readOnly/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-4">
+                            <div className="card shadow-soft border p-4 mb-4">
+                                <div className="form-group focused">
+                                    <label htmlFor="location">Location</label>
+                                    <input type="text" value={pickupRestaurant.location.name}
+                                           className="form-control shadow-soft"
+                                           id="location" readOnly/>
+                                </div>
+                                <div className="form-group focused">
+                                    <span className="d-block mb-2 font-small">Rating</span>
+                                    {parse(CalculateStarRating(pickupRestaurant.rating))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-12">
+                            <div className="card shadow-soft border p-4 mb-4">
+                                <textarea rows="10" className="form-control shadow-soft"
+                                          readOnly
+                                          value={pickupMessage}
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+                )}
+            </Fragment>
+        );
+    };
+
     return (
         <main>
+            <FoodShareToast message="Your pick-up request has been successfully registered!"/>
+            <FoodShareDialog
+                title="A notice regarding your message"
+                visible={isMessageDialogVisible}
+                onConfirm={handleMessageDialogConfirm}
+                onClose={handleMessageDialogClose}
+            >
+                <div>
+                    <p>You are about to submit a Pick-Up request with the default system message.
+                        Some restaurants might appreciate if you spent a little more time adding a
+                        personal flavor to your request.
+                    </p>
+                    <p className="mb-2">Are you certain you wish to proceed?</p>
+                </div>
+            </FoodShareDialog>
             <Banner
                 subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
                  the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
@@ -206,7 +295,7 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
                 <Typography color="textPrimary">Schedule Pick-Up</Typography>
             </Banner>
 
-            <div className="section pt-5">
+            <div className="section pt-5" style={{backgroundColor: '#fefcff'}}>
                 <div className="container">
                     <div className="row">
                         <div className="col-12 mt-3 ml-lg-0">
@@ -214,9 +303,11 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
                                 activeStep={activeStep}
                                 stepOneContent={getStepOne()}
                                 stepTwoContent={getStepTwo()}
-                                stepThreeContent={<div>TEST 3 TEST</div>}
+                                stepThreeContent={getStepThree()}
                                 canProceedToStepTwo={!!(pickupDate && pickupRestaurant)}
+                                canProceedToStepThree
                                 onStepChange={handleStepChange}
+                                onReset={handleStepReset}
                             />
                         </div>
                     </div>

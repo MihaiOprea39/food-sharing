@@ -13,6 +13,14 @@
   pointer-events: none;
 }
 
+.font-weight-400 {
+  font-weight: 400 !important;
+}
+
+.min-h-350 {
+  min-height: 350px;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

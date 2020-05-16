@@ -208,59 +208,55 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
             <Fragment>
                 {(pickupRestaurant && pickupRestaurant.location && pickupDate && pickupMessage) && (
                     <div className="row mt-2">
-
-                        <div className="col-lg-4">
-                            <div className="card shadow-soft border p-4 mb-4">
-                                <div className="form-group focused">
-                                    <label htmlFor="firstname">Name</label>
-                                    <input type="text" value={pickupRestaurant.name}
-                                           className="form-control shadow-soft"
-                                           id="firstname" placeholder="Space title" readOnly/>
+                        <div className="col-12 mb-4 col-lg-4">
+                            <div className="pricing-card">
+                                <div className="card shadow-sm border-soft p-4 min-h-350">
+                                    <header className="card-header border-bottom bg-white text-center">
+                                        <h3 className="font-weight-normal text-gray">Details</h3>
+                                    </header>
+                                    <div className="card-body pl-0 pb-0">
+                                        <div className="d-flex">
+                                            <p className="font-weight-400">{pickupRestaurant.name}</p>
+                                        </div>
+                                        <div className="d-flex">
+                                            <p className="font-weight-400">{pickupRestaurant.address}</p>
+                                        </div>
+                                        <div className="d-flex">
+                                            <p className="font-weight-400">{pickupRestaurant.location && pickupRestaurant.location.name}</p>
+                                        </div>
+                                        <div className="d-flex">
+                                            <p className="font-weight-400">{parse(CalculateStarRating(pickupRestaurant.rating))}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div className="col-lg-4">
-                            <div className="card shadow-soft border p-4 mb-4">
-                                <div className="form-group focused">
-                                    <label htmlFor="location">Address</label>
-                                    <input type="text" value={pickupRestaurant.address}
-                                           className="form-control shadow-soft"
-                                           id="address" readOnly/>
-                                </div>
-                                <div className="form-group focused">
-                                    <label htmlFor="location">Address</label>
-                                    <input type="text" value={pickupRestaurant.address}
-                                           className="form-control shadow-soft"
-                                           id="address" readOnly/>
+                        <div className="col-12 mb-4 col-lg-4">
+                            <div className="pricing-card">
+                                <div className="card shadow-sm border-soft p-4 min-h-350">
+                                    <header className="card-header border-bottom bg-white text-center">
+                                        <h3 className="font-weight-normal text-gray">Message</h3>
+                                    </header>
+                                    <div className="card-body pl-0 pb-0">
+                                        <div className="d-flex">
+                                            <p className="font-weight-400">{parse(pickupMessage)}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div className="col-lg-4">
-                            <div className="card shadow-soft border p-4 mb-4">
-                                <div className="form-group focused">
-                                    <label htmlFor="location">Location</label>
-                                    <input type="text" value={pickupRestaurant.location.name}
-                                           className="form-control shadow-soft"
-                                           id="location" readOnly/>
-                                </div>
-                                <div className="form-group focused">
-                                    <span className="d-block mb-2 font-small">Rating</span>
-                                    {parse(CalculateStarRating(pickupRestaurant.rating))}
+                        <div className="col-12 mb-4 col-lg-4">
+                            <div className="pricing-card">
+                                <div className="card shadow-sm border-soft p-4 min-h-350">
+                                    <header className="card-header border-bottom bg-white text-center">
+                                        <h3 className="font-weight-normal text-gray">Owner</h3>
+                                    </header>
+                                    <div className="card-body pl-0 pb-0">
+                                        PLACEHOLDER
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div className="col-lg-12">
-                            <div className="card shadow-soft border p-4 mb-4">
-                                <textarea rows="10" className="form-control shadow-soft"
-                                          readOnly
-                                          value={pickupMessage}
-                                />
-                            </div>
-                        </div>
-
                     </div>
                 )}
             </Fragment>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Banner from "../misc/banner/Banner";
+import Banner from "../reusable/banner/Banner";
 import Recommended from "../recommended/Recommended";
 import firebase from "../../firebase";
 import {Link, useParams} from "react-router-dom";
@@ -7,7 +7,7 @@ import ReviewsComponent from "../reviews/Reviews";
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import './restaurant.scss';
 import Typography from "@material-ui/core/Typography";
-import FoodShareMap from "../misc/map/Map";
+import FoodShareMap from "../reusable/map/Map";
 
 export default function Restaurant() {
     const [generatedId, setGeneratedId] = useState('');

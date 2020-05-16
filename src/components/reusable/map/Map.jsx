@@ -41,7 +41,7 @@ function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center, t
                         lng: marker.longitude
                     }}
                     onMarkerClick={(selectedMarker) => setSelectedMarker(selectedMarker)}
-                    onTogglePickup={(event, markerId) => onTogglePickup(event, markerId)}
+                    onTogglePickup={(event, marker) => onTogglePickup(event, marker)}
                 />
             ))}
         </GoogleMap>

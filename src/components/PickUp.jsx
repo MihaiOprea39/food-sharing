@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import FoodShareStepper from "./misc/Stepper";
-import Banner from "./misc/banner/Banner";
+import React, {useEffect, useState, Fragment} from 'react';
+import FoodShareStepper from "./reusable/Stepper";
+import Banner from "./reusable/banner/Banner";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {useLocation} from "react-router-dom";
 import firebase from "../firebase";
 import format from "date-fns/format";
-import FoodShareMap from "./misc/map/Map";
-import FoodShareDatePicker from "./misc/DatePicker";
+import FoodShareMap from "./reusable/map/Map";
+import FoodShareDatePicker from "./reusable/DatePicker";
+import CalculateStarRating from "../services/calculate-star-rating";
+import parse from "html-react-parser";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -17,6 +19,7 @@ export default function PickUp() {
     const [activeStep, setActiveStep] = useState(0);
     const [pickupDate, setPickupDate] = useState(null);
     const [pickupRestaurant, setPickupRestaurant] = useState(null);
+    const [pickupComment, setPickupComment] = useState('');
     const [restaurants, setRestaurants] = useState([]);
     const query = useQuery();
 
@@ -50,11 +53,25 @@ export default function PickUp() {
             .collection('restaurants')
             .where('id', '==', Number(restaurantId))
             .get()
-            .then(snapshot => {
+            .then(async snapshot => {
                 const data = snapshot.docs.map(document => document.data());
+                const location = await getMatchingRestaurantLocation((data[0] && data[0].location) || null);
 
-                setPickupRestaurant(data[0] || null);
+                setPickupRestaurant({
+                    ...data[0],
+                    ...(location && {
+                        location: location[0]
+                    })
+                });
             })
+    };
+
+    const getMatchingRestaurantLocation = (restaurantLocation) => {
+        return firebase.firestore()
+            .collection('locations')
+            .where('id', '==', Number(restaurantLocation))
+            .get()
+            .then(snapshot => snapshot.docs.map(document => document.data()))
     };
 
     const getRestaurants = () => {
@@ -65,20 +82,31 @@ export default function PickUp() {
             .then(snapshot => snapshot.docs.map(document => document.data()));
     };
 
-    const handleReadyForPickupChange = (event, restaurantId) => {
+    const handleReadyForPickupChange = async (event, restaurant) => {
+        const {id: restaurantId} = restaurant;
+
         event.persist();
 
-        console.log('here', event.target.checked);
         const updatedRestaurants = restaurants.map(restaurant => ({
             ...restaurant,
             readyForPickup: restaurant.id === restaurantId ? event.target.checked : false
         }));
-        const matchingRestaurant = updatedRestaurants.find(({id}) => Number(restaurantId));
-
+        const location = await getMatchingRestaurantLocation(restaurant.location || null);
+        const updatedRestaurant = {
+            ...restaurant,
+            ...(location && {
+                location: location[0]
+            })
+        }
         setRestaurants(updatedRestaurants);
-        // setPickupRestaurant(matchingRestaurant.readyForPickup ? matchingRestaurant : null);
-        // ????
+        setPickupRestaurant(event.target.checked ? updatedRestaurant : null);
     };
+
+    const onPickupCommentChange = (event) => {
+        event.persist();
+
+        setPickupComment(event.target.value);
+    }
 
     const onDateChange = (value) => {
         const date = value ? format(value, 'MMM dd, yyyy') : null;
@@ -93,6 +121,9 @@ export default function PickUp() {
             await handleQueryStrings();
         })();
     }, []);
+
+    const DEFAULT_MESSAGE = `Greetings, \n
+This is PLACEHOLDER contacting you. We've come across one of your listings and noticed that the ${pickupRestaurant && pickupRestaurant.name} restaurant is available for pick-up on ${pickupDate && pickupDate}. If the date works for you, we'd very much like to come collect any food you can dispose of. Don't worry about the logistics, we need merely only your approval and we'll handle the rest!`
 
 
     console.log(pickupRestaurant);
@@ -119,27 +150,46 @@ export default function PickUp() {
 
     const getStepTwo = () => {
         return (
-            <div className="p-2">
-                <h5 className="mb-4">General information</h5>
-                <div className="form-group focused">
-                    <label htmlFor="firstname">Name</label>
-                    <input type="text" value="L'atelier Vancouver Coworking" className="form-control shadow-soft"
-                           id="firstname" placeholder="Space title" readOnly/>
-                </div>
-                <div className="form-group focused">
-                    <label htmlFor="location">Location</label>
-                    <input type="text" value="26, Vancouver, BC, Canada - 324578" className="form-control shadow-soft"
-                           id="location" placeholder="Search for location" required=""/>
-                </div>
-                <div className="form-group focused">
-                    <label htmlFor="description">Description</label>
-                    <textarea rows="10" className="form-control shadow-soft" id="description" placeholder="Description"
-                              onChange={() => 5}
-                              value="L'atelier is the brainchild of 3 innovative guys that want to create a working hub for the local community.
-                               The plan is to offer a cool place to hang out with other creative souls and let the brainwaves go berserk.">
+            <Fragment>
+                {pickupRestaurant && <div className="p-2">
+                    <h5 className="mb-4">General information</h5>
+                    <div className="form-group focused">
+                        <label htmlFor="firstname">Name</label>
+                        <input type="text" value={pickupRestaurant.name} className="form-control shadow-soft"
+                               id="firstname" placeholder="Space title" readOnly/>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 col-lg-6">
+                            <div className="form-group focused">
+                                <label htmlFor="location">Address</label>
+                                <input type="text" value={pickupRestaurant.address} className="form-control shadow-soft"
+                                       id="address" readOnly/>
+                            </div>
+                        </div>
+                        <div className="col-12 col-lg-6">
+                            <div className="form-group focused">
+                                <label htmlFor="location">Location</label>
+                                <input type="text" value={pickupRestaurant.location.name}
+                                       className="form-control shadow-soft"
+                                       id="location" readOnly/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="form-group focused">
+                        <span className="d-block mb-2 font-small">Rating</span>
+                        {parse(CalculateStarRating(pickupRestaurant.rating))}
+                    </div>
+                    <div className="form-group focused">
+                        <label htmlFor="description">Message</label>
+                        <textarea rows="10" className="form-control shadow-soft" id="description"
+                                  placeholder={DEFAULT_MESSAGE}
+                                  onChange={onPickupCommentChange}
+                                  value={pickupComment}>
                     </textarea>
+                    </div>
                 </div>
-            </div>
+                }
+            </Fragment>
         );
     };
 

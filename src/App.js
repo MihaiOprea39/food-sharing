@@ -9,7 +9,7 @@ import 'prismjs/themes/prism.css';
 // Global styling
 import './scss/spaces.scss';
 
-// import './misc/scss/global.scss';
+// import './reusable/scss/global.scss';
 
 import {
     BrowserRouter as Router,

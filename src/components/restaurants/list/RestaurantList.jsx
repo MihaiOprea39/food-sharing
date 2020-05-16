@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Banner from "../../misc/banner/Banner";
+import Banner from "../../reusable/banner/Banner";
 import firebase from "../../../firebase";
 import RestaurantFilters from "../filters/RestaurantFilters";
 import {Waypoint} from 'react-waypoint';
@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import './restaurant-list.scss'
 import RestaurantListItem from "./list-item/RestaurantListItem";
 import SearchIcon from '@material-ui/icons/Search';
-import FoodShareDatePicker from "../../misc/DatePicker";
+import FoodShareDatePicker from "../../reusable/DatePicker";
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import format from 'date-fns/format';

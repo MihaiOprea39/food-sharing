@@ -59,7 +59,7 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                                 <li>
                                     <div><span className="marker-field meta-property">Pick-up</span>
                                         <Checkbox
-                                            onChange={(event) => onTogglePickup(event, marker.id)}
+                                            onChange={(event) => onTogglePickup(event, marker)}
                                             checked={marker.readyForPickup}
                                             color="primary"
                                         />

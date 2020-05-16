@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import FoodShareDatePicker from "../misc/DatePicker";
+import FoodShareDatePicker from "../reusable/DatePicker";
 import './schedule-filters.scss';
 import format from "date-fns/format";
 import firebase from "../../firebase";

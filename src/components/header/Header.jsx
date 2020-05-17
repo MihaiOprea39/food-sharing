@@ -1,10 +1,16 @@
-import {Link} from "react-router-dom";
-import React, {useEffect, useRef, useState} from "react";
+import {Link, Redirect} from "react-router-dom";
+import React, {useContext} from "react";
 import './header.scss';
-
-// https://codedaily.io/tutorials/60/Create-a-useMousePosition-Hook-with-useEffect-and-useState-in-React
+import firebase from "../../firebase";
+import {AuthContext} from "../../Auth";
 
 export default function Header() {
+    const {currentUser} = useContext(AuthContext);
+
+    if (!currentUser) {
+        return <></>;
+    }
+
     return (
         <header className="header-global">
             <nav id="navbar-main"
@@ -26,7 +32,7 @@ export default function Header() {
                                     <Link to="#navbar_global" className="fas fa-times" data-toggle="collapse"
                                           data-target="#navbar_global" aria-controls="navbar_global"
                                           aria-expanded="false"
-                                          aria-label="Toggle navigation"></Link>
+                                          aria-label="Toggle navigation"/>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +46,7 @@ export default function Header() {
                                 <Link to="#" className="nav-link" data-toggle="dropdown">
 
                                     <span className="nav-link-inner-text">Pages</span><i
-                                    className="fas fa-angle-down nav-link-arrow"></i>
+                                    className="fas fa-angle-down nav-link-arrow"/>
                                 </Link>
                                 <ul className="dropdown-menu">
                                     <li className="nav-item">
@@ -72,7 +78,7 @@ export default function Header() {
                                         <Link to="#"
                                               className="dropdown-toggle dropdown-item d-flex justify-content-between align-items-center"
                                               aria-haspopup="true" aria-expanded="false">My account <i
-                                            className="fas fa-angle-right nav-link-arrow"></i></Link>
+                                            className="fas fa-angle-right nav-link-arrow"/></Link>
                                         <ul className="dropdown-menu">
                                             <li>
                                                 <Link to="./html/pages/my-account.html" className="dropdown-item">My
@@ -158,21 +164,13 @@ export default function Header() {
                         </ul>
                     </div>
                     <div className="d-none d-lg-block">
-                        <Link to="./html/pages/sign-in.html"
-                              className="btn btn-sm btn-primary animate-up-1 ml-3">Login</Link>
-                        <Link to="./html/pages/sign-up.html" className="btn btn-sm btn-white animate-up-1 ml-3">Sign
-                            up</Link>
-                        <Link to="./html/pages/submit-space.html" className="btn btn-sm btn-outline-white ml-3"><i
-                            className="fas fa-plus mr-2"></i>List a Space</Link>
+                        <span className="btn btn-sm btn-white animate-up-1 ml-3 cursor-pointer" onClick={() => firebase.auth().signOut()}>Sign out</span>
                     </div>
                     <div className="d-flex d-lg-none align-items-center">
-                        <Link to="./html/pages/sign-in.html"
-                              className="btn btn-sm btn-primary animate-up-1 ml-3">Login</Link>
-                        <Link to="./html/pages/sign-up.html" className="btn btn-sm btn-white animate-up-1 ml-3">Sign
-                            up</Link>
+                        <span className="btn btn-sm btn-white animate-up-1 ml-3 cursor-pointer" onClick={() => firebase.auth().signOut()}>Sign out</span>
                         <button className="navbar-toggler ml-2" type="button" data-toggle="collapse"
                                 data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false"
-                                aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
+                                aria-label="Toggle navigation"><span className="navbar-toggler-icon"/></button>
                     </div>
                 </div>
             </nav>

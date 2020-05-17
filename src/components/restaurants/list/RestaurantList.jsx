@@ -14,8 +14,9 @@ import format from 'date-fns/format';
 import {Link, useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {useLocation} from "react-router-dom";
+import noResultsBanner from '../../../assets/img/no-results-2.png';
 
-const DEFAULT_LIMIT = 2;
+const DEFAULT_LIMIT = 6;
 
 const initialFilters = {
     search: '',
@@ -258,7 +259,7 @@ export default function RestaurantsList() {
     return (
         <main className="restaurant-list-main">
             <Banner
-                title={`Restaurant listings ${location ? `in ${location}` : '' }`}
+                title={`Restaurant listings ${location ? `in ${location}` : ''}`}
                 subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
                  the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
                  that set this restaurant apart from others. A location tool for simplicity is also available."
@@ -308,9 +309,14 @@ export default function RestaurantsList() {
                                      role="tabpanel"
                                      aria-labelledby="tab-link-example-13">
 
-                                    {restaurants.map((restaurant, key) =>
-                                        <RestaurantListItem key={key} restaurant={restaurant}/>
-                                    )}
+                                    {!!restaurants.length ?
+                                        restaurants.map((restaurant, key) =>
+                                            <RestaurantListItem key={key} restaurant={restaurant}/>
+                                        ) :
+                                        (
+                                            <img src={noResultsBanner} alt="no results banner for restaurants"/>
+                                        )
+                                    }
 
                                     {(isFetching && !isDoneFetching) &&
                                     <div className="restaurant-list-loader">

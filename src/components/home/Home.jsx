@@ -139,55 +139,6 @@ export default function Home() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="tab-pane fade" id="link-example-8" role="tabpanel"
-                                     aria-labelledby="tab-link-example-8">
-                                    <div className="row">
-                                        <div className="col-12 col-lg-4">
-                                            <div className="card shadow-soft border-0 mb-4 mb-lg-0 text-center">
-                                                <div className="card-body p-3 px-xl-4 py-xl-6">
-                                                    <div
-                                                        className="icon icon-shape icon-shape-secondary mb-4 rounded-circle">
-                                                        <i className="fas fa-clipboard-list"></i>
-                                                    </div>
-                                                    <h5 className="font-weight-normal my-3">1. List your space</h5>
-                                                    <p>It takes no longer than 15 minutes to list your space on
-                                                        themesberg. Our user friendly onboarding process.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-4">
-                                            <div className="card shadow-soft border-0 mb-4 mb-lg-0 text-center">
-                                                <div className="card-body p-3 px-xl-4 py-xl-6">
-                                                    <div
-                                                        className="icon icon-shape icon-shape-secondary mb-4 rounded-circle">
-                                                        <i className="far fa-user"></i>
-                                                    </div>
-                                                    <h5 className="font-weight-normal my-3">2. Get ready</h5>
-                                                    <p>After you have uploaded your space - our website makes it easy
-                                                        for you to keep the details up to date.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-lg-4">
-                                            <div className="card shadow-soft border-0 mb-4 mb-lg-0 text-center">
-                                                <div className="card-body p-3 px-xl-4 py-xl-6">
-                                                    <div
-                                                        className="icon icon-shape icon-shape-secondary mb-4 rounded-circle">
-                                                        <i className="far fa-money-bill-alt"></i>
-                                                    </div>
-                                                    <h5 className="font-weight-normal my-3">3. Earn money</h5>
-                                                    <p>Orders coming from themesberg are 100% prepaid. We will bring you
-                                                        not just leads but new clients.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col mt-6 text-center">
-                                        <a href="./html/pages/submit-space.html"
-                                           className="btn btn-secondary animate-up-2"><i
-                                            className="fas fa-plus mr-2"></i>List a Space</a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

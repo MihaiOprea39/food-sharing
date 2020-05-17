@@ -11,7 +11,6 @@ import FoodShareDatePicker from "./reusable/DatePicker";
 import CalculateStarRating from "../services/calculate-star-rating";
 import parse from "html-react-parser";
 import FoodShareDialog from "./reusable/dialog/Dialog";
-import FoodShareToast from "./reusable/Toast";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -212,12 +211,23 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
                             <div className="pricing-card">
                                 <div className="card shadow-sm border-soft p-4 min-h-350">
                                     <header className="card-header border-bottom bg-white text-center">
-                                        <h3 className="font-weight-normal text-gray">Details</h3>
+                                        <h3 className="font-weight-normal text-gray">Restaurant</h3>
                                     </header>
                                     <div className="card-body pl-0 pb-0">
                                         <div className="d-flex">
                                             <p className="font-weight-400">{pickupRestaurant.name}</p>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 mb-4 col-lg-4">
+                            <div className="pricing-card">
+                                <div className="card shadow-sm border-soft p-4 min-h-350">
+                                    <header className="card-header border-bottom bg-white text-center">
+                                        <h3 className="font-weight-normal text-gray">Details</h3>
+                                    </header>
+                                    <div className="card-body pl-0 pb-0">
                                         <div className="d-flex">
                                             <p className="font-weight-400">{pickupRestaurant.address}</p>
                                         </div>
@@ -235,24 +245,24 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
                             <div className="pricing-card">
                                 <div className="card shadow-sm border-soft p-4 min-h-350">
                                     <header className="card-header border-bottom bg-white text-center">
-                                        <h3 className="font-weight-normal text-gray">Message</h3>
-                                    </header>
-                                    <div className="card-body pl-0 pb-0">
-                                        <div className="d-flex">
-                                            <p className="font-weight-400">{parse(pickupMessage)}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 mb-4 col-lg-4">
-                            <div className="pricing-card">
-                                <div className="card shadow-sm border-soft p-4 min-h-350">
-                                    <header className="card-header border-bottom bg-white text-center">
                                         <h3 className="font-weight-normal text-gray">Owner</h3>
                                     </header>
                                     <div className="card-body pl-0 pb-0">
                                         PLACEHOLDER
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 mb-4 col-lg-12">
+                            <div className="pricing-card">
+                                <div className="card shadow-sm border-soft p-4 min-h-350">
+                                    <header className="card-header border-bottom bg-white text-center">
+                                        <h3 className="font-weight-normal text-gray">Message</h3>
+                                    </header>
+                                    <div className="card-body pl-0 pb-0">
+                                        <div className="d-flex">
+                                            <p className="font-weight-400" style={{whiteSpace: 'break-spaces'}}>{pickupMessage}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +275,6 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
 
     return (
         <main>
-            <FoodShareToast message="Your pick-up request has been successfully registered!"/>
             <FoodShareDialog
                 title="A notice regarding your message"
                 visible={isMessageDialogVisible}

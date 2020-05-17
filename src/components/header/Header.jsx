@@ -163,14 +163,24 @@ export default function Header() {
                             </li>
                         </ul>
                     </div>
-                    <div className="d-none d-lg-block">
-                        <span className="btn btn-sm btn-white animate-up-1 ml-3 cursor-pointer" onClick={() => firebase.auth().signOut()}>Sign out</span>
-                    </div>
-                    <div className="d-flex d-lg-none align-items-center">
-                        <span className="btn btn-sm btn-white animate-up-1 ml-3 cursor-pointer" onClick={() => firebase.auth().signOut()}>Sign out</span>
-                        <button className="navbar-toggler ml-2" type="button" data-toggle="collapse"
-                                data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false"
-                                aria-label="Toggle navigation"><span className="navbar-toggler-icon"/></button>
+                    <div className="d-flex align-items-center">
+                        <ul className="navbar-nav navbar-nav-hover ml-3">
+                            <li className="nav-item dropdown">
+                                <Link to="#" className="nav-link" data-toggle="dropdown">
+
+                                    <span className="nav-link-inner-text">Account</span><i
+                                    className="fas fa-angle-down nav-link-arrow"/>
+                                </Link>
+                                <ul className="dropdown-menu">
+                                    <li className="nav-item">
+                                        <Link to="/messages" className="dropdown-item">Messages</Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="#" className="dropdown-item" onClick={() => firebase.auth().signOut()}>Sign out</Link>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>

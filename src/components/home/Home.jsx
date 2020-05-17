@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './home.scss';
 import SchedulePickUpFilters from "../schedule-pickup/ScheduleFilters";
 import {Link, useHistory} from "react-router-dom";
@@ -6,6 +6,7 @@ import firebase from "../../firebase";
 import countBy from 'lodash/countBy';
 import CalculateStarRating from "../../services/calculate-star-rating";
 import parse from "html-react-parser";
+import {AuthContext} from "../../Auth";
 
 export default function Home() {
     const history = useHistory();
@@ -13,6 +14,8 @@ export default function Home() {
     const [topRestaurants, setTopRestaurants] = useState([]);
     const [restaurantCount, setRestaurantCount] = useState(null);
     const [locationCount, setLocationCount] = useState(null);
+
+    const {currentUser} = useContext(AuthContext);
 
     const handleScheduleFilters = (filters) => {
         const {date, restaurant: {id: restaurantId}} = filters;
@@ -32,7 +35,6 @@ export default function Home() {
             getTopLocations(topLocationIds);
             getTopRestaurants();
         })
-
     };
 
     const getTopLocations = (topLocationIds) => {

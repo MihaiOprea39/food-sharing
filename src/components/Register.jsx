@@ -11,7 +11,13 @@ const Register = ({history}) => {
     const handleRegister = useCallback(async event => {
         event.preventDefault();
 
-        const {email, password, username, userType} = event.target.elements;
+        const {email, password, username, userType, confirmPassword} = event.target.elements;
+
+        if (password.value !== confirmPassword.value) {
+            setErrorToast({message: 'Provided passwords do not match.'});
+
+            return;
+        }
 
         try {
             const credentials = await firebase.auth().createUserWithEmailAndPassword(email.value, password.value);
@@ -96,7 +102,7 @@ const Register = ({history}) => {
                                                     className="fas fa-unlock-alt"/></span>
                                             </div>
                                             <input className="form-control" placeholder="Password" type="password"
-                                                   required autoComplete="off"/>
+                                                   required autoComplete="off" name="password" />
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -105,7 +111,7 @@ const Register = ({history}) => {
                                                 <span className="input-group-text"><i
                                                     className="fas fa-unlock-alt"/></span>
                                             </div>
-                                            <input type="password" className="form-control" name="password"
+                                            <input type="password" className="form-control" name="confirmPassword"
                                                    id="input-password-confirm"
                                                    placeholder="Confirm password" required autoComplete="off" />
                                         </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import firebase from "./firebase";
+import loadingScreen from '../src/assets/img/gears-animation.gif';
 
 export const AuthContext = React.createContext();
 
@@ -29,7 +30,9 @@ export const AuthProvider = ({ children }) => {
     }, []);
     
     if (pending){
-        return <>Loading...</>
+        return <div className="foodshare-loading-banner">
+            <img src={loadingScreen} alt=""/>
+        </div>
     }
 
     return (

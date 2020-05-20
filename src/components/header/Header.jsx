@@ -173,7 +173,7 @@ export default function Header() {
                                 </Link>
                                 <ul className="dropdown-menu">
                                     <li className="nav-item">
-                                        <Link to="/messages" className="dropdown-item">Messages</Link>
+                                        <Link to="/conversations" className="dropdown-item">Conversations</Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="#" className="dropdown-item" onClick={() => firebase.auth().signOut()}>Sign out</Link>

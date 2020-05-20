@@ -19,9 +19,10 @@ import Footer from "./components/footer/Footer";
 import {AuthProvider} from "./Auth";
 import ProtectedRoute from "./ProtectedRoute";
 
-const HomeComponent = lazy(() => import('./components/home/Home'));
 const SignInComponent = lazy(() => import('./components/SignIn'));
 const RegisterComponent = lazy(() => import('./components/Register'));
+const HomeComponent = lazy(() => import('./components/home/Home'));
+const ConversationsComponent = lazy(() => import('./components/conversations/Conversations'));
 const RestaurantComponent = lazy(() => import('./components/restaurants/Restaurant'));
 const RestaurantsListComponent = lazy(() => import('./components/restaurants/list/RestaurantList'));
 const PickUpComponent = lazy(() => import('./components/PickUp'));
@@ -32,7 +33,7 @@ function App() {
         <AuthProvider>
             <Router>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <Header/>
+                    {/*<Header/>*/}
                     <Switch>
                         <ProtectedRoute exact path="/" component={HomeComponent} />
 
@@ -43,6 +44,7 @@ function App() {
                             <RegisterComponent/>
                         </Route>
 
+                        <ProtectedRoute path="/conversations" component={ConversationsComponent} />
                         <ProtectedRoute path="/pick-up" component={PickUpComponent} />
                         <ProtectedRoute path="/restaurant/:id" component={RestaurantComponent} />
                         <ProtectedRoute path="/restaurants" component={RestaurantsListComponent} />
@@ -51,7 +53,7 @@ function App() {
                             <NotFoundComponent/>
                         </Route>
                     </Switch>
-                    <Footer/>
+                    {/*<Footer/>*/}
                 </Suspense>
             </Router>
         </AuthProvider>

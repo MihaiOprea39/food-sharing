@@ -8,6 +8,18 @@
   pointer-events: none !important;
 }
 
+.foodshare-loading-banner {
+  background-color: #f4f9ff;
+  height: 100vh;
+}
+
+.foodshare-loading-banner img {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

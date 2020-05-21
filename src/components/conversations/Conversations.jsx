@@ -5,6 +5,7 @@ import Conversation from "./Conversation";
 import MessagesPanel from "./MessagesPanel";
 import firebase from "../../firebase";
 import {AuthContext} from "../../Auth";
+import planeLoader from '../../assets/img/plane-loader2.gif';
 
 export default function Conversations() {
     const [conversations, setConversations] = useState([]);
@@ -17,7 +18,7 @@ export default function Conversations() {
 
     const getAllConversations = async () => {
         const currentUserType = currentUser.type === '0' ? 'ngo' : 'restaurant';
-        
+
         firebase
             .firestore()
             .collection('conversations')
@@ -72,6 +73,35 @@ export default function Conversations() {
             .get()
             .then(snap => snap.docs.map(doc => doc.data()));
     };
+
+    const sendMessage = (message) => {
+        const {conversationId, ...messagePayload} = message;
+
+        firebase
+            .firestore()
+            .collection('conversations')
+            .doc(conversationId)
+            .collection('messages')
+            .add(messagePayload)
+            .then(() => updateCurrentConversations(conversationId, messagePayload));
+    };
+
+    const updateCurrentConversations = (convId, messagePayload) => {
+        const updatedConversations = conversations.map((conversation) => ({
+                ...conversation,
+                ...(conversation.id === convId && {
+                    messages: [...conversation.messages, messagePayload]
+                })
+            })
+        );
+        const updatedActiveConversation = {
+            ...activeConversation,
+            messages: [...activeConversation.messages, messagePayload]
+        };
+
+        setConversations(updatedConversations);
+        setActiveConversation(updatedActiveConversation);
+    }
 
     useEffect(() => {
         (async function asyncFn() {
@@ -142,10 +172,11 @@ export default function Conversations() {
                                     )}
                                 </ul>
                             )}
+                            <img src={planeLoader} alt=""/>
                         </div>
                     </div>
 
-                    <MessagesPanel current={activeConversation} user={currentUser} />
+                    <MessagesPanel current={activeConversation} user={currentUser} onMessageSubmit={sendMessage}/>
 
                 </div>
             </div>

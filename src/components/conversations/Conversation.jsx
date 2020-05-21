@@ -1,6 +1,16 @@
 import React from "react";
 
-export default function Conversation({conversation, active, onInteract}) {
+export default function Conversation({conversation, user, active, onInteract}) {
+
+    const getMessagePreview = () => {
+        return conversation && conversation.messages &&
+            `${getMessagePrefix()} ${conversation.messages[conversation.messages.length - 1].message}`;
+    }
+
+    const getMessagePrefix = () => {
+        return user && conversation && user.uid === conversation.from.id ? 'You: ' : '';
+    }
+
     return (
         <li className={`list-group-item ${active ? 'active-chat' : ''}`} onClick={() => onInteract(conversation)}>
             <figure className="avatar avatar-state-success">
@@ -9,8 +19,8 @@ export default function Conversation({conversation, active, onInteract}) {
             </figure>
             <div className="users-list-body">
                 <div>
-                    <h5 className="text-primary">{conversation.name}</h5>
-                    <p>What's up, how are you?</p>
+                    <h5 className="text-primary">{conversation.to.displayName}</h5>
+                    <p>{getMessagePreview()}</p>
                 </div>
                 <div className="users-list-action">
                     <div className="new-message-count">3</div>

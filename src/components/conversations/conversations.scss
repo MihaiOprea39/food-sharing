@@ -3,6 +3,39 @@
 
 .conversations-parent-wrapper {
 
+  .messages-panel-wrapper{
+    width: calc(100% - 448px);
+    height: 100%;
+
+    display: flex;
+    flex: 1 1;
+
+    &.empty {
+      height: calc(100% - 60px);
+    }
+
+    .chat {
+      .chat-body, .chat-footer {
+        &.inactive {
+          filter: opacity(0.3);
+        }
+      }
+    }
+
+    .no-current-chat {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      h4 {
+        color: #969696;
+      }
+    }
+  }
+
   .bg-primary {
     background: #26a69a !important;
     color: white !important;
@@ -171,7 +204,7 @@
   }
 
   .text-primary {
-    color: #26a69a !important;
+    color: #005AD4 !important;
   }
 
   .text-info {
@@ -408,13 +441,13 @@
   }
 
   .btn.btn-primary, a.btn[href="#next"], a.btn[href="#previous"] {
-    background: #26a69a;
-    border-color: #26a69a;
+    background: #005AD4;
+    border-color: #005AD4;
   }
 
   .btn.btn-primary:not(:disabled):not(.disabled):hover, a.btn:not(:disabled):not(.disabled):hover[href="#next"], a.btn:not(:disabled):not(.disabled):hover[href="#previous"], .btn.btn-primary:not(:disabled):not(.disabled):focus, a.btn:not(:disabled):not(.disabled):focus[href="#next"], a.btn:not(:disabled):not(.disabled):focus[href="#previous"], .btn.btn-primary:not(:disabled):not(.disabled):active, a.btn:not(:disabled):not(.disabled):active[href="#next"], a.btn:not(:disabled):not(.disabled):active[href="#previous"] {
-    background: #08887c;
-    border-color: #08887c;
+    background: #005AD4;
+    border-color: #005AD4;
   }
 
   .btn.btn-primary:not(:disabled):not(.disabled):focus, a.btn:not(:disabled):not(.disabled):focus[href="#next"], a.btn:not(:disabled):not(.disabled):focus[href="#previous"] {
@@ -2246,7 +2279,7 @@
 
   header.main-header {
     height: 60px;
-    background-color: #26a69a;
+    background-color: #005AD4;
     padding: 0 1.50rem;
     display: -webkit-box;
     display: -webkit-flex;
@@ -2268,7 +2301,7 @@
   }
 
   header.main-header #logo {
-    background: #44c4b8;
+    background-color: #1357b3;
     margin: -25px;
     width: 450px;
     height: 60px;
@@ -2368,7 +2401,7 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    border-color: #26a69a !important;
+    border-color: #91b5e6 !important;
   }
 
   textarea {
@@ -3589,7 +3622,8 @@
   .layout .content .sidebar {
     background: white;
     overflow: hidden;
-    width: 450px;
+    width: 448px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
@@ -3698,7 +3732,7 @@
     content: '';
     display: block;
     height: 2px;
-    background-color: #26a69a;
+    background-color: #005ad4;
     position: absolute;
     right: 0;
     bottom: 0;
@@ -3758,6 +3792,12 @@
     font-size: 16px;
     font-weight: 500;
     margin-bottom: .2rem;
+    color: #888888 !important;
+
+    &.unread {
+      color: #2b2b2b !important;
+      font-weight: 600;
+    }
   }
 
   .layout .content .sidebar .list-group-item .users-list-body p {
@@ -3797,7 +3837,7 @@
     line-height: 0;
     font-size: 13px;
     height: 23px;
-    background-color: #26a69a;
+    background-color: #005ad4;
     color: white;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -3832,7 +3872,7 @@
     -moz-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    background-color: #dddddd;
+    background-color: #ececec;
   }
 
   .layout .content .chat .chat-body {
@@ -3915,7 +3955,6 @@
 
   .layout .content .chat .chat-body .messages .message-item {
     max-width: 65%;
-    margin-bottom: 3rem;
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
@@ -3959,6 +3998,14 @@
 
   .layout .content .chat .chat-body .messages .message-item .time .ti-double-check:after {
     margin-left: -4px;
+  }
+
+  .layout .content .chat .chat-body .messages .message-item.outgoing-message .time {
+    text-align: right;
+  }
+  .layout .content .chat .chat-body .messages .message-item .time {
+    text-align: left;
+    margin-left: 5px;
   }
 
   .layout .content .chat .chat-body .messages .message-item .message-content {

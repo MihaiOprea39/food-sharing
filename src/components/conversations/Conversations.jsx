@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import './conversations.scss';
 import {Link} from "react-router-dom";
 import Conversation from "./Conversation";
@@ -10,11 +10,59 @@ import planeLoader from '../../assets/img/plane-loader2.gif';
 export default function Conversations() {
     const [conversations, setConversations] = useState([]);
     const [activeConversation, setActiveConversation] = useState(null);
+    const messagePanelRef = useRef();
     const {currentUser} = useContext(AuthContext);
 
     const handleConversationInteract = (conversation) => {
-        setActiveConversation(conversation);
+        if (activeConversation && conversation.id === activeConversation.id) {
+            return;
+        }
+
+        const updatedConversation = {
+            ...conversation,
+            messages: conversation.messages.map(message => ({
+                ...message,
+                isRead: true
+            }))
+        };
+
+        const updatedConversations = conversations.map(conv => ({
+            ...conv,
+            ...conv.id === conversation.id && {
+                messages: conv.messages.map(message => ({
+                    ...message,
+                    isRead: true
+                }))
+            }
+        }));
+
+        setActiveConversation(updatedConversation);
+        // setConversations(updatedConversations);
+        markMessagesAsRead(conversation.id);
     };
+
+    const markMessagesAsRead = (conversationId) => {
+        firebase
+            .firestore()
+            .collection('conversations')
+            .doc(conversationId)
+            .collection('messages')
+            .get()
+            .then(snap => {
+                snap.forEach(doc => {
+                    firebase.firestore()
+                        .collection('conversations')
+                        .doc(conversationId)
+                        .collection('messages')
+                        .doc(doc.id)
+                        .set({
+                            isRead: true
+                        }, {
+                            merge: true
+                        }).then()
+                })
+            })
+    }
 
     const getAllConversations = async () => {
         const currentUserType = currentUser.type === '0' ? 'ngo' : 'restaurant';
@@ -107,8 +155,11 @@ export default function Conversations() {
         (async function asyncFn() {
             await getAllConversations();
         })();
-        // getAllConversations();
     }, []);
+
+    useEffect(() => {
+        messagePanelRef.current && messagePanelRef.current.scrollToBottom();
+    }, [activeConversation]);
 
     return (
         <div className="conversations-parent-wrapper">
@@ -167,6 +218,7 @@ export default function Conversations() {
                                                       conversation={conversation}
                                                       user={currentUser}
                                                       active={activeConversation && activeConversation.id === conversation.id}
+                                                      showUnreadMessages={currentUser.uid !== (currentUser.type === '0' ? conversation.ngo : conversation.restaurant)}
                                                       onInteract={handleConversationInteract}
                                         />
                                     )}
@@ -176,7 +228,12 @@ export default function Conversations() {
                         </div>
                     </div>
 
-                    <MessagesPanel current={activeConversation} user={currentUser} onMessageSubmit={sendMessage}/>
+                    <MessagesPanel current={activeConversation}
+                                   user={currentUser}
+                                   ref={messagePanelRef}
+                                   onMessageSubmit={sendMessage}
+                                   accepted={activeConversation && activeConversation.isAccepted}
+                    />
 
                 </div>
             </div>

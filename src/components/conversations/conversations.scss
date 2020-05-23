@@ -34,6 +34,22 @@
         color: #969696;
       }
     }
+
+    .not-accepted-yet {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+
+      .accept-conversation {
+        background-color: #2A354F;
+        padding: 30px;
+        width: 100%;
+        position: absolute;
+        bottom: 30px;
+      }
+    }
   }
 
   .bg-primary {

@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import noResultsBanner from '../../assets/img/no-results-2.png';
 import format from 'date-fns/format';
 import firebase from "../../firebase";
 import {getFirebaseTime} from "../../services/time";
 
-export default function MessagesPanel({current, accepted = 1, user, onMessageSubmit}) {
+const MessagesPanel = forwardRef(({current, accepted = 1, user, onMessageSubmit}, ref) => {
     const [newMessage, setNewMessage] = useState('');
     const messagePanelBodyRef = useRef();
 
@@ -12,12 +12,15 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
         return format(getFirebaseTime(message.timestamp.seconds, message.timestamp.nanoseconds), 'MMM dd, yyyy');
     }
 
-    const scrollToBottom = (container) => {
-        container.scroll({
-            top: container.scrollHeight,
-            behavior: 'auto'
-        });
-    };
+    useImperativeHandle(ref, () => ({
+        scrollToBottom() {
+            messagePanelBodyRef.current &&
+            messagePanelBodyRef.current.scroll({
+                top: messagePanelBodyRef.current.scrollHeight,
+                behavior: 'auto'
+            });
+        }
+    }));
 
     const handleMessageSubmit = (event) => {
         event.preventDefault();
@@ -34,8 +37,6 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
             to: current.to.id,
             conversationId: current.id
         }
-
-        scrollToBottom(messagePanelBodyRef.current);
 
         onMessageSubmit(payload);
         setNewMessage('');
@@ -68,13 +69,16 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
                     <h4>No conversation preview available. Try selecting one to begin.</h4>
                 </div>
             ) : (
-                <div className="chat">
+                <div className="chat position-relative">
                     {!accepted && (
-                        <div className="no-current-chat">
-                            No preview available. Select a conversation to begin.
+                        <div className="not-accepted-yet">
+                            <div className="accept-conversation">
+                                No preview available. Select a conversation to begin.
+                            </div>
                         </div>
                     )}
-                    <div className={`chat-body custom-scrollbar ${current ? '' : 'inactive'}`} ref={messagePanelBodyRef}>
+                    <div className={`chat-body custom-scrollbar ${current ? '' : 'inactive'}`}
+                         ref={messagePanelBodyRef}>
                         <div className="messages">
                             {current && current.messages.map((message, index) =>
                                 <div className={`message-item ${message.from === user.uid ? 'outgoing-message' : ''}`}
@@ -89,7 +93,8 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
                                         <div className="message-content">
                                             {message.message}
                                         </div>
-                                        <div className={`time ${areAvatarAndDateVisible(index)}`}>{getMessageParsedDate(message)}</div>
+                                        <div
+                                            className={`time ${areAvatarAndDateVisible(index)}`}>{getMessageParsedDate(message)}</div>
                                     </div>
                                 </div>
                             )}
@@ -104,7 +109,7 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
                                 </button>
                             </div>
                             <input type="text" className="form-control" placeholder="Write a message..."
-                                   autoComplete="off" onChange={handleMessageTyping} value={newMessage} />
+                                   autoComplete="off" onChange={handleMessageTyping} value={newMessage}/>
                             <div className="form-buttons">
                                 <button className={`btn btn-primary ${newMessage ? '' : 'not-allowed-element'}`}
                                         type="submit">
@@ -117,4 +122,6 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
             )}
         </div>
     );
-}
+});
+
+export default MessagesPanel;

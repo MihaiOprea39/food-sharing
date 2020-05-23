@@ -24,7 +24,7 @@ export default function Conversation({conversation, user, active, onInteract}) {
                 </div>
                 <div className="users-list-action">
                     <div className="new-message-count">3</div>
-                    <small className="text-primary">{conversation.timestamp}</small>
+                    {/*<small className="text-primary">{conversation.timestamp}</small>*/}
                 </div>
             </div>
         </li>

@@ -1,9 +1,23 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import noResultsBanner from '../../assets/img/no-results-2.png';
 import format from 'date-fns/format';
+import firebase from "../../firebase";
+import {getFirebaseTime} from "../../services/time";
 
 export default function MessagesPanel({current, accepted = 1, user, onMessageSubmit}) {
     const [newMessage, setNewMessage] = useState('');
+    const messagePanelBodyRef = useRef();
+
+    const getMessageParsedDate = (message) => {
+        return format(getFirebaseTime(message.timestamp.seconds, message.timestamp.nanoseconds), 'MMM dd, yyyy');
+    }
+
+    const scrollToBottom = (container) => {
+        container.scroll({
+            top: container.scrollHeight,
+            behavior: 'auto'
+        });
+    };
 
     const handleMessageSubmit = (event) => {
         event.preventDefault();
@@ -15,11 +29,13 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
         const payload = {
             message: newMessage,
             isRead: false,
-            timestamp: format(Date.now(), 'MMM dd, yyyy'),
+            timestamp: new firebase.firestore.Timestamp.now(),
             from: current.from.id,
             to: current.to.id,
             conversationId: current.id
         }
+
+        scrollToBottom(messagePanelBodyRef.current);
 
         onMessageSubmit(payload);
         setNewMessage('');
@@ -32,7 +48,7 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
     const areAvatarAndDateVisible = (index) => {
         if (user && current && current.messages && !!current.messages.length && current.messages[index]) {
             if (current.messages[index + 1]) {
-                if (current.messages[index].from === user.uid && current.messages[index + 1].from !== user.uid) {
+                if (current.messages[index].from !== current.messages[index + 1].from) {
                     return 'visible';
                 } else {
                     return 'invisible';
@@ -58,7 +74,7 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
                             No preview available. Select a conversation to begin.
                         </div>
                     )}
-                    <div className={`chat-body custom-scrollbar ${current ? '' : 'inactive'}`}>
+                    <div className={`chat-body custom-scrollbar ${current ? '' : 'inactive'}`} ref={messagePanelBodyRef}>
                         <div className="messages">
                             {current && current.messages.map((message, index) =>
                                 <div className={`message-item ${message.from === user.uid ? 'outgoing-message' : ''}`}
@@ -73,8 +89,7 @@ export default function MessagesPanel({current, accepted = 1, user, onMessageSub
                                         <div className="message-content">
                                             {message.message}
                                         </div>
-                                        <div
-                                            className={`time ${areAvatarAndDateVisible(index)}`}>{message.timestamp}</div>
+                                        <div className={`time ${areAvatarAndDateVisible(index)}`}>{getMessageParsedDate(message)}</div>
                                     </div>
                                 </div>
                             )}

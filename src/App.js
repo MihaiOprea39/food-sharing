@@ -33,7 +33,7 @@ function App() {
         <AuthProvider>
             <Router>
                 <Suspense fallback={<div>Loading...</div>}>
-                    {/*<Header/>*/}
+                    <Header/>
                     <Switch>
                         <ProtectedRoute exact path="/" component={HomeComponent} />
 

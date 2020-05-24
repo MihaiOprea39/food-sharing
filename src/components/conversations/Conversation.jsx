@@ -10,7 +10,11 @@ export default function Conversation({conversation, showUnreadMessages, user, ac
     }
 
     const getMessagePreview = () => {
-        return`${getMessagePrefix()} ${getLatestMessage().message}`;
+        if (conversation.isAccepted !== undefined) {
+            return conversation.isAccepted ?`${getMessagePrefix()} ${getLatestMessage().message}` : <i>Messages no longer available.</i>;
+        } else {
+            return`${getMessagePrefix()} ${getLatestMessage().message}`;
+        }
     }
 
     const getMessagePrefix = () => {

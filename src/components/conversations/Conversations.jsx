@@ -41,6 +41,32 @@ export default function Conversations() {
         markMessagesAsRead(conversation.id);
     };
 
+    const handleConversationAction = (state) => {
+        firebase
+            .firestore()
+            .collection('conversations')
+            .doc(activeConversation.id)
+            .set({
+                isAccepted: state
+            }, {
+                merge: true
+            }
+            )
+            .then(() => handleConversationActionState(state));
+    }
+
+    const handleConversationActionState = (state) => {
+        const updatedConversation = {
+            ...activeConversation,
+            isAccepted: state
+        };
+
+        const currentConversation = conversations.find(({id}) => id === activeConversation.id);
+        currentConversation.isAccepted = state;
+
+        setActiveConversation(updatedConversation);
+    }
+
     const markMessagesAsRead = (conversationId) => {
         firebase
             .firestore()
@@ -233,6 +259,7 @@ export default function Conversations() {
                                    ref={messagePanelRef}
                                    onMessageSubmit={sendMessage}
                                    accepted={activeConversation && activeConversation.isAccepted}
+                                   onRequestAction={handleConversationAction}
                     />
 
                 </div>

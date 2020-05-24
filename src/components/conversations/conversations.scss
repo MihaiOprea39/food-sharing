@@ -42,6 +42,35 @@
       z-index: 999;
       backdrop-filter: blur(4px);
 
+      .not-accepted-container {
+        width: 100%;
+        position: absolute;
+        height: 100%;
+        img {
+          border-radius: 25px;
+          transform: scale(0.65);
+        }
+        button {
+          i {
+            font-size: 30px !important;
+          }
+        }
+        .not-accepted-details {
+          width: 100%;
+          height: 100%;
+          h5 {
+            margin-top: -75px;
+          }
+          .not-accepted-ngo {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+
       .accept-conversation {
         background-color: #2A354F;
         padding: 30px;
@@ -2825,12 +2854,12 @@
   }
 
   .call .action-button {
-    margin-top: 3rem;
+    margin-top: 2rem;
   }
 
   .call .action-button .btn {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     margin: 0 15px;
   }
 

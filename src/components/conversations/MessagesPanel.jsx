@@ -3,6 +3,7 @@ import noResultsBanner from '../../assets/img/no-results-2.png';
 import format from 'date-fns/format';
 import firebase from "../../firebase";
 import {getFirebaseTime} from "../../services/time";
+import acceptConversationGif from '../../assets/img/security.gif';
 
 const MessagesPanel = forwardRef(({current, accepted = 1, user, onMessageSubmit}, ref) => {
     const [newMessage, setNewMessage] = useState('');
@@ -61,6 +62,8 @@ const MessagesPanel = forwardRef(({current, accepted = 1, user, onMessageSubmit}
         return 'invisible';
     }
 
+    console.log(current);
+
     return (
         <div className={`messages-panel-wrapper ${!current ? 'empty' : ''}`}>
             {!current ? (
@@ -72,8 +75,30 @@ const MessagesPanel = forwardRef(({current, accepted = 1, user, onMessageSubmit}
                 <div className="chat position-relative">
                     {!accepted && (
                         <div className="not-accepted-yet">
-                            <div className="accept-conversation">
-                                No preview available. Select a conversation to begin.
+                            <div className="call not-accepted-container">
+                                <div className="not-accepted-details">
+
+                                    {user.type === '1' ? (
+                                        <div className="not-accepted-restaurant">
+                                            <img src={acceptConversationGif} alt=""/>
+                                            <h5>{current.to.displayName} has requested a pick-up scheduled on {current.date}.</h5>
+                                            <div className="action-button">
+                                                <button type="button" className="btn btn-danger btn-floating btn-lg">
+                                                    <i className="fas fa-times"/>
+                                                </button>
+                                                <button type="button"
+                                                        className="btn btn-success btn-pulse btn-floating btn-lg">
+                                                    <i className="fas fa-check-circle"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="not-accepted-ngo">
+                                            <h5>{current.to.displayName} has yet to accept your pick-up request on {current.date}.</h5>
+                                        </div>
+                                    )}
+
+                                </div>
                             </div>
                         </div>
                     )}

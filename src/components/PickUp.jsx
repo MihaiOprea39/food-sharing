@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Fragment} from 'react';
+import React, {useEffect, useState, Fragment, useContext} from 'react';
 import FoodShareStepper from "./reusable/Stepper";
 import Banner from "./reusable/banner/Banner";
 import {Link, useHistory} from "react-router-dom";
@@ -11,6 +11,7 @@ import FoodShareDatePicker from "./reusable/DatePicker";
 import CalculateStarRating from "../services/calculate-star-rating";
 import parse from "html-react-parser";
 import FoodShareDialog from "./reusable/dialog/Dialog";
+import {AuthContext} from "../Auth";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -25,12 +26,17 @@ export default function PickUp() {
     const [isMessageDialogVisible, setIsMessageDialogVisible] = useState(false);
     const query = useQuery();
     const history = useHistory();
+    const {currentUser} = useContext(AuthContext);
 
     const handleStepChange = (step) => {
         if (step === 2 && isUsingDefaultMessage()) {
             setIsMessageDialogVisible(true);
         } else {
             setActiveStep(step);
+        }
+
+        if (step === 3) {
+            handlePickUpSubmit();
         }
     };
 
@@ -40,6 +46,37 @@ export default function PickUp() {
         setPickupDate(null);
         resetRestaurants();
         history.replace('/pick-up');
+    }
+
+    const handlePickUpSubmit = () => {
+        if (!pickupRestaurant || !pickupDate || !pickupMessage) {
+            return;
+        }
+
+        firebase
+            .firestore()
+            .collection('conversations')
+            .add({
+                date: pickupDate,
+                ngo: currentUser.uid,
+                restaurant: pickupRestaurant.uid,
+                deletedNgo: false,
+                deletedRestaurant: false
+            }).then(docRef => {
+
+            firebase
+                .firestore()
+                .collection('conversations')
+                .doc(docRef.id)
+                .collection('messages')
+                .add({
+                    from: currentUser.uid,
+                    to: pickupRestaurant.uid,
+                    message: pickupMessage,
+                    isRead: false,
+                    timestamp: firebase.firestore.Timestamp.now()
+                }).then();
+        });
     }
 
     const resetRestaurants = () => {
@@ -79,12 +116,18 @@ export default function PickUp() {
             .get()
             .then(async snapshot => {
                 const data = snapshot.docs.map(document => document.data());
+                const dataId = snapshot.docs.map(document => document.id);
                 const location = await getMatchingRestaurantLocation((data[0] && data[0].location) || null);
+                const owner = await getMatchingOwner(restaurantId);
 
                 setPickupRestaurant({
                     ...data[0],
+                    uid: dataId[0],
                     ...(location && {
                         location: location[0]
+                    }),
+                    ...(owner && {
+                        owner: owner[0]
                     })
                 });
             })
@@ -98,12 +141,21 @@ export default function PickUp() {
             .then(snapshot => snapshot.docs.map(document => document.data()))
     };
 
+    const getMatchingOwner = (restaurantId) => {
+        return firebase.firestore()
+            .collection('users')
+            .where('type', '==', '1')
+            .where('restaurants', 'array-contains', Number(restaurantId))
+            .get()
+            .then(snapshot => snapshot.docs.map(document => document.data()))
+    };
+
     const getRestaurants = () => {
         return firebase
             .firestore().collection('restaurants')
             .orderBy('name', 'asc')
             .get()
-            .then(snapshot => snapshot.docs.map(document => document.data()));
+            .then(snapshot => snapshot.docs.map(document => ({...document.data(), uid: document.id})));
     };
 
     const handleReadyForPickupChange = async (event, restaurant) => {
@@ -161,7 +213,7 @@ export default function PickUp() {
     }, []);
 
     const DEFAULT_MESSAGE = `Greetings, \n
-This is PLACEHOLDER contacting you. We've come across one of your listings and noticed that the ${pickupRestaurant && pickupRestaurant.name} restaurant is available for pick-up on ${pickupDate && pickupDate}. If the date works for you, we'd very much like to come collect any food you can dispose of. Don't worry about the logistics, we need merely only your approval and we'll handle the rest!`
+This is ${currentUser ? currentUser.displayName : 'PLACEHOLDER'} contacting you. We've come across one of your listings and noticed that the ${pickupRestaurant && pickupRestaurant.name} restaurant is available for pick-up on ${pickupDate && pickupDate}. If the date works for you, we'd very much like to come collect any food you can dispose of. Don't worry about the logistics, we need merely only your approval and we'll handle the rest!`
 
 
     const getStepOne = () => {
@@ -205,7 +257,7 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
     const getStepThree = () => {
         return (
             <Fragment>
-                {(pickupRestaurant && pickupRestaurant.location && pickupDate && pickupMessage) && (
+                {(pickupRestaurant && pickupRestaurant.location && pickupRestaurant.owner && pickupDate && pickupMessage) && (
                     <div className="row mt-2">
                         <div className="col-12 mb-4 col-lg-4">
                             <div className="pricing-card">
@@ -248,7 +300,8 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
                                         <h3 className="font-weight-normal text-gray">Owner</h3>
                                     </header>
                                     <div className="card-body pl-0 pb-0">
-                                        PLACEHOLDER
+                                        <p className="font-weight-400">{pickupRestaurant.owner.displayName}</p>
+                                        <p className="font-weight-400">{pickupRestaurant.owner.email}</p>
                                     </div>
                                 </div>
                             </div>
@@ -261,7 +314,8 @@ This is PLACEHOLDER contacting you. We've come across one of your listings and n
                                     </header>
                                     <div className="card-body pl-0 pb-0">
                                         <div className="d-flex">
-                                            <p className="font-weight-400" style={{whiteSpace: 'break-spaces'}}>{pickupMessage}</p>
+                                            <p className="font-weight-400"
+                                               style={{whiteSpace: 'break-spaces'}}>{pickupMessage}</p>
                                         </div>
                                     </div>
                                 </div>

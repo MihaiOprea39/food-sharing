@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import firebase from "./firebase";
-import loadingScreen from '../src/assets/img/gears-animation.gif';
+import loadingScreen from '../src/assets/img/gears-animation2.gif';
 
 export const AuthContext = React.createContext();
 

@@ -5,7 +5,7 @@ import Conversation from "./Conversation";
 import MessagesPanel from "./MessagesPanel";
 import firebase from "../../firebase";
 import {AuthContext} from "../../Auth";
-import planeLoader from '../../assets/img/plane-loader2.gif';
+import loadingScreen from '../../assets/img/gears-animation2.gif';
 
 export default function Conversations() {
     const [conversations, setConversations] = useState([]);
@@ -25,6 +25,10 @@ export default function Conversations() {
                 isRead: true
             }))
         };
+
+        const currentConversation = conversations.find(({id}) => id === conversation.id);
+        currentConversation.messages.forEach(message => message.isRead = true);
+
 
         const updatedConversations = conversations.map(conv => ({
             ...conv,
@@ -236,21 +240,21 @@ export default function Conversations() {
                         <form>
                             <input type="text" className="form-control" placeholder="Search"/>
                         </form>
-                        <div className="sidebar-body custom-scrollbar">
-                            {conversations && (
+                        <div className={`sidebar-body custom-scrollbar ${!conversations.length ? 'loading' : ''}`}>
+                            {conversations.length ? (
                                 <ul className="list-group list-group-flush">
                                     {conversations.map((conversation, index) =>
                                         <Conversation key={index}
                                                       conversation={conversation}
                                                       user={currentUser}
                                                       active={activeConversation && activeConversation.id === conversation.id}
-                                                      showUnreadMessages={currentUser.uid !== (currentUser.type === '0' ? conversation.ngo : conversation.restaurant)}
                                                       onInteract={handleConversationInteract}
                                         />
                                     )}
                                 </ul>
+                            ) : (
+                                <img src={loadingScreen} alt=""/>
                             )}
-                            <img src={planeLoader} alt=""/>
                         </div>
                     </div>
 

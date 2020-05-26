@@ -30,9 +30,8 @@ export default function Conversation({conversation, showUnreadMessages, user, ac
     }
 
     const getUnreadMessagesCount = () => {
-        return conversation.messages.filter(({isRead}) => !isRead).length;
+        return conversation.messages.filter(({isRead, from}) => !isRead && from !== user.uid).length;
     }
-
 
     return (
         <li className={`list-group-item ${active ? 'active-chat' : ''}`} onClick={() => onInteract(conversation)}>
@@ -46,7 +45,7 @@ export default function Conversation({conversation, showUnreadMessages, user, ac
                     <p>{getMessagePreview()}</p>
                 </div>
                 <div className="users-list-action">
-                    {showUnreadMessages && <div className="new-message-count">{getUnreadMessagesCount()}</div>}
+                    {!!getUnreadMessagesCount() && <div className="new-message-count">{getUnreadMessagesCount()}</div>}
                     <small className="text-primary">{getConversationParsedDate()}</small>
                 </div>
             </div>

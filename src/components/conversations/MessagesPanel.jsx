@@ -96,7 +96,7 @@ const MessagesPanel = forwardRef(({current, accepted, user, onMessageSubmit, onR
                                         </div>
                                     ) : (
                                         <div className="not-accepted-ngo">
-                                            <h5>{current.to.displayName} has yet to accept your pick-up request
+                                            <h5>{current.to.displayName} has yet to accept your pick-up request scheduled
                                                 on {current.date}.</h5>
                                         </div>
                                     )}

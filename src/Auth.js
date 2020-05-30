@@ -11,6 +11,8 @@ export const AuthProvider = ({ children }) => {
     const handleUser = () => {
         firebase.auth().onAuthStateChanged(async (authUser) => {
             let userParsedData = null;
+            
+            console.log('default user', authUser);
 
             if (authUser) {
                 const response = await firebase.firestore().collection('users').doc(authUser.uid).get();

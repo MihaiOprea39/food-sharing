@@ -2690,7 +2690,7 @@
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
-    top: -2px;
+    top: 27px;
     right: -2px;
     border: 3px solid white;
   }
@@ -3794,7 +3794,7 @@
     left: 0;
   }
 
-  .layout .content .sidebar .list-group-item.active-chat .users-list-body p {
+  .layout .content .sidebar .list-group-item.has-unread-messages .users-list-body p {
     font-weight: 600;
     color: #646464;
   }
@@ -3845,7 +3845,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     margin-bottom: .2rem;
     color: #888888 !important;
 

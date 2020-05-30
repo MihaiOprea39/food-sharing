@@ -71,7 +71,7 @@ export default function PickUp() {
                 .collection('messages')
                 .add({
                     from: currentUser.uid,
-                    to: pickupRestaurant.uid,
+                    to: pickupRestaurant.owner.uid,
                     message: pickupMessage,
                     isRead: false,
                     timestamp: firebase.firestore.Timestamp.now()
@@ -147,7 +147,7 @@ export default function PickUp() {
             .where('type', '==', '1')
             .where('restaurants', 'array-contains', Number(restaurantId))
             .get()
-            .then(snapshot => snapshot.docs.map(document => document.data()))
+            .then(snapshot => snapshot.docs.map(document => ({...document.data(), uid: document.id})))
     };
 
     const getRestaurants = () => {
@@ -168,10 +168,15 @@ export default function PickUp() {
             readyForPickup: restaurant.id === restaurantId ? event.target.checked : false
         }));
         const location = await getMatchingRestaurantLocation(restaurant.location || null);
+        const owner = await getMatchingOwner(restaurantId);
+
         const updatedRestaurant = {
             ...restaurant,
             ...(location && {
                 location: location[0]
+            }),
+            ...(owner && {
+                owner: owner[0]
             })
         }
         setRestaurants(updatedRestaurants);
@@ -214,7 +219,6 @@ export default function PickUp() {
 
     const DEFAULT_MESSAGE = `Greetings, \n
 This is ${currentUser ? currentUser.displayName : 'PLACEHOLDER'} contacting you. We've come across one of your listings and noticed that the ${pickupRestaurant && pickupRestaurant.name} restaurant is available for pick-up on ${pickupDate && pickupDate}. If the date works for you, we'd very much like to come collect any food you can dispose of. Don't worry about the logistics, we need merely only your approval and we'll handle the rest!`
-
 
     const getStepOne = () => {
         return (
@@ -302,6 +306,7 @@ This is ${currentUser ? currentUser.displayName : 'PLACEHOLDER'} contacting you.
                                     <div className="card-body pl-0 pb-0">
                                         <p className="font-weight-400">{pickupRestaurant.owner.displayName}</p>
                                         <p className="font-weight-400">{pickupRestaurant.owner.email}</p>
+                                        <p className="font-weight-400">{pickupRestaurant.owner.phone}</p>
                                     </div>
                                 </div>
                             </div>

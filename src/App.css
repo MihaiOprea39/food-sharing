@@ -28,6 +28,10 @@
   font-weight: 400 !important;
 }
 
+.font-weight-600 {
+  font-weight: 600 !important;
+}
+
 .min-h-350 {
   min-height: 350px;
 }

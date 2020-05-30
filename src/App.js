@@ -22,6 +22,7 @@ import ProtectedRoute from "./ProtectedRoute";
 const SignInComponent = lazy(() => import('./components/SignIn'));
 const RegisterComponent = lazy(() => import('./components/Register'));
 const HomeComponent = lazy(() => import('./components/home/Home'));
+const ProfileComponent = lazy(() => import('./components/Profile'));
 const ConversationsComponent = lazy(() => import('./components/conversations/Conversations'));
 const RestaurantComponent = lazy(() => import('./components/restaurants/Restaurant'));
 const RestaurantsListComponent = lazy(() => import('./components/restaurants/list/RestaurantList'));
@@ -48,6 +49,7 @@ function App() {
                         <ProtectedRoute path="/pick-up" component={PickUpComponent} />
                         <ProtectedRoute path="/restaurant/:id" component={RestaurantComponent} />
                         <ProtectedRoute path="/restaurants" component={RestaurantsListComponent} />
+                        <ProtectedRoute path="/profile" component={ProfileComponent} />
 
                         <Route path="*">
                             <NotFoundComponent/>

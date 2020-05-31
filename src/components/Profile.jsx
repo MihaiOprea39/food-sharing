@@ -4,11 +4,13 @@ import {AuthContext} from "../Auth";
 import firebase from "../firebase";
 import FoodShareToast from "./reusable/Toast";
 import isEqual from 'lodash/isEqual';
+import defaultAvatar from '../assets/img/profile-image-2.jpg';
 
 const defaultUser = {
     displayName: '',
     email: '',
     phone: '',
+    avatar: ''
 };
 
 const defaultToast = {
@@ -20,6 +22,7 @@ const defaultToast = {
 export default function Profile() {
     const {currentUser} = useContext(AuthContext);
     const [updatedUser, setUpdatedUser] = useState(defaultUser);
+    const [file, setFile] = useState(null);
     const [toast, setToast] = useState(defaultToast);
 
     const onDetailsChange = (event) => {
@@ -27,6 +30,36 @@ export default function Profile() {
             ...updatedUser,
             [event.target.name]: event.target.value
         })
+    };
+
+    const onAvatarChange = (event) => {
+        event.persist();
+
+        setUpdatedUser({
+            ...updatedUser,
+            avatar: event.target.files[0]
+        })
+    };
+
+    const updateUserAvatar = () => {
+        const updatedAvatar = firebase.storage().ref().child(`avatars/${updatedUser.avatar.name}`).put(updatedUser.avatar);
+
+        const avatar = firebase.storage().ref(`avatars/${updatedUser.avatar.name}`);
+
+        avatar.getDownloadURL().then(url => {
+            console.log(url)
+        })
+
+
+        updatedAvatar.snapshot.ref.getDownloadURL().then(downloadURL => {
+            // console.log('File available at', downloadURL);
+        });
+    };
+
+    const getAvatarUrl = () => {
+        const avatar = firebase.storage().ref(`avatars/${updatedUser.avatar.name}`);
+        
+        return avatar.getDownloadURL().then(url => url);
     }
 
     const updatePassword = (event) => {
@@ -66,7 +99,7 @@ export default function Profile() {
     }
 
     const updateProfile = () => {
-        const {displayName, email, phone} = updatedUser;
+        const {displayName, email, phone, avatar} = updatedUser;
 
         if (displayName !== currentUser.displayName) {
             firebase.auth().currentUser.updateProfile({displayName})
@@ -80,6 +113,14 @@ export default function Profile() {
 
         if (phone !== currentUser.phone) {
             updateDatabaseCredential('phone');
+        }
+
+        updateUserAvatar();
+
+
+        if (avatar !== currentUser.avatar) {
+            // updateUserAvatar();
+            // updateDatabaseCredential('avatar');
         }
     };
 
@@ -166,7 +207,7 @@ export default function Profile() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col">
+                                <div className="col justify-content-end d-flex">
                                     <button
                                         className={`btn btn-primary btn-dark mt-2 animate-up-2 ${isUpdateButtonDisabled() ? 'not-allowed-element' : ''}`}
                                         onClick={updateProfile}>Update
@@ -180,11 +221,12 @@ export default function Profile() {
                             <label>Profile picture</label>
                             <div className="d-flex justify-content-between align-items-center mt-2">
                                 <div className="profile-image-small fmxw-100 mr-4">
-                                    <img src="../../assets/img/team/profile-image-2.jpg"
+                                    <img src={updatedUser.avatar ? updatedUser.avatar : defaultAvatar}
                                          className="card-img-top rounded-circle" alt="image"/>
                                 </div>
                                 <div className="custom-file">
-                                    <input id="profile-image" type="file" className="custom-file-input"/>
+                                    <input id="profile-image" type="file" className="custom-file-input"
+                                           onChange={onAvatarChange}/>
                                     <label className="custom-file-label" htmlFor="profile-image">Choose file</label>
                                 </div>
                             </div>

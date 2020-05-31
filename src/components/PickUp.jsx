@@ -11,7 +11,7 @@ import FoodShareDatePicker from "./reusable/DatePicker";
 import CalculateStarRating from "../services/calculate-star-rating";
 import parse from "html-react-parser";
 import FoodShareDialog from "./reusable/dialog/Dialog";
-import {AuthContext} from "../Auth";
+import {AuthContext} from "../contexts/AuthContext";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);

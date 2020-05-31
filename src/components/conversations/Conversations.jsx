@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import Conversation from "./Conversation";
 import MessagesPanel from "./MessagesPanel";
 import firebase from "../../firebase";
-import {AuthContext} from "../../Auth";
+import {AuthContext} from "../../contexts/AuthContext";
 import loadingScreen from '../../assets/img/gears-animation2.gif';
 
 export default function Conversations() {

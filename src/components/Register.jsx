@@ -3,7 +3,7 @@ import registerSvg from '../assets/img/signup.svg';
 import {Link, Redirect, withRouter} from "react-router-dom";
 import firebase from "../firebase";
 import FoodShareToast from "./reusable/Toast";
-import {AuthContext} from "../Auth";
+import {AuthContext} from "../contexts/AuthContext";
 
 const Register = ({history}) => {
     const [errorToast, setErrorToast] = useState(null);

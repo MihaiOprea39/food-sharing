@@ -2,7 +2,7 @@ import {Link, Redirect} from "react-router-dom";
 import React, {useContext} from "react";
 import './header.scss';
 import firebase from "../../firebase";
-import {AuthContext} from "../../Auth";
+import {AuthContext} from "../../contexts/AuthContext";
 
 export default function Header() {
     const {currentUser} = useContext(AuthContext);

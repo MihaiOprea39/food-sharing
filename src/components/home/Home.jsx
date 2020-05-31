@@ -6,7 +6,7 @@ import firebase from "../../firebase";
 import countBy from 'lodash/countBy';
 import CalculateStarRating from "../../services/calculate-star-rating";
 import parse from "html-react-parser";
-import {AuthContext} from "../../Auth";
+import {AuthContext} from "../../contexts/AuthContext";
 
 export default function Home() {
     const history = useHistory();

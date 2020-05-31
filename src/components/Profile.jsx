@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import {AuthContext} from "../Auth";
+import {AuthContext} from "../contexts/AuthContext";
 import firebase from "../firebase";
 import FoodShareToast from "./reusable/Toast";
 import isEqual from 'lodash/isEqual';
@@ -20,7 +20,7 @@ const defaultToast = {
 };
 
 export default function Profile() {
-    const {currentUser} = useContext(AuthContext);
+    const {currentUser, dispatch} = useContext(AuthContext);
     const [updatedUser, setUpdatedUser] = useState(defaultUser);
     const [userFile, setUserFile] = useState(null);
     const [toast, setToast] = useState(defaultToast);
@@ -36,21 +36,20 @@ export default function Profile() {
         event.persist();
 
         setUserFile(event.target.files[0]);
-
-        console.log(event.target.files[0]);
     };
 
     const updateUserAvatar = () => {
         const avatar = firebase.storage().ref().child(`avatars/${userFile.name}`).put(userFile);
 
         avatar.snapshot.ref.getDownloadURL().then(url => {
-            console.log('url', url);
 
             setUpdatedUser({
                 ...updatedUser,
                 avatar: url
             })
             setUserFile(null);
+
+            dispatch({type: '[USER] Load User', user: updatedUser});
 
             updateDatabaseCredential('avatar', url)
         });
@@ -133,6 +132,8 @@ export default function Profile() {
                     }
                 ));
     };
+
+    console.log(currentUser);
 
     const isUpdateButtonDisabled = () => isEqual(currentUser, updatedUser) && !userFile;
 

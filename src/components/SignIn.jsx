@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useState} from 'react';
 import signInSvg from '../assets/img/signin.svg';
 import {Link, withRouter, Redirect} from "react-router-dom";
-import {AuthContext} from "../Auth";
+import {AuthContext} from "../contexts/AuthContext";
 import firebase from "../firebase";
 import FoodShareToast from "./reusable/Toast";
 

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import firebase from "./firebase";
-import loadingScreen from '../src/assets/img/gears-animation2.gif';
+import React, {useEffect, useReducer, useState} from "react";
+import firebase from "../firebase";
+import loadingScreen from '../assets/img/gears-animation2.gif';
+import {AuthReducer} from "../reducers/AuthReducer";
 
 export const AuthContext = React.createContext();
 
-export const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
+export const AuthContextProvider = ({ children }) => {
+    const [currentUser, dispatch] = useReducer(AuthReducer, null);
     const [pending, setPending] = useState(true);
 
     const handleUser = () => {
@@ -20,7 +21,7 @@ export const AuthProvider = ({ children }) => {
                 userParsedData = {...response.data(), uid: authUser.uid};
             }
 
-            setCurrentUser(userParsedData)
+            dispatch({type: '[USER] Load User', user: userParsedData})
             setPending(false)
         });
     }
@@ -38,11 +39,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider
-            value={{
-                currentUser
-            }}
-        >
+        <AuthContext.Provider value={{currentUser, dispatch}}>
             {children}
         </AuthContext.Provider>
     );

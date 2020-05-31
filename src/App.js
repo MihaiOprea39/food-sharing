@@ -16,7 +16,7 @@ import {
 } from "react-router-dom";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
-import {AuthProvider} from "./Auth";
+import {AuthContextProvider} from "./contexts/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 
 const SignInComponent = lazy(() => import('./components/SignIn'));
@@ -31,7 +31,7 @@ const NotFoundComponent = lazy(() => import('./components/NotFound'));
 
 function App() {
     return (
-        <AuthProvider>
+        <AuthContextProvider>
             <Router>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Header/>
@@ -58,7 +58,7 @@ function App() {
                     {/*<Footer/>*/}
                 </Suspense>
             </Router>
-        </AuthProvider>
+        </AuthContextProvider>
     );
 }
 

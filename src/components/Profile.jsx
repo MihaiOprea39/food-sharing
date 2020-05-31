@@ -22,7 +22,7 @@ const defaultToast = {
 export default function Profile() {
     const {currentUser} = useContext(AuthContext);
     const [updatedUser, setUpdatedUser] = useState(defaultUser);
-    const [file, setFile] = useState(null);
+    const [userFile, setUserFile] = useState(null);
     const [toast, setToast] = useState(defaultToast);
 
     const onDetailsChange = (event) => {
@@ -35,32 +35,26 @@ export default function Profile() {
     const onAvatarChange = (event) => {
         event.persist();
 
-        setUpdatedUser({
-            ...updatedUser,
-            avatar: event.target.files[0]
-        })
+        setUserFile(event.target.files[0]);
+
+        console.log(event.target.files[0]);
     };
 
     const updateUserAvatar = () => {
-        const updatedAvatar = firebase.storage().ref().child(`avatars/${updatedUser.avatar.name}`).put(updatedUser.avatar);
+        const avatar = firebase.storage().ref().child(`avatars/${userFile.name}`).put(userFile);
 
-        const avatar = firebase.storage().ref(`avatars/${updatedUser.avatar.name}`);
+        avatar.snapshot.ref.getDownloadURL().then(url => {
+            console.log('url', url);
 
-        avatar.getDownloadURL().then(url => {
-            console.log(url)
-        })
+            setUpdatedUser({
+                ...updatedUser,
+                avatar: url
+            })
+            setUserFile(null);
 
-
-        updatedAvatar.snapshot.ref.getDownloadURL().then(downloadURL => {
-            // console.log('File available at', downloadURL);
+            updateDatabaseCredential('avatar', url)
         });
     };
-
-    const getAvatarUrl = () => {
-        const avatar = firebase.storage().ref(`avatars/${updatedUser.avatar.name}`);
-        
-        return avatar.getDownloadURL().then(url => url);
-    }
 
     const updatePassword = (event) => {
         event.persist();
@@ -115,24 +109,20 @@ export default function Profile() {
             updateDatabaseCredential('phone');
         }
 
-        updateUserAvatar();
-
-
-        if (avatar !== currentUser.avatar) {
-            // updateUserAvatar();
-            // updateDatabaseCredential('avatar');
+        if (userFile !== null) {
+            updateUserAvatar();
         }
     };
 
     // TO DO: UPDATE CURRENT USER THROUGH CONTEXT
 
-    const updateDatabaseCredential = (credential) => {
+    const updateDatabaseCredential = (credential, value = null) => {
         firebase
             .firestore()
             .collection('users')
             .doc(currentUser.uid)
             .set({
-                [credential]: updatedUser[credential]
+                [credential]: updatedUser[credential] ? updatedUser[credential] : value
             }, {merge: true})
             .then(() =>
                 setToast({
@@ -144,7 +134,7 @@ export default function Profile() {
                 ));
     };
 
-    const isUpdateButtonDisabled = () => isEqual(currentUser, updatedUser);
+    const isUpdateButtonDisabled = () => isEqual(currentUser, updatedUser) && !userFile;
 
     useEffect(() => setUpdatedUser(currentUser), [currentUser]);
 
@@ -221,8 +211,11 @@ export default function Profile() {
                             <label>Profile picture</label>
                             <div className="d-flex justify-content-between align-items-center mt-2">
                                 <div className="profile-image-small fmxw-100 mr-4">
-                                    <img src={updatedUser.avatar ? updatedUser.avatar : defaultAvatar}
-                                         className="card-img-top rounded-circle" alt="image"/>
+                                    {updatedUser.avatar &&
+                                        <img src={updatedUser.avatar}
+                                             className="card-img-top rounded-circle"
+                                             alt="image"/>
+                                    }
                                 </div>
                                 <div className="custom-file">
                                     <input id="profile-image" type="file" className="custom-file-input"

@@ -1,27 +1,34 @@
 import React, {useEffect, useReducer, useState} from "react";
 import firebase from "../firebase";
 import loadingScreen from '../assets/img/gears-animation2.gif';
-import {AuthReducer} from "../reducers/AuthReducer";
+import {AuthReducer, loadUser} from "../reducers/AuthReducer";
 
 export const AuthContext = React.createContext();
 
-export const AuthContextProvider = ({ children }) => {
-    const [currentUser, dispatch] = useReducer(AuthReducer, null);
+export const AuthContextProvider = ({children}) => {
+    const [currentUser, userDispatch] = useReducer(AuthReducer, null);
     const [pending, setPending] = useState(true);
+
+    const isNewUser = () => {
+        if (!firebase.auth().currentUser) {
+            return false;
+        }
+
+        return firebase.auth().currentUser.metadata.creationTime === firebase.auth().currentUser.metadata.lastSignInTime;
+    }
 
     const handleUser = () => {
         firebase.auth().onAuthStateChanged(async (authUser) => {
-            let userParsedData = null;
-            
-            console.log('default user', authUser);
+            let userData = null;
 
             if (authUser) {
                 const response = await firebase.firestore().collection('users').doc(authUser.uid).get();
 
-                userParsedData = {...response.data(), uid: authUser.uid};
+                userData = {...response.data(), uid: authUser.uid};
             }
-
-            dispatch({type: '[USER] Load User', user: userParsedData})
+            if (!isNewUser()) {
+                userDispatch(loadUser(userData));
+            }
             setPending(false)
         });
     }
@@ -31,15 +38,15 @@ export const AuthContextProvider = ({ children }) => {
             await handleUser();
         })();
     }, []);
-    
-    if (pending){
+
+    if (pending) {
         return <div className="foodshare-loading-banner">
             <img src={loadingScreen} alt=""/>
         </div>
     }
 
     return (
-        <AuthContext.Provider value={{currentUser, dispatch}}>
+        <AuthContext.Provider value={{currentUser, userDispatch}}>
             {children}
         </AuthContext.Provider>
     );

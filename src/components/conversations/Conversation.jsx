@@ -2,7 +2,7 @@ import React from "react";
 import format from "date-fns/format";
 import {getFirebaseTime} from "../../services/time";
 
-export default function Conversation({conversation, showUnreadMessages, user, active, onInteract}) {
+export default function Conversation({conversation, user, active, onInteract}) {
 
     const getLatestMessage = () => {
         return conversation && conversation.messages && conversation.messages[conversation.messages.length - 1] &&
@@ -37,7 +37,7 @@ export default function Conversation({conversation, showUnreadMessages, user, ac
         <li className={`list-group-item ${active ? 'active-chat' : ''} ${!!getUnreadMessagesCount() ? 'has-unread-messages' : ''}`}
             onClick={() => onInteract(conversation)}>
             <figure className={`avatar ${!!getUnreadMessagesCount() ? 'avatar-state-success' : ''}`}>
-                <img src="https://via.placeholder.com/200X200" className="rounded-circle"
+                <img src={conversation.to.avatar} className="rounded-circle"
                      alt="foodshare-user-avatar"/>
             </figure>
             <div className="users-list-body">

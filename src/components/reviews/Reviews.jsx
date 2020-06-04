@@ -1,22 +1,35 @@
-import React, {useState, useRef, Fragment} from 'react';
+import React, {useState, useRef, Fragment, useContext} from 'react';
 import parse from "html-react-parser";
 import FoodShareStars from "./Stars";
 import format from "date-fns/format";
 import CalculateStarRating from "../../services/calculate-star-rating";
+import {AuthContext} from "../../contexts/AuthContext";
+import firebase from "../../firebase";
+import {getFirebaseTime} from "../../services/time";
 
 const defaultReview = {
     comment: '',
     rating: '',
-    timestamp: format(new Date(), 'MMM dd, yyyy'),
-    name: "A testing user"
+    timestamp: firebase.firestore.Timestamp.now(),
+    name: '',
+    from: ''
 }
 
 export default function ReviewsComponent({reviews, addReview}) {
     const [newReview, setNewReview] = useState(defaultReview);
+    const {currentUser} = useContext(AuthContext);
     const starsRef = useRef();
 
+    const getReviewDate = (review) => {
+        return format(getFirebaseTime(review.timestamp.seconds, review.timestamp.nanoseconds), 'MMM dd, yyyy');
+    }
+
     const onAddReview = () => {
-        addReview(newReview);
+        addReview({
+            ...newReview,
+            name: currentUser.displayName,
+            from: currentUser.uid
+        });
         resetReview();
     };
 
@@ -71,11 +84,8 @@ export default function ReviewsComponent({reviews, addReview}) {
                     <div className="bg-white border border-soft shadow-soft  p-4 mb-4 single-review" key={key}>
                         <div className="d-flex justify-content-between mb-4">
                             <div className="d-flex align-items-center">
-                                <a href="./profile.html" className="btn btn-xs btn-icon-only btn-primary mr-2 p-1"><span
-                                    className="fa fa-user"/></a>
-                                <a href="./profile.html"
-                                   className="font-weight-normal font-small text-gray-800">{review.name}</a>
-                                <span className="ml-2 font-small d-none d-md-inline">{review.timestamp}</span></div>
+                                <div className="font-weight-normal font-small text-gray-800">{review.name}</div>
+                                <span className="ml-2 font-small d-none d-md-inline">{getReviewDate(review)}</span></div>
                             <div className="d-flex justify-content-end align-items-center">
                                 {parse(CalculateStarRating(Number(review.rating)))}
                             </div>

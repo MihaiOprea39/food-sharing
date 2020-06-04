@@ -8,7 +8,7 @@ import CalculateStarRating from "../../services/calculate-star-rating";
 import parse from "html-react-parser";
 import {AuthContext} from "../../contexts/AuthContext";
 
-export default function Home() {
+export default function Home({user}) {
     const history = useHistory();
     const [topLocations, setTopLocations] = useState([]);
     const [topRestaurants, setTopRestaurants] = useState([]);
@@ -64,7 +64,7 @@ export default function Home() {
     return (
         <main className="home-container">
             <section className="section section-xl bg-primary overlay-dark text-white rounded"
-                     data-background="assets/img/hero.jpg">
+                     style={{paddingBottom: currentUser && currentUser.type === '0' ? '10rem' : '3rem'}}>
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 text-md-center">
@@ -78,11 +78,13 @@ export default function Home() {
                             </p>
                         </div>
                     </div>
-                    <div className="row mt-4">
-                        <div className="col">
-                            <SchedulePickUpFilters onFiltersSubmit={handleScheduleFilters}/>
+                    {currentUser && currentUser.type === '0' && (
+                        <div className="row mt-4">
+                            <div className="col">
+                                <SchedulePickUpFilters onFiltersSubmit={handleScheduleFilters}/>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </section>
             <section className="section py-lg-6 py-5 bg-soft">
@@ -234,7 +236,6 @@ export default function Home() {
                                             <img src="assets/img/image-office.jpg" className="card-img-top space-image"
                                                  alt="a card"/>
                                             <span className="badge badge-primary position-absolute listing-badge">
-                                    <span className="font-weight-normal font-xs">Office Space</span>
                                 </span>
                                         </Link>
                                         <div className="card-body">
@@ -249,20 +250,6 @@ export default function Home() {
                                                 {parse(CalculateStarRating(restaurant.rating))}
                                                 <span
                                                     className="badge badge-pill badge-secondary ml-2">{restaurant.rating}</span>
-                                            </div>
-                                            <div className="d-flex justify-content-between">
-                                                <div className="col pl-0">
-                                                    <span className="text-muted font-small d-block mb-2">Monthly</span>
-                                                    <span className="h5 text-dark font-weight-bold">2100$</span>
-                                                </div>
-                                                <div className="col">
-                                                    <span className="text-muted font-small d-block mb-2">People</span>
-                                                    <span className="h5 text-dark font-weight-bold">12</span>
-                                                </div>
-                                                <div className="col pr-0">
-                                                    <span className="text-muted font-small d-block mb-2">Sq.Ft</span>
-                                                    <span className="h5 text-dark font-weight-bold">1200</span>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

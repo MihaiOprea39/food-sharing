@@ -4,7 +4,7 @@ import {AuthContext} from "../contexts/AuthContext";
 import firebase from "../firebase";
 import FoodShareToast from "./reusable/Toast";
 import isEqual from 'lodash/isEqual';
-import defaultAvatar from '../assets/img/profile-image-2.jpg';
+import {loadUser} from "../reducers/AuthReducer";
 
 const defaultUser = {
     displayName: '',
@@ -20,9 +20,10 @@ const defaultToast = {
 };
 
 export default function Profile() {
-    const {currentUser, dispatch} = useContext(AuthContext);
+    const {currentUser, userDispatch} = useContext(AuthContext);
     const [updatedUser, setUpdatedUser] = useState(defaultUser);
     const [userFile, setUserFile] = useState(null);
+    const [hasUpdatedUser, setHasUpdatedUser] = useState(false);
     const [toast, setToast] = useState(defaultToast);
 
     const onDetailsChange = (event) => {
@@ -39,20 +40,35 @@ export default function Profile() {
     };
 
     const updateUserAvatar = () => {
-        const avatar = firebase.storage().ref().child(`avatars/${userFile.name}`).put(userFile);
+        firebase.storage().ref().child(`avatars/${userFile.name}`)
+            .put(userFile)
+            .then((snapshot) => {
+                snapshot.ref.getDownloadURL().then(url => {
 
-        avatar.snapshot.ref.getDownloadURL().then(url => {
+                    setUpdatedUser({
+                        ...updatedUser,
+                        avatar: url
+                    })
+                    setUserFile(null);
 
-            setUpdatedUser({
-                ...updatedUser,
-                avatar: url
+                    firebase
+                        .firestore()
+                        .collection('users')
+                        .doc(currentUser.uid)
+                        .set({
+                            avatar: url
+                        }, {merge: true})
+                        .then(() =>
+                            setToast({
+                                    ...toast,
+                                    visible: true,
+                                    message: 'Your profile has been successfully updated.',
+                                    type: 'success'
+                                }
+                            ))
+                        .then(() => userDispatch(loadUser({...updatedUser, avatar: url})));
+                });
             })
-            setUserFile(null);
-
-            dispatch({type: '[USER] Load User', user: updatedUser});
-
-            updateDatabaseCredential('avatar', url)
-        });
     };
 
     const updatePassword = (event) => {
@@ -92,7 +108,7 @@ export default function Profile() {
     }
 
     const updateProfile = () => {
-        const {displayName, email, phone, avatar} = updatedUser;
+        const {displayName, email, phone} = updatedUser;
 
         if (displayName !== currentUser.displayName) {
             firebase.auth().currentUser.updateProfile({displayName})
@@ -111,9 +127,9 @@ export default function Profile() {
         if (userFile !== null) {
             updateUserAvatar();
         }
-    };
 
-    // TO DO: UPDATE CURRENT USER THROUGH CONTEXT
+        setHasUpdatedUser(true);
+    };
 
     const updateDatabaseCredential = (credential, value = null) => {
         firebase
@@ -121,7 +137,7 @@ export default function Profile() {
             .collection('users')
             .doc(currentUser.uid)
             .set({
-                [credential]: updatedUser[credential] ? updatedUser[credential] : value
+                [credential]: value ? value : updatedUser[credential]
             }, {merge: true})
             .then(() =>
                 setToast({
@@ -133,11 +149,15 @@ export default function Profile() {
                 ));
     };
 
-    console.log(currentUser);
-
     const isUpdateButtonDisabled = () => isEqual(currentUser, updatedUser) && !userFile;
 
     useEffect(() => setUpdatedUser(currentUser), [currentUser]);
+    useEffect(() => {
+        if (hasUpdatedUser) {
+            userDispatch(loadUser(updatedUser))
+            setHasUpdatedUser(false);
+        }
+    }, [hasUpdatedUser]);
 
     return (
         <div className="section section-lg">
@@ -211,13 +231,6 @@ export default function Profile() {
                         <form action="#" method="post" className="card shadow-soft border p-4 mb-4">
                             <label>Profile picture</label>
                             <div className="d-flex justify-content-between align-items-center mt-2">
-                                <div className="profile-image-small fmxw-100 mr-4">
-                                    {updatedUser.avatar &&
-                                        <img src={updatedUser.avatar}
-                                             className="card-img-top rounded-circle"
-                                             alt="image"/>
-                                    }
-                                </div>
                                 <div className="custom-file">
                                     <input id="profile-image" type="file" className="custom-file-input"
                                            onChange={onAvatarChange}/>

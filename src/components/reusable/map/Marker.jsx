@@ -1,14 +1,16 @@
-import React, {useEffect} from "react"
+import React, {useContext, useEffect} from "react"
 import {InfoWindow, Marker} from "react-google-maps";
 import parse from "html-react-parser";
 import Checkbox from "@material-ui/core/Checkbox";
 import {useHistory} from "react-router-dom";
 import CalculateStarRating from "../../../services/calculate-star-rating";
+import {AuthContext} from "../../../contexts/AuthContext";
 
 const defaultPosition = {lat: -34.397, lng: 150.644};
 
 export default function FoodShareMarker({marker, position = defaultPosition, selected, icon = null, togglePickup = false, onTogglePickup, onMarkerClick}) {
     const history = useHistory();
+    const {currentUser} = useContext(AuthContext);
 
     const handleScheduleInteract = (id) => {
         history.push(`/pick-up?restaurant=${id}`);
@@ -69,11 +71,12 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                         </ul>
                         {!togglePickup && (
                             <div>
-                                <button
-                                    className="btn btn-primary animate-up-2 schedule-pickup"
-                                    onClick={() => handleScheduleInteract(marker.id)}
-                                >Schedule pickup
-                                </button>
+                                {currentUser.type === '0' && (<button
+                                        className="btn btn-primary animate-up-2 schedule-pickup"
+                                        onClick={() => handleScheduleInteract(marker.id)}
+                                    >Schedule pickup
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>

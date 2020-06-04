@@ -2438,8 +2438,9 @@
     -webkit-border-radius: .50rem;
     -moz-border-radius: .50rem;
     border-radius: .50rem;
-    font-size: 14px;
+    font-size: 16px;
     border: 2px solid #dddddd;
+    font-weight: 500;
   }
 
   .form-control:focus {
@@ -3641,9 +3642,7 @@
   }
 
   .layout {
-    height: -webkit-calc(100vh - 60px);
-    height: -moz-calc(100vh - 60px);
-    height: calc(100vh - 60px);
+    height: 100vh;
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;

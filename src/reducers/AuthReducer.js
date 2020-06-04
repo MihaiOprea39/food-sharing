@@ -1,13 +1,11 @@
-export const AuthReducer = (state, action) => {
-    switch (action.type) {
-        case '[USER] Load User':
-            return action.user;
+export function loadUser(data) {
+    return {type: '[USER] Load User', user: data};
+}
 
-        case '[USER] Update User Avatar':
-            return {
-                ...state,
-                avatar: action.avatar
-            }
+export const AuthReducer = (state, {type, user}) => {
+    switch (type) {
+        case '[USER] Load User':
+            return user;
 
         default:
             return state;

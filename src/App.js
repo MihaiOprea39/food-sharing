@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from 'react';
+import React, {lazy, Suspense, useContext} from 'react';
 import './App.css';
 
 // Vendor css
@@ -18,6 +18,7 @@ import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import {AuthContextProvider} from "./contexts/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
+import NgoRoute from "./NgoRoute";
 
 const SignInComponent = lazy(() => import('./components/SignIn'));
 const RegisterComponent = lazy(() => import('./components/Register'));
@@ -36,7 +37,7 @@ function App() {
                 <Suspense fallback={<div>Loading...</div>}>
                     <Header/>
                     <Switch>
-                        <ProtectedRoute exact path="/" component={HomeComponent} />
+                        <ProtectedRoute exact path="/" component={HomeComponent}/>
 
                         <Route exact path="/login">
                             <SignInComponent/>
@@ -46,16 +47,16 @@ function App() {
                         </Route>
 
                         <ProtectedRoute path="/conversations" component={ConversationsComponent} />
-                        <ProtectedRoute path="/pick-up" component={PickUpComponent} />
-                        <ProtectedRoute path="/restaurant/:id" component={RestaurantComponent} />
-                        <ProtectedRoute path="/restaurants" component={RestaurantsListComponent} />
-                        <ProtectedRoute path="/profile" component={ProfileComponent} />
+                        <NgoRoute path="/pick-up" component={PickUpComponent}/>
+                        <ProtectedRoute path="/restaurant/:id" component={RestaurantComponent}/>
+                        <ProtectedRoute path="/restaurants" component={RestaurantsListComponent}/>
+                        <ProtectedRoute path="/profile" component={ProfileComponent}/>
 
                         <Route path="*">
                             <NotFoundComponent/>
                         </Route>
                     </Switch>
-                    {/*<Footer/>*/}
+                    <Footer/>
                 </Suspense>
             </Router>
         </AuthContextProvider>

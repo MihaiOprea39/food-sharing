@@ -118,7 +118,7 @@ const MessagesPanel = forwardRef(({current, accepted, user, onMessageSubmit, onR
                                                 key={index}>
                                                 <div className={`message-avatar ${areAvatarAndDateVisible(index)}`}>
                                                     <figure className="avatar" title="Mirabelle Tow">
-                                                        <img src="https://via.placeholder.com/200X200"
+                                                        <img src={message.from === user.uid ? current.from.avatar : current.to.avatar}
                                                              className="rounded-circle"
                                                              alt="image"/>
                                                     </figure>

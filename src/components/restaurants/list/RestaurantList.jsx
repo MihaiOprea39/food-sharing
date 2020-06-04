@@ -148,21 +148,21 @@ export default function RestaurantsList() {
     };
 
     const updateCustomFields = () => {
-        firebase.firestore()
-            .collection('restaurants')
-            .get()
-            .then(snapshot => {
-                snapshot.forEach(doc => {
-                    firebase.firestore()
-                        .collection('restaurants')
-                        .doc(doc.id)
-                        .set({
-                            location: [1, 2, 3, 4][Math.floor(Math.random() * [1, 2, 3, 4].length)]
-                        }, {
-                            merge: true
-                        }).then()
-                })
-            })
+        // firebase.firestore()
+        //     .collection('restaurants')
+        //     .get()
+        //     .then(snapshot => {
+        //         snapshot.forEach(doc => {
+        //             firebase.firestore()
+        //                 .collection('restaurants')
+        //                 .doc(doc.id)
+        //                 .set({
+        //                     location: [1, 2, 3, 4][Math.floor(Math.random() * [1, 2, 3, 4].length)]
+        //                 }, {
+        //                     merge: true
+        //                 }).then()
+        //         })
+        //     })
         // firebase.firestore()
         //     .collection('restaurants')
         //     .get()
@@ -180,6 +180,37 @@ export default function RestaurantsList() {
         //                 }).then()
         //         })
         //     })
+        firebase.firestore()
+            .collection('restaurants')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    firebase.firestore()
+                        .collection('restaurants')
+                        .doc(doc.id)
+                        .collection('reviews')
+                        .get()
+                        .then(snap => {
+                            snap.forEach(review => {
+                                    firebase.firestore()
+                                        .collection('restaurants')
+                                        .doc(doc.id)
+                                        .collection('reviews')
+                                        .doc(review.id)
+                                        .set({
+                                            timestamp: [firebase.firestore.Timestamp.fromDate(new Date(1591280791773)),
+                                                firebase.firestore.Timestamp.fromDate(new Date(1591210791773)),
+                                                firebase.firestore.Timestamp.fromDate(new Date(1581210711773)),
+                                                firebase.firestore.Timestamp.fromDate(new Date(1581110311773)),
+                                                firebase.firestore.Timestamp.fromDate(new Date(1582119311773)),
+                                            ][Math.floor(Math.random() * 5)]
+                                        }, {
+                                            merge: true
+                                        }).then()
+                                })
+                        })
+                })
+            })
         // JSON.parse(JSON.stringify((local))).forEach((item, index) => {
         //     firebase.firestore()
         //         .collection('restaurants')

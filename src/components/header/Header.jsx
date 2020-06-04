@@ -1,4 +1,4 @@
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import React, {useContext} from "react";
 import './header.scss';
 import firebase from "../../firebase";
@@ -50,8 +50,9 @@ export default function Header() {
                                 </Link>
                                 <ul className="dropdown-menu">
                                     <li className="nav-item">
-                                        <Link to="./html/pages/single-space.html" className="dropdown-item">Space
-                                            details</Link>
+                                        <Link to="#" onClick={() => firebase.auth().signOut()}
+                                              className="dropdown-item">Sign out
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="./html/pages/all-spaces.html" className="dropdown-item">Listing
@@ -163,34 +164,39 @@ export default function Header() {
                             </li>
                         </ul>
                     </div>
-                    <div className="d-flex align-items-center">
-                        <ul className="navbar-nav navbar-nav-hover ml-3">
-                            <li className="nav-item dropdown">
-                                <Link to="#" className="nav-link d-flex align-items-center p-0" data-toggle="dropdown">
+                    {currentUser && (
+                        <div className="d-flex align-items-center">
+                            <ul className="navbar-nav navbar-nav-hover ml-3">
+                                <li className="nav-item dropdown">
+                                    <Link to="#" className="nav-link d-flex align-items-center p-0"
+                                          data-toggle="dropdown">
 
                                     <span
                                         className="nav-link-inner-text">{currentUser ? currentUser.displayName : 'Account'}</span>
-                                    <div className="profile-image-small ml-1">
-                                        <img src="../../assets/img/team/profile-image-2.jpg"
-                                             className="card-img-top rounded-circle" alt="image"
-                                             style={{width: '45px', height: '45px'}}/>
-                                    </div>
-                                </Link>
-                                <ul className="dropdown-menu">
-                                    <li className="nav-item">
-                                        <Link to="/profile" className="dropdown-item">Profile</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to="/conversations" className="dropdown-item">Conversations</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to="#" className="dropdown-item"
-                                              onClick={() => firebase.auth().signOut()}>Sign out</Link>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
+                                        <div className="profile-image-small ml-1">
+                                            {currentUser.avatar &&
+                                            <img src={currentUser.avatar}
+                                                 className="card-img-top rounded-circle" alt="image"
+                                                 style={{width: '45px', height: '45px'}}/>
+                                            }
+                                        </div>
+                                    </Link>
+                                    <ul className="dropdown-menu">
+                                        <li className="nav-item">
+                                            <Link to="/profile" className="dropdown-item">Profile</Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/conversations" className="dropdown-item">Conversations</Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="#" className="dropdown-item"
+                                                  onClick={() => firebase.auth().signOut()}>Sign out</Link>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </nav>
         </header>

@@ -1,12 +1,14 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useReducer, useState} from 'react';
 import registerSvg from '../assets/img/signup.svg';
 import {Link, Redirect, withRouter} from "react-router-dom";
 import firebase from "../firebase";
 import FoodShareToast from "./reusable/Toast";
 import {AuthContext} from "../contexts/AuthContext";
+import {loadUser} from "../reducers/AuthReducer";
 
 const Register = ({history}) => {
     const [errorToast, setErrorToast] = useState(null);
+    const {currentUser, userDispatch} = useContext(AuthContext);
 
     const handleRegister = useCallback(async event => {
         event.preventDefault();
@@ -21,13 +23,19 @@ const Register = ({history}) => {
 
         try {
             const credentials = await firebase.auth().createUserWithEmailAndPassword(email.value, password.value);
-
-            await firebase.firestore().collection('users').doc(credentials.user.uid).set({
+            const defaultAvatarRef = firebase.storage().ref().child('avatars/default-user.jpg');
+            const defaultAvatarUrl = await defaultAvatarRef.getDownloadURL();
+            const payload = {
                 displayName: username.value,
                 email: email.value,
-                type: userType.value
-            });
+                type: userType.value,
+                avatar: defaultAvatarUrl,
+                phone: ''
+            };
 
+            await firebase.firestore().collection('users').doc(credentials.user.uid).set(payload);
+
+            userDispatch(loadUser({...payload, uid: credentials.user.uid}));
             history.push('/');
 
         } catch (error) {
@@ -35,7 +43,6 @@ const Register = ({history}) => {
         }
     }, [history]);
 
-    const {currentUser} = useContext(AuthContext);
 
     if (currentUser) {
         return <Redirect to="/"/>;

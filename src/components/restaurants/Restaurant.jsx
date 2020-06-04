@@ -12,16 +12,31 @@ import FoodShareMap from "../reusable/map/Map";
 export default function Restaurant() {
     const [generatedId, setGeneratedId] = useState('');
     const [restaurant, setRestaurant] = useState(null);
+    const [recommended, setRecommended] = useState([]);
+    const [owner, setOwner] = useState(null);
     const [amenities, setAmenities] = useState(null);
     const [reviews, setReviews] = useState(null);
-    const [averageRating, setAverageRating] = useState(0);
     const {id: restaurantId} = useParams();
-    const [activeTab, setActiveTab] = useState('4');
+    const [activeTab, setActiveTab] = useState('1');
 
     const toggleTab = tab => {
         if (activeTab !== tab) {
             setActiveTab(tab);
         }
+    }
+
+    const getRecommended = (locationId) => {
+        firebase.firestore()
+            .collection('restaurants')
+            .where('location', '==', Number(locationId))
+            .limit(3)
+            .get()
+            .then((snapshot) => {
+                const data = snapshot.docs.map(document => document.data());
+                const filteredData = data.filter(({id}) => id !== Number(restaurantId));
+
+                setRecommended(filteredData);
+            });
     }
 
     const getRestaurantData = () => {
@@ -35,6 +50,8 @@ export default function Restaurant() {
 
                     getAmenities(document);
                     getReviews(document);
+                    getOwner();
+                    getRecommended(document.data().location || null);
 
                     return {
                         ...document.data(),
@@ -69,8 +86,20 @@ export default function Restaurant() {
             .then(snap => {
                 const reviews = snap.docs.map(review => review.data());
 
-                setAverageRating(calculateAverageRating(reviews));
                 setReviews(reviews);
+            });
+    };
+
+    const getOwner = () => {
+        firebase.firestore()
+            .collection('users')
+            .where('type', '==', '1')
+            .where('restaurants', 'array-contains', Number(restaurantId))
+            .get()
+            .then(snapshot => {
+                const owner = snapshot.docs.map(document => document.data());
+
+                setOwner(owner[0]);
             });
     };
 
@@ -82,17 +111,30 @@ export default function Restaurant() {
             .add(review)
             .then(() => {
                 const updatedReviews = [...reviews, review];
+                const updatedAverageRating = calculateAverageRating(updatedReviews);
 
-                setAverageRating(calculateAverageRating(updatedReviews));
-                setReviews(updatedReviews)
+                updateRating(updatedAverageRating);
+                setReviews(updatedReviews);
             });
     };
+
+    const updateRating = (rating) => {
+        firebase.firestore()
+            .collection('restaurants')
+            .doc(generatedId)
+            .set({
+                rating
+            }, {merge: true})
+            .then(() => {
+                setRestaurant({...restaurant, rating});
+            });
+    }
 
     const calculateAverageRating = (reviews) => {
         const ratings = reviews.map(({rating}) => Number(rating));
         const ratingsSum = ratings.reduce((acc, current) => acc + current, 0);
 
-        return (ratingsSum / ratings.length) || 0;
+        return (ratingsSum / ratings.length).toFixed(2) || 0;
     };
 
     useEffect(getRestaurantData, []);
@@ -166,9 +208,7 @@ export default function Restaurant() {
                                     <TabPane tabId="1">
                                         <h2 className="font-weight-normal">{restaurant.name}</h2>
                                         <div className="d-block d-md-flex">
-                                            <h6 className="text-secondary font-weight-light"><i
-                                                className="fas fa-check-circle mr-1 pr-1"></i>Verified</h6>
-                                            <span className="lh-120 ml-md-4"><i
+                                            <span className="lh-120"><i
                                                 className="fas fa-map-marker-alt mr-1 pr-1"/>
                                                 {restaurant.address}
                                                 <a data-fancybox className="text-primary ml-md-3" onClick={() => {
@@ -194,60 +234,6 @@ export default function Restaurant() {
                                             </div>
                                         </div>
                                         <p>{restaurant.description}</p>
-                                        <div className="row shadow-sm mt-5">
-                                            <div className="col-6 col-xl-3 card bg-soft">
-                                                <div className="card-body text-center">
-                                                    <div className="icon">
-                                                        <i className="far fa-calendar-alt"/>
-                                                    </div>
-                                                    <p className="font-weight-normal h4 mt-3 mb-0">
-                                                        <span className="counter text-dark mr-2">1</span>Year
-                                                    </p>
-                                                    <p className="text-muted mb-0">
-                                                        Minimum term
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="col-6 col-xl-3 card bg-soft border-left">
-                                                <div className="card-body text-center">
-                                                    <div className="icon">
-                                                        <i className="fas fa-ruler-combined"/>
-                                                    </div>
-                                                    <p className="font-weight-normal mt-3 mb-0 h4">
-                                                        <span className="counter text-dark mr-2">180</span>SqFt
-                                                    </p>
-                                                    <p className="text-muted mb-0">
-                                                        Space size
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="col-6 col-xl-3 card bg-soft border-left">
-                                                <div className="card-body text-center">
-                                                    <div className="icon">
-                                                        <i className="fas fa-users"></i>
-                                                    </div>
-                                                    <p className="font-weight-normal mt-3 mb-0 h4">
-                                                        <span className="counter text-dark mr-2">15</span>+
-                                                    </p>
-                                                    <p className="text-muted mb-0">
-                                                        People
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="col-6 col-xl-3 card bg-soft border-left">
-                                                <div className="card-body text-center">
-                                                    <div className="icon">
-                                                        <i className="fas fa-couch"></i>
-                                                    </div>
-                                                    <p className="font-weight-normal mt-3 mb-0 h4">
-                                                        <span className="text-dark mr-2">Meeting</span>
-                                                    </p>
-                                                    <p className="text-muted mb-0">
-                                                        Space type
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </TabPane>
                                     <TabPane tabId="2">
                                         <ReviewsComponent reviews={reviews} addReview={onReviewSubmit}/>
@@ -275,150 +261,107 @@ export default function Restaurant() {
                                         </div>
                                     </TabPane>
                                     <TabPane tabId="4">
-                                        <FoodShareMap
-                                            googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
-                                            loadingElement={<div style={{height: `100%`}}/>}
-                                            containerElement={<div style={{height: `100vh`}}/>}
-                                            mapElement={<div style={{height: `100%`}}/>}
-                                            markers={[restaurant]}
-                                            center={{
-                                                lat: restaurant.latitude,
-                                                lng: restaurant.longitude
-                                            }}
-                                        />
+                                        {/*<FoodShareMap*/}
+                                        {/*    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}*/}
+                                        {/*    loadingElement={<div style={{height: `100%`}}/>}*/}
+                                        {/*    containerElement={<div style={{height: `100vh`}}/>}*/}
+                                        {/*    mapElement={<div style={{height: `100%`}}/>}*/}
+                                        {/*    markers={[restaurant]}*/}
+                                        {/*    center={{*/}
+                                        {/*        lat: restaurant.latitude,*/}
+                                        {/*        lng: restaurant.longitude*/}
+                                        {/*    }}*/}
+                                        {/*/>*/}
                                     </TabPane>
                                 </TabContent>
                             </div>
                         </div>
-                        <aside className="col-12 col-lg-4">
+                        <aside className="col-12 col-lg-4 mt-2">
                             <div className="card bg-soft shadow-sm border-soft p-3">
                                 <div className="d-flex align-items-center justify-content-center">
                                     <span><i className="foodshare-star star fas fa-star text-warning"/></span>
-                                    <span className="h3 font-weight-bold mb-0 mr-1">{averageRating.toFixed(2)} <span
+                                    <span className="h3 font-weight-bold mb-0 mr-1">{restaurant.rating} <span
                                         className="font-weight-light">/</span> 5</span>
                                 </div>
                             </div>
-                            <div className="card shadow-sm border-soft mt-4 p-3">
-                                <button className="btn btn-primary availability" value="06/20/2018">Booking
-                                    Availability
-                                </button>
-                            </div>
-                            <div className="card shadow-sm border-soft mt-4 p-3">
-                                <h5 className="font-weight-normal">Property Owner</h5>
-                                <div className="media d-flex align-items-center my-3">
-                                    <a href="./profile.html" className="avatar-lg mr-2" data-toggle="tooltip"
-                                       data-placement="top" title="More details">
-                                        <img className="img-fluid rounded-circle"
-                                             src="../../../public/assets/img/team/profile-image-4.jpg" alt="avatar"/>
-                                    </a>
-                                    <div className="avatar-name"><a className="text-gray" href="./profile.html"
-                                                                    data-toggle="tooltip" data-placement="top"
-                                                                    title="More details">Tanislav Robert</a></div>
-                                </div>
-                                <button type="button" className="btn btn-block btn-secondary mb-3" data-toggle="modal"
-                                        data-target="#modal-form">Contact Host
-                                </button>
-                                <div className="modal fade" id="modal-form" tabIndex="-1" role="dialog"
-                                     aria-labelledby="modal-form"
-                                     aria-hidden="true">
-                                    <div className="modal-dialog modal-dialog-centered modal-md" role="document">
-                                        <div className="modal-content">
-                                            <div className="modal-body p-0">
-                                                <div className="card shadow-md border-0">
-                                                    <div className="card-body position-relative">
-                                                        <button type="button" className="close mb-2"
-                                                                data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">×</span>
-                                                        </button>
-                                                        <form className="mt-3">
-                                                            <div className="form-group">
-                                                                <div className="input-group mb-4">
-                                                                    <div className="input-group-prepend">
+                            {owner && (
+                                <div className="card shadow-sm border-soft mt-4 p-3 owner-card">
+                                    <h5 className="font-weight-normal">Property Owner</h5>
+                                    <div className="media d-block align-items-center my-3 mb-0">
+                                        <div className="avatar-lg mr-2" style={{width: '6rem', height: '6rem'}}>
+                                            <img className="img-fluid rounded-circle"
+                                                 src={owner.avatar}
+                                                 alt="avatar"/>
+                                        </div>
+                                        <div className="avatar-name">
+                                            <p className="font-weight-400">{owner.displayName}</p>
+                                            <p className="font-weight-400">{owner.email}</p>
+                                            <p className="font-weight-400">{owner.phone}</p>
+                                        </div>
+                                    </div>
+                                    <div className="modal fade" id="modal-form" tabIndex="-1" role="dialog"
+                                         aria-labelledby="modal-form"
+                                         aria-hidden="true">
+                                        <div className="modal-dialog modal-dialog-centered modal-md" role="document">
+                                            <div className="modal-content">
+                                                <div className="modal-body p-0">
+                                                    <div className="card shadow-md border-0">
+                                                        <div className="card-body position-relative">
+                                                            <button type="button" className="close mb-2"
+                                                                    data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                            <form className="mt-3">
+                                                                <div className="form-group">
+                                                                    <div className="input-group mb-4">
+                                                                        <div className="input-group-prepend">
                                                                         <span className="input-group-text"><i
                                                                             className="far fa-user"></i></span>
+                                                                        </div>
+                                                                        <input className="form-control"
+                                                                               placeholder="Name"
+                                                                               type="text"
+                                                                               required/>
                                                                     </div>
-                                                                    <input className="form-control" placeholder="Name"
-                                                                           type="text"
-                                                                           required/>
                                                                 </div>
-                                                            </div>
-                                                            <div className="form-group">
-                                                                <div className="input-group mb-4">
-                                                                    <div className="input-group-prepend">
+                                                                <div className="form-group">
+                                                                    <div className="input-group mb-4">
+                                                                        <div className="input-group-prepend">
                                                                         <span className="input-group-text"><i
                                                                             className="far fa-envelope"></i></span>
+                                                                        </div>
+                                                                        <input className="form-control"
+                                                                               placeholder="Email"
+                                                                               type="email"
+                                                                               required/>
                                                                     </div>
-                                                                    <input className="form-control" placeholder="Email"
-                                                                           type="email"
-                                                                           required/>
                                                                 </div>
-                                                            </div>
-                                                            <div className="form-group">
+                                                                <div className="form-group">
                                                             <textarea className="form-control"
                                                                       placeholder="Write message"
                                                                       id="message-2" rows="4" required></textarea>
-                                                            </div>
-                                                            <div className="text-center">
-                                                                <button type="submit"
-                                                                        className="btn btn-block btn-primary mt-4">Send
-                                                                    Message
-                                                                </button>
-                                                            </div>
-                                                        </form>
+                                                                </div>
+                                                                <div className="text-center">
+                                                                    <button type="submit"
+                                                                            className="btn btn-block btn-primary mt-4">Send
+                                                                        Message
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="card shadow-sm border-soft mt-4 p-3">
-                                <h5 className="font-weight-normal">Request Desk</h5>
-                                <form className="mt-3">
-                                    <div className="form-group">
-                                        <div className="input-group mb-4">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text"><i
-                                                    className="far fa-user"></i></span>
-                                            </div>
-                                            <input className="form-control" placeholder="Name" type="text" required/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <div className="input-group mb-4">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text"><i
-                                                    className="far fa-envelope"></i></span>
-                                            </div>
-                                            <input className="form-control" placeholder="Email" type="email" required/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <div className="input-group mb-4">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text"><i
-                                                    className="fas fa-mobile"></i></span>
-                                            </div>
-                                            <input className="form-control" placeholder="Phone" type="number" required/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                    <textarea className="form-control" placeholder="Write short message to host"
-                                              id="message"
-                                              rows="4" required></textarea>
-                                    </div>
-                                    <div className="text-center">
-                                        <button type="submit" className="btn btn-block btn-primary mt-4">Send Request
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                            )}
                         </aside>
                     </div>
                 </div>
             </div>
             }
-            <Recommended/>
+            {!!recommended.length && <Recommended restaurants={recommended}/> }
         </main>
     );
 }

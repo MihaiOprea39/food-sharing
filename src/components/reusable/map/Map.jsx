@@ -1,8 +1,9 @@
-import React, {useState} from "react"
+import React, {useContext, useState} from "react"
 import {withScriptjs, withGoogleMap, GoogleMap} from "react-google-maps"
 import FoodShareMarker from "./Marker";
 import mapStyle from './mapStyle';
 import './map.scss';
+import {AuthContext} from "../../../contexts/AuthContext";
 
 const defaultProps = {
     center: {

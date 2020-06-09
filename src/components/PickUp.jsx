@@ -9,7 +9,6 @@ import format from "date-fns/format";
 import FoodShareMap from "./reusable/map/Map";
 import FoodShareDatePicker from "./reusable/DatePicker";
 import CalculateStarRating from "../services/calculate-star-rating";
-import parse from "html-react-parser";
 import FoodShareDialog from "./reusable/dialog/Dialog";
 import {AuthContext} from "../contexts/AuthContext";
 
@@ -291,7 +290,7 @@ This is ${currentUser ? currentUser.displayName : 'PLACEHOLDER'} contacting you.
                                             <p className="font-weight-400">{pickupRestaurant.location && pickupRestaurant.location.name}</p>
                                         </div>
                                         <div className="d-flex">
-                                            <p className="font-weight-400">{parse(CalculateStarRating(pickupRestaurant.rating))}</p>
+                                            {CalculateStarRating(pickupRestaurant.rating)}
                                         </div>
                                     </div>
                                 </div>

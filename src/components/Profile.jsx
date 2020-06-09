@@ -234,7 +234,7 @@ export default function Profile() {
                                 <div className="custom-file">
                                     <input id="profile-image" type="file" className="custom-file-input"
                                            onChange={onAvatarChange}/>
-                                    <label className="custom-file-label" htmlFor="profile-image">Choose file</label>
+                                    <label className="custom-file-label" htmlFor="profile-image">{userFile ? userFile.name : 'Choose a file'}</label>
                                 </div>
                             </div>
                             <small className="text-gray-500 font-weight-light font-xs d-block mt-2">Image should be

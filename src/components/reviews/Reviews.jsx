@@ -87,7 +87,7 @@ export default function ReviewsComponent({reviews, addReview}) {
                                 <div className="font-weight-normal font-small text-gray-800">{review.name}</div>
                                 <span className="ml-2 font-small d-none d-md-inline">{getReviewDate(review)}</span></div>
                             <div className="d-flex justify-content-end align-items-center">
-                                {parse(CalculateStarRating(Number(review.rating)))}
+                                {CalculateStarRating(Number(review.rating))}
                             </div>
                         </div>
                         <p className="m-0">{review.comment}</p>

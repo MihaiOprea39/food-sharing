@@ -232,6 +232,9 @@ export default function RestaurantsList() {
 
     const onSearchSubmit = async () => {
         const {search, date, rating, location} = filters;
+        
+        console.log('here', rating);
+        console.log('here', Math.min(...rating));
 
         let searchQuery = firebase
             .firestore()
@@ -250,7 +253,7 @@ export default function RestaurantsList() {
         }
 
         if (rating && !!rating.length) {
-            searchQuery = searchQuery.where('rating', 'in', rating);
+            searchQuery = searchQuery.where('rating', '>=', String(Math.min(...rating)));
         }
 
         if (location) {

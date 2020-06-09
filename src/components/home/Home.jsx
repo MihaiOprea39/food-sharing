@@ -5,7 +5,6 @@ import {Link, useHistory} from "react-router-dom";
 import firebase from "../../firebase";
 import countBy from 'lodash/countBy';
 import CalculateStarRating from "../../services/calculate-star-rating";
-import parse from "html-react-parser";
 import {AuthContext} from "../../contexts/AuthContext";
 
 export default function Home({user}) {
@@ -50,7 +49,7 @@ export default function Home({user}) {
     const getTopRestaurants = () => {
         firebase.firestore()
             .collection('restaurants')
-            .where('rating', '==', '5')
+            .where('rating', '>=', '3.50')
             .limit(6)
             .get().then(snapshot => {
             const topRestaurants = snapshot.docs.map(doc => doc.data());
@@ -63,19 +62,19 @@ export default function Home({user}) {
 
     return (
         <main className="home-container">
-            <section className="section section-xl bg-primary overlay-dark text-white rounded"
+            <section className="section home-section-banner section-xl bg-primary overlay-dark text-white rounded"
                      style={{paddingBottom: currentUser && currentUser.type === '0' ? '10rem' : '3rem'}}>
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 text-md-center">
-                            <h1 className="display-2">
-                                Find your perfect <span className="font-weight-bolder">coworking</span> space.
+                            <h1 className="display-2 mb-5">
+                                Find your perfect <span className="font-weight-bolder">food-sharing</span> space.
                             </h1>
-                            <p className="lead text-muted mt-4">
-                                <span className="font-weight-bold">12,000+</span> coworking spaces with desks, offices &
-                                meeting rooms in <span className="font-weight-bold">165+</span> countries. <br/>Discover
-                                and reserve space today.
-                            </p>
+                            {/*<p className="lead text-muted mt-4">*/}
+                            {/*    <span className="font-weight-bold">12,000+</span> coworking spaces with desks, offices &*/}
+                            {/*    meeting rooms in <span className="font-weight-bold">165+</span> countries. <br/>Discover*/}
+                            {/*    and reserve space today.*/}
+                            {/*</p>*/}
                         </div>
                     </div>
                     {currentUser && currentUser.type === '0' && (
@@ -92,8 +91,8 @@ export default function Home({user}) {
                     <div className="row justify-content-center">
                         <div className="col-8 text-center">
                             <h2 className="h1"><span className="font-weight-bold">How it works? </span></h2>
-                            <p className="lead mt-3">All you’ll need are the details of the building and location, the
-                                types of space, pricing and some good quality photographs.</p>
+                            <p className="lead mt-3">All you’ll need are the details of the location, the
+                                desired date, a pick-up request and as soon as an owner approves, you're good to go.</p>
                         </div>
                     </div>
                     <div className="row mt-lg-3 mt-3">
@@ -109,9 +108,8 @@ export default function Home({user}) {
                                                         className="icon icon-shape icon-shape-primary mb-4 rounded-circle">
                                                         <i className="fas fa-search"></i>
                                                     </div>
-                                                    <h5 className="font-weight-normal my-3">1. Choose a workspace</h5>
-                                                    <p>It takes no longer than 15 minutes to list your space on
-                                                        themesberg. Our user friendly onboarding process.</p>
+                                                    <h5 className="font-weight-normal my-3">1. Choose a restaurant</h5>
+                                                    <p>It takes no longer than a couple of minutes to venture through our user friendly listings screen.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -122,9 +120,9 @@ export default function Home({user}) {
                                                         className="icon icon-shape icon-shape-primary mb-4 rounded-circle">
                                                         <i className="far fa-calendar-check"></i>
                                                     </div>
-                                                    <h5 className="font-weight-normal my-3">2. Schedule a tour</h5>
-                                                    <p>After you have uploaded your space - our website makes it easy
-                                                        for you to keep the details up to date.</p>
+                                                    <h5 className="font-weight-normal my-3">2. Schedule a pick-up</h5>
+                                                    <p>Once you have found your desired location, our platform makes it easy
+                                                        for you to get in touch with its owner.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,9 +133,8 @@ export default function Home({user}) {
                                                         className="icon icon-shape icon-shape-primary mb-4 rounded-circle">
                                                         <i className="fas fa-mouse-pointer"></i>
                                                     </div>
-                                                    <h5 className="font-weight-normal my-3">3. Book your workspace</h5>
-                                                    <p>Orders coming from themesberg are 100% prepaid. We will bring you
-                                                        not just leads but new clients.</p>
+                                                    <h5 className="font-weight-normal my-3">3. Collect</h5>
+                                                    <p>All that's left now is to arrive at the location and collect your disposable food.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,11 +184,11 @@ export default function Home({user}) {
                     <div className="row mt-6">
                         <div className="col-md-4">
                             <h2 className="h1 mb-5">Explore our <span className="font-weight-bold">available</span>
-                                <br/>office
-                                spaces.</h2>
+                                <br/>restaurant
+                                listings.</h2>
                         </div>
                         <div className="col-md-4">
-                            <p className="lead">Coworking is not only about the physical place, but about establishing
+                            <p className="lead">FoodSharing is not only about the physical place, but about establishing
                                 the coworking community first. Its benefits can already be experienced outside of its
                                 places, and it is recommended</p>
                             <p className="lead mt-4">To start with building a coworking community first before
@@ -247,9 +244,9 @@ export default function Home({user}) {
                                                     className="fas fa-map-marker-alt mr-2"/>{restaurant.address}</span>
                                             </div>
                                             <div className="d-flex my-4">
-                                                {parse(CalculateStarRating(restaurant.rating))}
+                                                {CalculateStarRating(restaurant.rating)}
                                                 <span
-                                                    className="badge badge-pill badge-secondary ml-2">{restaurant.rating}</span>
+                                                    className="badge badge-pill badge-secondary ml-2 d-flex align-items-center">{restaurant.rating}</span>
                                             </div>
                                         </div>
                                     </div>

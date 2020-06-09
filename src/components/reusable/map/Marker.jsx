@@ -1,6 +1,5 @@
 import React, {useContext, useEffect} from "react"
 import {InfoWindow, Marker} from "react-google-maps";
-import parse from "html-react-parser";
 import Checkbox from "@material-ui/core/Checkbox";
 import {useHistory} from "react-router-dom";
 import CalculateStarRating from "../../../services/calculate-star-rating";
@@ -53,7 +52,7 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                             <li>
                                 <div><span className="marker-field meta-property">Rating</span>
                                     <span
-                                        className="marker-field meta-value">{parse(CalculateStarRating(Number(marker.rating)))}
+                                        className="marker-field meta-value">{CalculateStarRating(Number(marker.rating))}
                                     </span>
                                 </div>
                             </li>

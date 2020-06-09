@@ -1,7 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import CalculateStarRating from "../../services/calculate-star-rating";
-import parse from "html-react-parser";
 
 export default function Recommended({restaurants}) {
     return (
@@ -26,8 +25,8 @@ export default function Recommended({restaurants}) {
                                     <span className="small lh-120"><i className="fas fa-map-marker-alt mr-2"/>{restaurant.address}</span>
                                 </div>
                                 <div className="d-flex my-4">
-                                      {parse(CalculateStarRating(Number(restaurant.rating)))}
-                                    <span className="badge badge-pill badge-secondary ml-2">{restaurant.rating}</span>
+                                      {CalculateStarRating(Number(restaurant.rating))}
+                                    <span className="badge badge-pill badge-secondary ml-2 d-flex align-items-center">{restaurant.rating}</span>
                                 </div>
                             </div>
                         </div>

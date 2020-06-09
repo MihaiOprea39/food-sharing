@@ -1,13 +1,12 @@
+import React from 'react';
+
 export default function CalculateStarRating(rating) {
-    const rounded = Math.floor(rating);
-    const decimal = 5 - rounded;
+    const starPercentage = (rating / 5) * 100;
+    const starWidth = `${(Math.round(starPercentage / 10) * 10)}%`;
 
-    let totalStars = '<i class="star fas fa-star text-warning"/>'.repeat(rounded);
-
-    if (decimal) {
-        const greyStars = ('<i class="star far fa-star text-gray"/>').repeat(decimal);
-        totalStars = totalStars.concat(greyStars);
-    }
-
-    return totalStars;
+    return (
+        <div className="stars-outer">
+            <div className="stars-inner" style={{width: starWidth}}/>
+        </div>
+    );
 }

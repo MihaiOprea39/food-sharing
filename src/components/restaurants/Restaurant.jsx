@@ -261,17 +261,17 @@ export default function Restaurant() {
                                         </div>
                                     </TabPane>
                                     <TabPane tabId="4">
-                                        {/*<FoodShareMap*/}
-                                        {/*    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}*/}
-                                        {/*    loadingElement={<div style={{height: `100%`}}/>}*/}
-                                        {/*    containerElement={<div style={{height: `100vh`}}/>}*/}
-                                        {/*    mapElement={<div style={{height: `100%`}}/>}*/}
-                                        {/*    markers={[restaurant]}*/}
-                                        {/*    center={{*/}
-                                        {/*        lat: restaurant.latitude,*/}
-                                        {/*        lng: restaurant.longitude*/}
-                                        {/*    }}*/}
-                                        {/*/>*/}
+                                        <FoodShareMap
+                                            googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAPS_KEY}&v=3.exp&libraries=places`}
+                                            loadingElement={<div style={{height: `100%`}}/>}
+                                            containerElement={<div style={{height: `100vh`}}/>}
+                                            mapElement={<div style={{height: `100%`}}/>}
+                                            markers={[restaurant]}
+                                            center={{
+                                                lat: restaurant.latitude,
+                                                lng: restaurant.longitude
+                                            }}
+                                        />
                                     </TabPane>
                                 </TabContent>
                             </div>

@@ -42,7 +42,7 @@ export default function FoodShareMarker({marker, position = defaultPosition, sel
                     position={position}
                 >
                     <div className="foodshare-info-window-wrapper">
-                        <h3>{marker.name} - {marker.id}</h3>
+                        <h3>{marker.name}</h3>
                         <ul className="marker-field-container">
                             <li>
                                 <div><span className="marker-field meta-property">Address</span> <span

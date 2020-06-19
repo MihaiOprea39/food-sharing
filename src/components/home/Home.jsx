@@ -68,7 +68,7 @@ export default function Home({user}) {
                     <div className="row justify-content-center">
                         <div className="col-12 text-md-center">
                             <h1 className="display-2 mb-5">
-                                Find your perfect <span className="font-weight-bolder">food-sharing</span> space.
+                                Find your perfect <span className="font-weight-bolder">food sharing</span> space.
                             </h1>
                             {/*<p className="lead text-muted mt-4">*/}
                             {/*    <span className="font-weight-bold">12,000+</span> coworking spaces with desks, offices &*/}

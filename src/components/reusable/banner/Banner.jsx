@@ -4,7 +4,8 @@ import './banner.scss';
 
 export default function Banner({children, title, subtitle, cover}) {
     return (
-        <div className="foodshare-banner-wrapper section section-header bg-primary overlay-dark text-white" style={{backgroundImage: `url(${cover})`}}>
+        <div className="foodshare-banner-wrapper section section-header bg-primary overlay-dark text-white"
+             style={{backgroundImage: `url(${process.env.REACT_APP_RESOURCES_ROOT}/${cover})`}}>
             <div className="container">
                 <div className="row justify-content-center pt-5">
                     <div className="col-12">

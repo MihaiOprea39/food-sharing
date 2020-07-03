@@ -9,6 +9,7 @@ import loadingScreen from '../../assets/img/gears-animation2.gif';
 export default function Conversations() {
     const [conversations, setConversations] = useState([]);
     const [activeConversation, setActiveConversation] = useState(null);
+    const [hasFinishedLoading, setHasFinishedLoading] = useState(false);
     const messagePanelRef = useRef();
     const {currentUser} = useContext(AuthContext);
 
@@ -127,6 +128,7 @@ export default function Conversations() {
                 const resolvedConversations = await Promise.all(promisedConversations);
 
                 setConversations(resolvedConversations || []);
+                setHasFinishedLoading(true);
             })
 
     };
@@ -202,7 +204,7 @@ export default function Conversations() {
                             <span>Chats</span>
                         </header>
                         <div className={`sidebar-body custom-scrollbar ${!conversations.length ? 'loading' : ''}`}>
-                            {conversations.length ? (
+                            {conversations.length || hasFinishedLoading ? (
                                 <ul className="list-group list-group-flush">
                                     {conversations.map((conversation, index) =>
                                         <Conversation key={index}

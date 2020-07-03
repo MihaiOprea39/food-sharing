@@ -58,7 +58,7 @@ export default function PickUp() {
             .add({
                 date: pickupDate,
                 ngo: currentUser.uid,
-                restaurant: pickupRestaurant.uid,
+                restaurant: pickupRestaurant.owner.uid,
                 deletedNgo: false,
                 deletedRestaurant: false
             }).then(docRef => {
@@ -232,6 +232,12 @@ This is ${currentUser ? currentUser.displayName : 'PLACEHOLDER'} contacting you.
                     containerElement={<div style={{height: `500px`}}/>}
                     mapElement={<div style={{height: `100%`}}/>}
                     markers={restaurants}
+                    {...(pickupRestaurant && {
+                        center: {
+                            lat: pickupRestaurant.latitude || 34.10,
+                            lng: pickupRestaurant.longitude || -118.33
+                        }
+                    })}
                     togglePickup
                     onTogglePickup={handleReadyForPickupChange}
                 />
@@ -348,6 +354,7 @@ This is ${currentUser ? currentUser.displayName : 'PLACEHOLDER'} contacting you.
                 </div>
             </FoodShareDialog>
             <Banner
+                cover="pick-up-banner-1.jpg"
                 subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
                  the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
                  that set this restaurant apart from others. A location tool for simplicity is also available."

@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import Banner from "../reusable/banner/Banner";
 import Recommended from "../recommended/Recommended";
 import firebase from "../../firebase";
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams, withRouter} from "react-router-dom";
 import ReviewsComponent from "../reviews/Reviews";
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import './restaurant.scss';
 import Typography from "@material-ui/core/Typography";
 import FoodShareMap from "../reusable/map/Map";
 
-export default function Restaurant() {
+const Restaurant = ({match}) => {
     const [generatedId, setGeneratedId] = useState('');
     const [restaurant, setRestaurant] = useState(null);
     const [recommended, setRecommended] = useState([]);
@@ -137,12 +137,13 @@ export default function Restaurant() {
         return (ratingsSum / ratings.length).toFixed(2) || 0;
     };
 
-    useEffect(getRestaurantData, []);
+    useEffect(getRestaurantData, [match.params.id]);
 
     return (
         <main>
             {restaurant && <Banner
                 title={`${restaurant.name}`}
+                cover={restaurant.image}
                 subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
                  the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
                  that set this restaurant apart from others. A location tool for simplicity is also available."
@@ -365,3 +366,5 @@ export default function Restaurant() {
         </main>
     );
 }
+
+export default withRouter(Restaurant);

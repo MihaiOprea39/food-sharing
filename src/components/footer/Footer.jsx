@@ -6,13 +6,13 @@ export default function Footer() {
         <footer className="footer section bg-dark text-white">
             <div className="container">
                 <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-8">
                         <Link className="footer-brand" to="./index.html">
-                            <img src="./assets/img/brand/light.svg" alt="Brand logo footer"/>
+                            <img src={`${process.env.REACT_APP_RESOURCES_ROOT}/light.svg`} alt="Brand logo footer"/>
                         </Link>
-                        <p className="mt-4 text-gray">For those seeking the finest in services and technology in a
-                            downtown
-                            business center, without the high cost.</p>
+                        <p className="mt-4 text-gray">For those seeking the finest in food sharing services and
+                            technology in a fast-paced, always online platform, without the hassle that usually comes
+                            along.</p>
                         <ul className="social-buttons mb-5 mb-lg-0">
                             <li>
                                 <a href="https://github.com/MihaiOprea39" target="_blank" rel="nofollow"
@@ -21,29 +21,6 @@ export default function Footer() {
                                     <i className="fab fa-github"/>
                                 </a>
                             </li>
-                        </ul>
-                    </div>
-                    <div className="col-sm-6 col-md-3 col-lg-2 mt-4 mt-md-0">
-                        <h6 className="font-weight-normal">About Us</h6>
-                        <ul className="links-vertical">
-                            <li><Link className="text-gray" to="https://themesberg.com/blog" target="_blank">Blog</Link>
-                            </li>
-                            <li><Link className="text-gray" to="https://themesberg.com/about" target="_blank">About
-                                Us</Link></li>
-                            <li><Link className="text-gray" to="https://themesberg.com/products"
-                                   target="_blank">Products</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="col-sm-6 col-md-3 col-lg-3 mt-4 mt-md-0">
-                        <h6 className="font-weight-normal">Market</h6>
-                        <ul className="links-vertical">
-                            <li><Link className="text-gray" to="#">Sales FAQ</Link></li>
-                            <li><Link className="text-gray" to="#">How to Register</Link></li>
-                            <li><Link className="text-gray" to="#">Sell Goods</Link></li>
-                            <li><Link className="text-gray" to="#">Receive Payment</Link></li>
-                            <li><Link className="text-gray" to="#">Sell Goods</Link></li>
-                            <li><Link className="text-gray" to="#">Receive Payment</Link></li>
                         </ul>
                     </div>
                 </div>

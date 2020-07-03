@@ -19,7 +19,7 @@ function Map({markers, zoom = defaultProps.zoom, center = defaultProps.center, t
     return (
         <GoogleMap
             defaultZoom={zoom}
-            defaultCenter={center}
+            center={center}
             defaultOptions={{styles: mapStyle}}
         >
             {markers && markers.map((marker) => (

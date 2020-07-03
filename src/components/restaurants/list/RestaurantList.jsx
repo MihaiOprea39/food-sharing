@@ -148,21 +148,26 @@ export default function RestaurantsList() {
     };
 
     const updateCustomFields = () => {
-        // firebase.firestore()
-        //     .collection('restaurants')
-        //     .get()
-        //     .then(snapshot => {
-        //         snapshot.forEach(doc => {
-        //             firebase.firestore()
-        //                 .collection('restaurants')
-        //                 .doc(doc.id)
-        //                 .set({
-        //                     location: [1, 2, 3, 4][Math.floor(Math.random() * [1, 2, 3, 4].length)]
-        //                 }, {
-        //                     merge: true
-        //                 }).then()
-        //         })
-        //     })
+        firebase.firestore()
+            .collection('restaurants')
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    firebase.firestore()
+                        .collection('restaurants')
+                        .doc(doc.id)
+                        .set({
+                            keywords: ['', `${doc.data().name.toLowerCase()}`].concat(
+                                doc
+                                    .data()
+                                    .name.toLowerCase()
+                                    .split(" ")
+                            )
+                        }, {
+                            merge: true
+                        }).then()
+                })
+            })
         // firebase.firestore()
         //     .collection('restaurants')
         //     .get()
@@ -180,37 +185,37 @@ export default function RestaurantsList() {
         //                 }).then()
         //         })
         //     })
-        firebase.firestore()
-            .collection('restaurants')
-            .get()
-            .then(snapshot => {
-                snapshot.forEach(doc => {
-                    firebase.firestore()
-                        .collection('restaurants')
-                        .doc(doc.id)
-                        .collection('reviews')
-                        .get()
-                        .then(snap => {
-                            snap.forEach(review => {
-                                    firebase.firestore()
-                                        .collection('restaurants')
-                                        .doc(doc.id)
-                                        .collection('reviews')
-                                        .doc(review.id)
-                                        .set({
-                                            timestamp: [firebase.firestore.Timestamp.fromDate(new Date(1591280791773)),
-                                                firebase.firestore.Timestamp.fromDate(new Date(1591210791773)),
-                                                firebase.firestore.Timestamp.fromDate(new Date(1581210711773)),
-                                                firebase.firestore.Timestamp.fromDate(new Date(1581110311773)),
-                                                firebase.firestore.Timestamp.fromDate(new Date(1582119311773)),
-                                            ][Math.floor(Math.random() * 5)]
-                                        }, {
-                                            merge: true
-                                        }).then()
-                                })
-                        })
-                })
-            })
+        // firebase.firestore()
+        //     .collection('restaurants')
+        //     .get()
+        //     .then(snapshot => {
+        //         snapshot.forEach(doc => {
+        //             firebase.firestore()
+        //                 .collection('restaurants')
+        //                 .doc(doc.id)
+        //                 .collection('reviews')
+        //                 .get()
+        //                 .then(snap => {
+        //                     snap.forEach(review => {
+        //                             firebase.firestore()
+        //                                 .collection('restaurants')
+        //                                 .doc(doc.id)
+        //                                 .collection('reviews')
+        //                                 .doc(review.id)
+        //                                 .set({
+        //                                     timestamp: [firebase.firestore.Timestamp.fromDate(new Date(1591280791773)),
+        //                                         firebase.firestore.Timestamp.fromDate(new Date(1591210791773)),
+        //                                         firebase.firestore.Timestamp.fromDate(new Date(1581210711773)),
+        //                                         firebase.firestore.Timestamp.fromDate(new Date(1581110311773)),
+        //                                         firebase.firestore.Timestamp.fromDate(new Date(1582119311773)),
+        //                                     ][Math.floor(Math.random() * 5)]
+        //                                 }, {
+        //                                     merge: true
+        //                                 }).then()
+        //                         })
+        //                 })
+        //         })
+        //     })
         // JSON.parse(JSON.stringify((local))).forEach((item, index) => {
         //     firebase.firestore()
         //         .collection('restaurants')
@@ -232,9 +237,6 @@ export default function RestaurantsList() {
 
     const onSearchSubmit = async () => {
         const {search, date, rating, location} = filters;
-        
-        console.log('here', rating);
-        console.log('here', Math.min(...rating));
 
         let searchQuery = firebase
             .firestore()
@@ -294,41 +296,66 @@ export default function RestaurantsList() {
         <main className="restaurant-list-main">
             <Banner
                 title={`Restaurant listings ${location ? `in ${location}` : ''}`}
-                subtitle="You are now viewing a single restaurant listing. You are about to discover a cohesive description
-                 the owner has made available, the reviews the other organisation have left in regards to this listing, as well as all amenities
-                 that set this restaurant apart from others. A location tool for simplicity is also available."
+                cover={`${location ? `${location}.jpg` : 'list-banner-1.jpg'}`}
+                subtitle="You are now viewing an entire collection of restaurant listing. You have the possibility of
+                 filtering through the listings, as well as performing a more detailed search.
+                 You are able to visualize a restaurant's name, as well as its location and the ratings other users of this platform had given.
+                 When you are ready, click on a restaurant of your liking to begin the Pick-up process."
             >
                 <Link color="inherit" to="/">
                     Home
                 </Link>
                 <Typography color="textPrimary">Restaurants</Typography>
             </Banner>
-            <div className="section pt-5 pt-lg-6">
-                <div id="spaces-container" className="container">
+            <div className="section section-md pt-5 pb-3">
+                <div className="container mt-n7">
                     <div className="row">
-                        <div className="restaurant-search-container col-md-12 col-lg-9">
-                            <Grid container alignItems="flex-end">
-                                <Grid item>
-                                    <SearchIcon/>
-                                </Grid>
-                                <Grid item>
-                                    <TextField label="Search" onChange={onSearchChange} value={filters.search}/>
-                                </Grid>
-                            </Grid>
-                            <FoodShareDatePicker value={filters.date} onChange={onDateChange}
-                                                 placeholder="Available date"/>
-                            <button className="btn btn-primary btn-block mt-md-0 animate-up-2 search-button"
-                                    onClick={onSearchSubmit}
-                            >Find restaurants
-                            </button>
+                        <div className="col-12">
+                            <div className="card border-light p-3">
+                                <div className="card-body p-4">
+                                    <div className="row">
+                                        <div className="col-8">
+                                            <div className="row">
+                                                <div className="col">
+                                                    <div className="form-group form-group-lg mb-lg-0">
+                                                        <div className="input-group">
+                                                            <div className="input-group-prepend"><span
+                                                                className="input-group-text"><span
+                                                                className="fas fa-map-marker-alt"></span></span>
+                                                            </div>
+                                                            <input id="search-location" type="text"
+                                                                   className="form-control autocomplete"
+                                                                   placeholder="Search for a restaurant"
+                                                                   onChange={onSearchChange}
+                                                                   value={filters.search}
+                                                            /></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-4 mt-1">
+                                            <div className="row align-items-center">
+                                                <div className="col-12">
+                                                    <button className="btn btn-primary btn-block animate-up-2"
+                                                            onClick={onSearchSubmit}>Find restaurants
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div className="section pt-5 pt-lg-4">
+                <div id="spaces-container" className="container">
                     <div className="row">
-
                         <RestaurantFilters locations={locations}
                                            onFiltersChange={onSidebarFiltersChange}
                         />
-
                         <div className="col-md-12 col-lg-9 order-lg-1 restaurant-list-wrapper">
                             <div
                                 className="restaurant-list-counter justify-content-between align-items-center d-none d-md-flex">

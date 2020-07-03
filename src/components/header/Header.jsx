@@ -17,7 +17,7 @@ export default function Header() {
                  className="navbar navbar-main navbar-expand-lg navbar-transparent navbar-dark navbar-theme-primary headroom py-lg-2 px-lg-6">
                 <div className="container">
                     <Link className="navbar-brand" to="/">
-                        <img className="navbar-brand-dark" src="./assets/img/brand/light.svg" alt="Logo light"/>
+                        <img className="navbar-brand-dark" src={`${process.env.REACT_APP_RESOURCES_ROOT}/light.svg`} alt="Logo light"/>
                         <img className="navbar-brand-light" src="./assets/img/brand/secondary.svg" alt="Logo dark"/>
                     </Link>
                     <div className="navbar-collapse collapse" id="navbar_global">

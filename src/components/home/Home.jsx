@@ -109,7 +109,8 @@ export default function Home({user}) {
                                                         <i className="fas fa-search"></i>
                                                     </div>
                                                     <h5 className="font-weight-normal my-3">1. Choose a restaurant</h5>
-                                                    <p>It takes no longer than a couple of minutes to venture through our user friendly listings screen.</p>
+                                                    <p>It takes no longer than a couple of minutes to venture through
+                                                        our user friendly listings screen.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,7 +122,8 @@ export default function Home({user}) {
                                                         <i className="far fa-calendar-check"></i>
                                                     </div>
                                                     <h5 className="font-weight-normal my-3">2. Schedule a pick-up</h5>
-                                                    <p>Once you have found your desired location, our platform makes it easy
+                                                    <p>Once you have found your desired location, our platform makes it
+                                                        easy
                                                         for you to get in touch with its owner.</p>
                                                 </div>
                                             </div>
@@ -134,7 +136,8 @@ export default function Home({user}) {
                                                         <i className="fas fa-mouse-pointer"></i>
                                                     </div>
                                                     <h5 className="font-weight-normal my-3">3. Collect</h5>
-                                                    <p>All that's left now is to arrive at the location and collect your disposable food.</p>
+                                                    <p>All that's left now is to arrive at the location and collect your
+                                                        disposable food.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -153,7 +156,7 @@ export default function Home({user}) {
                                 <div className="icon icon-primary icon-xl">
                                     <i className="fas fa-clock"></i>
                                 </div>
-                                <h6 className="font-weight-normal text-gray mt-4 mb-3">24 Hr Access</h6>
+                                <h6 className="font-weight-normal text-gray mt-4 mb-3">24 Hr Availability</h6>
                             </div>
                         </div>
                         <div className="col-6 col-lg-3">
@@ -161,7 +164,7 @@ export default function Home({user}) {
                                 <div className="icon icon-primary icon-xl">
                                     <i className="fas fa-tachometer-alt"></i>
                                 </div>
-                                <h6 className="font-weight-normal text-gray mt-4 mb-3">Fast Internet</h6>
+                                <h6 className="font-weight-normal text-gray mt-4 mb-3">Fast Responses</h6>
                             </div>
                         </div>
                         <div className="col-6 col-lg-3">
@@ -169,15 +172,15 @@ export default function Home({user}) {
                                 <div className="icon icon-primary icon-xl">
                                     <i className="fas fa-user-tie"></i>
                                 </div>
-                                <h6 className="font-weight-normal text-gray mt-4 mb-3">Good Coworkers</h6>
+                                <h6 className="font-weight-normal text-gray mt-4 mb-3">Eager Collaborators</h6>
                             </div>
                         </div>
                         <div className="col-6 col-lg-3">
                             <div className="icon-box text-center">
                                 <div className="icon icon-primary icon-xl">
-                                    <i className="fas fa-city"></i>
+                                    <i className="fas fa-utensils"></i>
                                 </div>
-                                <h6 className="font-weight-normal text-gray mt-4 mb-3">Modern Building</h6>
+                                <h6 className="font-weight-normal text-gray mt-4 mb-3">Plenty to choose from</h6>
                             </div>
                         </div>
                     </div>
@@ -188,18 +191,16 @@ export default function Home({user}) {
                                 listings.</h2>
                         </div>
                         <div className="col-md-4">
-                            <p className="lead">FoodSharing is not only about the physical place, but about establishing
-                                the coworking community first. Its benefits can already be experienced outside of its
-                                places, and it is recommended</p>
-                            <p className="lead mt-4">To start with building a coworking community first before
-                                considering opening a Coworking place.</p>
+                            <p className="lead">Food Sharing is designed for those seeking the finest in food sharing services and technology in a fast-paced,
+                                always online platform, without the hassle that usually comes along.</p>
+                            <p className="lead mt-4">You have the possibility of
+                                filtering through the listings, as well as performing a more detailed search.
+                            </p>
                         </div>
                         <div className="col-md-4">
-                            <p className="lead">However, some coworking places don’t build a community: they just get a
-                                part of an existing one by combining their opening with</p>
-                            <p className="lead mt-4">An event which attracts their target group. Real-estate centric
-                                coworking spaces are about selling desks first, with building community as a secondary
-                                goal.</p>
+                            <p className="lead">You are able to visualize a restaurant's name, as well as its location
+                                and the ratings other users of this platform had given.
+                            </p>
                         </div>
                     </div>
                     <div className="row mt-6">
@@ -209,9 +210,9 @@ export default function Home({user}) {
                         {topLocations && topLocations.map((location, key) => (
                                 <div className="col-12 col-sm-6 col-lg-3 mb-4 mb-lg-0" key={key}>
                                     <Link to={`/restaurants?location=${location.id}`}
-                                          className="card img-card fh-400 border-0 outer-bg"
-                                          data-background-inner="assets/img/newyork.jpg">
-                                        <div className="inner-bg overlay-dark"></div>
+                                          className="card img-card fh-400 border-0 outer-bg">
+                                        <div className="inner-bg overlay-dark"
+                                             style={{backgroundImage: `url(${process.env.REACT_APP_RESOURCES_ROOT}/${location.name}.jpg)` }} />
                                         <div className="card-img-overlay d-flex align-items-center">
                                             <div className="card-body text-white p-3">
                                                 <h5 className="font-weight-normal text-uppercase text-center">{location.name}</h5>
@@ -230,12 +231,12 @@ export default function Home({user}) {
                                 <div className="col-md-6 col-lg-4" key={key}>
                                     <div className="card shadow-sm border-soft mb-4 animate-up-5">
                                         <Link to={`/restaurant/${restaurant.id}`} className="position-relative">
-                                            <img src="assets/img/image-office.jpg" className="card-img-top space-image"
-                                                 alt="a card"/>
+                                            <img src={`${process.env.REACT_APP_RESOURCES_ROOT}/${restaurant.image}`} className="card-img-top space-image"
+                                                 alt="a card" style={{minHeight: '228px'}}/>
                                             <span className="badge badge-primary position-absolute listing-badge">
                                 </span>
                                         </Link>
-                                        <div className="card-body">
+                                        <div className="card-body" style={{minHeight: '203px'}}>
                                             <a href="./html/pages/single-space.html">
                                                 <h5 className="font-weight-normal">{restaurant.name}</h5>
                                             </a>

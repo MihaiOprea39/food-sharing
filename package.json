@@ -22,7 +22,7 @@
     "html-react-parser": "^0.10.3",
     "jquery": "^3.4.1",
     "jquery-countdown": "2.2.0",
-    "jquery-validation": "1.19.1",
+    "jquery-validation": "1.19.5",
     "jquery.counterup": "2.1.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.0",
